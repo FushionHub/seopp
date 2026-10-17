@@ -159,7 +159,7 @@ require_once __DIR__ . '/sidebar.php';
         <div class="admin-card">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <h6 class="text-white fw-bold mb-0">Recent Transactions</h6>
-                <a href="<?= BASE_URL ?>/admin/transactions.php" class="btn-admin btn-admin-outline">View All</a>
+                <a href="<?= BASE_URL ?>/admin/transactions" class="btn-admin btn-admin-outline">View All</a>
             </div>
             <div class="table-responsive">
                 <table class="admin-table">
@@ -184,7 +184,7 @@ require_once __DIR__ . '/sidebar.php';
         <div class="admin-card">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <h6 class="text-white fw-bold mb-0">Recent Registrations</h6>
-                <a href="<?= BASE_URL ?>/admin/users.php" class="btn-admin btn-admin-outline">View All</a>
+                <a href="<?= BASE_URL ?>/admin/users" class="btn-admin btn-admin-outline">View All</a>
             </div>
             <?php foreach ($recentUsers as $u): ?>
                 <div class="d-flex align-items-center gap-2 mb-2 pb-2" style="border-bottom:1px solid var(--admin-border);">

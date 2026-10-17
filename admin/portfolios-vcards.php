@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             set_flash('success', "vCard #{$vcardId} deleted.");
         }
     }
-    redirect(BASE_URL . '/admin/portfolios-vcards.php');
+    redirect(url('admin/portfolios-vcards'));
 }
 
 // KPI Metrics
@@ -170,7 +170,7 @@ require_once __DIR__ . '/sidebar.php';
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a href="<?= BASE_URL ?>/portfolio.php?u=<?= urlencode($p['username']) ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Portfolio Live">
+                                        <a href="<?= url('portfolio', ['u' => $p['username']]) ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Portfolio Live">
                                             <i class="ph-bold ph-arrow-square-out"></i>
                                         </a>
                                         <form method="POST" style="display:inline;">
@@ -247,10 +247,10 @@ require_once __DIR__ . '/sidebar.php';
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a href="<?= BASE_URL ?>/vcard.php?u=<?= urlencode($v['username']) ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Digital vCard">
+                                        <a href="<?= url('vcard', ['u' => $v['username']]) ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Digital vCard">
                                             <i class="ph-bold ph-arrow-square-out"></i>
                                         </a>
-                                        <a href="<?= BASE_URL ?>/vcard-download.php?u=<?= urlencode($v['username']) ?>" class="btn-admin btn-admin-outline" title="Download .vcf File">
+                                        <a href="<?= url('vcard-download', ['u' => $v['username']]) ?>" class="btn-admin btn-admin-outline" title="Download .vcf File">
                                             <i class="ph-bold ph-download-simple"></i>
                                         </a>
                                         <form method="POST" style="display:inline;">

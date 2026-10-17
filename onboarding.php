@@ -3,14 +3,14 @@
 require_once __DIR__ . '/config/site_setting_and_config.php';
 
 if (!is_logged_in()) {
-    redirect(BASE_URL . '/login.php');
+    redirect(url('login'));
 }
 
 $user = current_user();
 $userId = current_user_id();
 
 if (!empty($user['onboarding_completed'])) {
-    redirect(BASE_URL . '/dashboard.php');
+    redirect(url('dashboard'));
 }
 
 require_once __DIR__ . '/modules/firecrawl_scraper.php';
@@ -73,12 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $step = max(1, $step - 1);
         } elseif ($action === 'complete') {
             db()->update('users', ['onboarding_completed' => 1], 'id = ?', [$userId]);
-            redirect(BASE_URL . '/dashboard.php');
+            redirect(url('dashboard'));
         }
     }
 }
 
-$pageTitle = 'Getting Started — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Getting Started â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/header.php';
 
 $socialPlatforms = [

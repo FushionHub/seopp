@@ -6,19 +6,19 @@ require_once __DIR__ . '/modules/email_service.php';
 
 $pendingUserId = (int)($_SESSION['2fa_pending_user_id'] ?? 0);
 if ($pendingUserId <= 0) {
-    redirect(BASE_URL . '/login.php');
+    redirect(url('login'));
 }
 
 $user = db()->fetchOne("SELECT * FROM users WHERE id = ?", [$pendingUserId]);
 if (!$user || (int)($user['two_factor_enabled'] ?? 0) !== 1) {
     unset($_SESSION['2fa_pending_user_id']);
-    redirect(BASE_URL . '/login.php');
+    redirect(url('login'));
 }
 
 $errors  = [];
 $success = '';
 
-// ── Abuse control ──
+// â”€â”€ Abuse control â”€â”€
 // The TOTP space is only 10^6 and a code stays valid for 30s, so an
 // attacker who can spam guesses could walk it. Cap attempts and OTP emails.
 $verifyAllowed = check_rate_limit('2fa_verify_' . $pendingUserId, 10, 900);
@@ -140,7 +140,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
     }
 }
 
-$pageTitle = 'Verify Identity (2FA) — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Verify Identity (2FA) â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/header.php';
 ?>
 

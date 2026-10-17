@@ -70,10 +70,10 @@ if ($userId) {
             <p class="page-subtitle">Discover businesses, hotels, hospitals, churches, products, and services from the community.</p>
         </div>
         <div style="display:flex;align-items:center;gap:12px;">
-            <a href="<?= BASE_URL ?>/create-listing.php" class="btn-accent">
+            <a href="<?= url('create-listing') ?>" class="btn-accent">
                 <i class="ph ph-plus-circle me-1"></i> List Business, Place or Product
             </a>
-            <a href="<?= BASE_URL ?>/dashboard.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('dashboard') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-arrow-left"></i> Dashboard
             </a>
         </div>
@@ -97,7 +97,7 @@ if ($userId) {
             <?php endforeach; ?>
         </ul>
 
-        <form method="GET" action="<?= BASE_URL ?>/marketplace.php" style="display:flex;align-items:center;gap:8px;">
+        <form method="GET" action="<?= url('marketplace') ?>" style="display:flex;align-items:center;gap:8px;">
             <input type="hidden" name="tab" value="<?= e($currentTab) ?>">
             <?php if ($filterType !== ''): ?>
                 <input type="hidden" name="type" value="<?= e($filterType) ?>">
@@ -148,7 +148,7 @@ if ($userId) {
             <p style="color:var(--fg2);font-size:14px;max-width:400px;margin:0 auto 20px;">
                 Be the first to list a business, place, hotel, hospital, or church in this directory!
             </p>
-            <a href="<?= BASE_URL ?>/create-listing.php" class="btn-accent">
+            <a href="<?= url('create-listing') ?>" class="btn-accent">
                 <i class="ph ph-plus-circle me-1"></i> Post the First Listing
             </a>
         </div>
@@ -194,7 +194,7 @@ if ($userId) {
                         <!-- Body -->
                         <div style="padding:22px;flex:1;display:flex;flex-direction:column;">
                             <h5 style="color:#fff;font-weight:700;font-size:16px;margin-bottom:8px;line-height:1.4;">
-                                <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $listing['id'] ?>" style="color:#fff;text-decoration:none;">
+                                <a href="<?= url('listing-details', ['id' => $listing['id']]) ?>" style="color:#fff;text-decoration:none;">
                                     <?= htmlspecialchars($listing['title']) ?>
                                 </a>
                             </h5>
@@ -225,7 +225,7 @@ if ($userId) {
                                     <?php endif; ?>
                                 </div>
 
-                                <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $listing['id'] ?>" class="btn-outline-dark btn-sm">
+                                <a href="<?= url('listing-details', ['id' => $listing['id']]) ?>" class="btn-outline-dark btn-sm">
                                     View Details <i class="ph ph-arrow-right"></i>
                                 </a>
                             </div>

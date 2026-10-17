@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/ugc-studio.php');
+    redirect(url('admin/ugc-studio'));
 }
 
 // Metrics

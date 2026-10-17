@@ -15,7 +15,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="col-lg-8">
                 <div class="text-center">
                     <ul class="d-inline-flex align-items-center justify-content-center tw-gap-2 bg-white-08 rounded-pill tw-px-5 tw-py-2">
-                        <li><a href="<?= BASE_URL ?>/index.php" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
+                        <li><a href="<?= url('index') ?>" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
                         <li class="text-white tw-text-lg">/</li>
                         <li> <span class="text-white"> About Us </span> </li>
                     </ul>
@@ -170,7 +170,7 @@ require_once __DIR__ . '/includes/header.php';
               and scale campaigns across every platform without switching tabs.
             </p>
             <div class="tw-mt-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="0">
-              <a href="<?= BASE_URL ?>/register.php"
+              <a href="<?= url('register') ?>"
                 class="btn btn-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-705 group active--translate-y-2 tw-p-1 tw-ps-8 rounded-pill group-item"
                 data-block="button">
                 <span class="button__flair"></span>
@@ -308,7 +308,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
           </div>
           <div class="tw-mt-8">
-            <a href="<?= BASE_URL ?>/contact.php"
+            <a href="<?= url('contact') ?>"
               class="btn btn-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-705 group active--translate-y-2 tw-p-1 tw-ps-8 rounded-pill group-item"
               data-block="button">
               <span class="button__flair"></span>
@@ -383,7 +383,7 @@ require_once __DIR__ . '/includes/header.php';
               </div>
             </div>
             <div class="tw-mt-8">
-              <a href="<?= BASE_URL ?>/contact.php"
+              <a href="<?= url('contact') ?>"
                 class="btn btn-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-705 group active--translate-y-2 tw-p-1 tw-ps-8 rounded-pill group-item"
                 data-block="button">
                 <span class="button__flair"></span>
@@ -447,7 +447,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
           </div>
           <div class="tw-mt-8">
-            <a href="<?= BASE_URL ?>/contact.php"
+            <a href="<?= url('contact') ?>"
               class="btn btn-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-705 group active--translate-y-2 tw-p-1 tw-ps-8 rounded-pill group-item"
               data-block="button">
               <span class="button__flair"></span>
@@ -498,7 +498,7 @@ require_once __DIR__ . '/includes/header.php';
             </p>
           </div>
           <div class="flex-shrink-0" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
-            <a href="<?= BASE_URL ?>/contact.php"
+            <a href="<?= url('contact') ?>"
               class="btn btn-black-outline hover-style-three button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-705 group active--translate-y-2 tw-p-1 tw-ps-8 rounded-pill group-item"
               data-block="button">
               <span class="button__flair"></span>
@@ -540,7 +540,7 @@ require_once __DIR__ . '/includes/header.php';
           <div
             class="image-double-animation bg-white tw-rounded-xl tw-p-24-px d-flex tw-gap-52-px flex-column flex-lg-row mx-3 mx-sm-0"
             data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-            <a href="<?= BASE_URL ?>/project-details.php" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
+            <a href="<?= url('project-details') ?>" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img1.png" alt="Image"
                 class="image-double-animation__element tw-rounded-2xl w-100 h-100 object-fit-cover">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img1.png" alt="Image"
@@ -556,7 +556,7 @@ require_once __DIR__ . '/includes/header.php';
                 Launch and manage ad campaigns across Meta, Instagram, TikTok, Google Ads, and Snapchat from a single dashboard.
               </p>
               <div class="tw-mt-12">
-                <a href="<?= BASE_URL ?>/create-ad.php"
+                <a href="<?= url('create-ad') ?>"
                   class="btn btn-main-outline hover-style-two group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill tw-py-305"
                   data-block="button">
                   <span class="button__flair"></span>
@@ -573,7 +573,7 @@ require_once __DIR__ . '/includes/header.php';
           <div
             class="image-double-animation bg-white tw-rounded-xl tw-p-24-px d-flex tw-gap-52-px flex-column flex-lg-row mx-3 mx-sm-0"
             data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
-            <a href="<?= BASE_URL ?>/project-details.php" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
+            <a href="<?= url('project-details') ?>" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img2.png" alt="Image"
                 class="image-double-animation__element tw-rounded-2xl w-100 h-100 object-fit-cover">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img2.png" alt="Image"
@@ -589,7 +589,7 @@ require_once __DIR__ . '/includes/header.php';
                 Launch and manage ad campaigns across Meta, Instagram, TikTok, Google Ads, and Snapchat from a single dashboard.
               </p>
               <div class="tw-mt-12">
-                <a href="<?= BASE_URL ?>/create-ad.php"
+                <a href="<?= url('create-ad') ?>"
                   class="btn btn-main-outline hover-style-two group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill tw-py-305"
                   data-block="button">
                   <span class="button__flair"></span>
@@ -606,7 +606,7 @@ require_once __DIR__ . '/includes/header.php';
           <div
             class="image-double-animation bg-white tw-rounded-xl tw-p-24-px d-flex tw-gap-52-px flex-column flex-lg-row mx-3 mx-sm-0"
             data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
-            <a href="<?= BASE_URL ?>/project-details.php" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
+            <a href="<?= url('project-details') ?>" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img3.png" alt="Image"
                 class="image-double-animation__element tw-rounded-2xl w-100 h-100 object-fit-cover">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img3.png" alt="Image"
@@ -622,7 +622,7 @@ require_once __DIR__ . '/includes/header.php';
                 Launch and manage ad campaigns across Meta, Instagram, TikTok, Google Ads, and Snapchat from a single dashboard.
               </p>
               <div class="tw-mt-12">
-                <a href="<?= BASE_URL ?>/create-ad.php"
+                <a href="<?= url('create-ad') ?>"
                   class="btn btn-main-outline hover-style-two group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill tw-py-305"
                   data-block="button">
                   <span class="button__flair"></span>
@@ -639,7 +639,7 @@ require_once __DIR__ . '/includes/header.php';
           <div
             class="image-double-animation bg-white tw-rounded-xl tw-p-24-px d-flex tw-gap-52-px flex-column flex-lg-row mx-3 mx-sm-0"
             data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-            <a href="<?= BASE_URL ?>/project-details.php" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
+            <a href="<?= url('project-details') ?>" class="position-relative overflow-hidden tw-rounded-2xl view-cursor-show">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img2.png" alt="Image"
                 class="image-double-animation__element tw-rounded-2xl w-100 h-100 object-fit-cover">
               <img src="<?= ASSETS_URL ?>/images/thumbs/project-img2.png" alt="Image"
@@ -655,7 +655,7 @@ require_once __DIR__ . '/includes/header.php';
                 Launch and manage ad campaigns across Meta, Instagram, TikTok, Google Ads, and Snapchat from a single dashboard.
               </p>
               <div class="tw-mt-12">
-                <a href="<?= BASE_URL ?>/create-ad.php"
+                <a href="<?= url('create-ad') ?>"
                   class="btn btn-main-outline hover-style-two group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill tw-py-305"
                   data-block="button">
                   <span class="button__flair"></span>
@@ -703,7 +703,7 @@ require_once __DIR__ . '/includes/header.php';
             class="team-three-item image-double-animation bg-white tw-rounded-xl tw-p-205 d-flex flex-sm-row align-items-sm-center flex-column tw-gap-6 justify-content-between">
             <div class="tw-ps-705 tw-py-3 flex-grow-1">
               <h2 class="h5 tw-mb-2">
-                <a href="<?= BASE_URL ?>/team-details.php"
+                <a href="<?= url('team-details') ?>"
                   class="text-heading fw-semibold hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                   <span class="element-double-animation__element" data-content="Sofia Martin">Sofia Martin</span>
                 </a>
@@ -735,7 +735,7 @@ require_once __DIR__ . '/includes/header.php';
               </ul>
             </div>
             <div class="flex-grow-1">
-              <a href="<?= BASE_URL ?>/team-details.php"
+              <a href="<?= url('team-details') ?>"
                 class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                 <img src="<?= ASSETS_URL ?>/images/thumbs/team-three-img1.png" alt="Image"
                   class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -750,7 +750,7 @@ require_once __DIR__ . '/includes/header.php';
             class="team-three-item image-double-animation bg-white tw-rounded-xl tw-p-205 d-flex flex-sm-row align-items-sm-center flex-column tw-gap-6 justify-content-between">
             <div class="tw-ps-705 tw-py-3 flex-grow-1">
               <h2 class="h5 tw-mb-2">
-                <a href="<?= BASE_URL ?>/team-details.php"
+                <a href="<?= url('team-details') ?>"
                   class="text-heading fw-semibold hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                   <span class="element-double-animation__element" data-content="Liam Patel">Liam Patel</span>
                 </a>
@@ -780,7 +780,7 @@ require_once __DIR__ . '/includes/header.php';
               </ul>
             </div>
             <div class="flex-grow-1">
-              <a href="<?= BASE_URL ?>/team-details.php"
+              <a href="<?= url('team-details') ?>"
                 class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                 <img src="<?= ASSETS_URL ?>/images/thumbs/team-three-img2.png" alt="Image"
                   class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -794,7 +794,7 @@ require_once __DIR__ . '/includes/header.php';
           <div
             class="team-three-item image-double-animation bg-white tw-rounded-xl tw-p-205 d-flex flex-sm-row align-items-sm-center flex-column tw-gap-42-px">
             <div class="flex-grow-1">
-              <a href="<?= BASE_URL ?>/team-details.php"
+              <a href="<?= url('team-details') ?>"
                 class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                 <img src="<?= ASSETS_URL ?>/images/thumbs/team-three-img3.png" alt="Image"
                   class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -804,7 +804,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="tw-py-3 flex-grow-1">
               <h2 class="h5 tw-mb-2">
-                <a href="<?= BASE_URL ?>/team-details.php"
+                <a href="<?= url('team-details') ?>"
                   class="text-heading fw-semibold hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                   <span class="element-double-animation__element" data-content="Mia Johnson">Mia Johnson</span>
                 </a>
@@ -839,7 +839,7 @@ require_once __DIR__ . '/includes/header.php';
           <div
             class="team-three-item image-double-animation bg-white tw-rounded-xl tw-p-205 d-flex flex-sm-row align-items-sm-center flex-column tw-gap-42-px">
             <div class="flex-grow-1">
-              <a href="<?= BASE_URL ?>/team-details.php"
+              <a href="<?= url('team-details') ?>"
                 class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                 <img src="<?= ASSETS_URL ?>/images/thumbs/team-three-img4.png" alt="Image"
                   class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -849,7 +849,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="tw-py-3 flex-grow-1">
               <h2 class="h5 tw-mb-2">
-                <a href="<?= BASE_URL ?>/team-details.php"
+                <a href="<?= url('team-details') ?>"
                   class="text-heading fw-semibold hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                   <span class="element-double-animation__element" data-content="Ethan Brooks">Ethan Brooks</span>
                 </a>
@@ -1045,7 +1045,7 @@ require_once __DIR__ . '/includes/header.php';
             Blog & News</span>
         </h2>
       </div>
-      <a href="<?= BASE_URL ?>/blog.php"
+      <a href="<?= url('blog') ?>"
         class="btn btn-main-two hover-style-two group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill"
         data-block="button">
         <span class="button__flair"></span>
@@ -1071,10 +1071,10 @@ require_once __DIR__ . '/includes/header.php';
               <span class="tw-text-base fw-medium text-neutral-500">Business</span>
             </div>
             <h2 class="h5 tw-my-6">
-              <a href="<?= BASE_URL ?>/blog-details.php" class="text-heading hover-text-main-600 line-clamp-3">What to emphasize when
+              <a href="<?= url('blog-details') ?>" class="text-heading hover-text-main-600 line-clamp-3">What to emphasize when
                 you are designing promotional</a>
             </h2>
-            <a href="<?= BASE_URL ?>/blog-details.php"
+            <a href="<?= url('blog-details') ?>"
               class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
               <span class="element-double-animation__element" data-content="Read Details">Read Details</span>
 
@@ -1083,7 +1083,7 @@ require_once __DIR__ . '/includes/header.php';
               </span>
             </a>
           </div>
-          <a href="<?= BASE_URL ?>/blog-details.php" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
+          <a href="<?= url('blog-details') ?>" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img1.png" alt="Image"
               class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img1.png" alt="Image"
@@ -1103,10 +1103,10 @@ require_once __DIR__ . '/includes/header.php';
               <span class="tw-text-base fw-medium text-neutral-500">Business</span>
             </div>
             <h2 class="h5 tw-my-6">
-              <a href="<?= BASE_URL ?>/blog-details.php" class="text-heading hover-text-main-600 line-clamp-3">Google Ads vs Facebook
+              <a href="<?= url('blog-details') ?>" class="text-heading hover-text-main-600 line-clamp-3">Google Ads vs Facebook
                 Ads: Which is Better?</a>
             </h2>
-            <a href="<?= BASE_URL ?>/blog-details.php"
+            <a href="<?= url('blog-details') ?>"
               class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
               <span class="element-double-animation__element" data-content="Read Details">Read Details</span>
 
@@ -1115,7 +1115,7 @@ require_once __DIR__ . '/includes/header.php';
               </span>
             </a>
           </div>
-          <a href="<?= BASE_URL ?>/blog-details.php" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
+          <a href="<?= url('blog-details') ?>" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img2.png" alt="Image"
               class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img2.png" alt="Image"
@@ -1135,10 +1135,10 @@ require_once __DIR__ . '/includes/header.php';
               <span class="tw-text-base fw-medium text-neutral-500">Business</span>
             </div>
             <h2 class="h5 tw-my-6">
-              <a href="<?= BASE_URL ?>/blog-details.php" class="text-heading hover-text-main-600 line-clamp-3">Automation Workflows
+              <a href="<?= url('blog-details') ?>" class="text-heading hover-text-main-600 line-clamp-3">Automation Workflows
                 That Save Time & Sell More</a>
             </h2>
-            <a href="<?= BASE_URL ?>/blog-details.php"
+            <a href="<?= url('blog-details') ?>"
               class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
               <span class="element-double-animation__element" data-content="Read Details">Read Details</span>
 
@@ -1147,7 +1147,7 @@ require_once __DIR__ . '/includes/header.php';
               </span>
             </a>
           </div>
-          <a href="<?= BASE_URL ?>/blog-details.php" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
+          <a href="<?= url('blog-details') ?>" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img3.png" alt="Image"
               class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img3.png" alt="Image"

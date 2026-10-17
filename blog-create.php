@@ -24,7 +24,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
     $canPublish = is_admin() || in_array(current_user_role() ?? '', ['editor', 'author'], true);
     if ($status === 'published' && !$canPublish) {
         $status = 'draft';
-        $notice[] = 'Your article was saved as a draft — a reviewer will publish it shortly.';
+        $notice[] = 'Your article was saved as a draft â€” a reviewer will publish it shortly.';
     }
 
     if ($title === '') {
@@ -94,11 +94,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
         ]);
 
         set_flash('success', "Article '{$title}' created successfully!");
-        redirect(BASE_URL . '/blog-manage.php');
+        redirect(url('blog-manage'));
     }
 }
 
-$pageTitle = 'Write New Blog Post — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Write New Blog Post â€” ' . get_setting('site_name', 'Adsbooster.net');
 $_appPage = 'blog-manage';
 require_once __DIR__ . '/includes/app_header.php';
 ?>
@@ -116,10 +116,10 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="text-muted mb-0 font-size-14">Craft high-converting marketing guides, product updates, and platform announcements.</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="<?= BASE_URL ?>/blog-manage.php" class="btn btn-outline-light rounded-pill px-4">
+            <a href="<?= url('blog-manage') ?>" class="btn btn-outline-light rounded-pill px-4">
                 <i class="ph ph-arrow-left me-1"></i> Back to Articles
             </a>
-            <a href="<?= BASE_URL ?>/blog.php" target="_blank" class="btn btn-outline-light rounded-pill px-3" title="View Public Blog">
+            <a href="<?= url('blog') ?>" target="_blank" class="btn btn-outline-light rounded-pill px-3" title="View Public Blog">
                 <i class="ph ph-arrow-square-out me-1"></i> Public Blog
             </a>
         </div>
@@ -197,20 +197,20 @@ require_once __DIR__ . '/includes/app_header.php';
                 <div class="mb-3">
                     <label class="form-label text-muted font-size-13">Status</label>
                     <select name="status" class="form-select bg-dark border-secondary text-white rounded-3">
-                        <option value="published" selected>🚀 Published (Live on Site)</option>
-                        <option value="draft">📝 Save as Draft</option>
+                        <option value="published" selected>ðŸš€ Published (Live on Site)</option>
+                        <option value="draft">ðŸ“ Save as Draft</option>
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-muted font-size-13">Category</label>
                     <select name="category" class="form-select bg-dark border-secondary text-white rounded-3">
-                        <option value="Advertising" selected>📢 Advertising &amp; Campaigns</option>
-                        <option value="AI & Automation">🤖 AI &amp; Copy Automation</option>
-                        <option value="SEO & Growth">📈 SEO &amp; Growth Hacking</option>
-                        <option value="Social Media">📱 Social Media Strategies</option>
-                        <option value="Directory & Places">📍 Directory &amp; Local Business</option>
-                        <option value="Platform News">✨ Platform News &amp; Updates</option>
+                        <option value="Advertising" selected>ðŸ“¢ Advertising &amp; Campaigns</option>
+                        <option value="AI & Automation">ðŸ¤– AI &amp; Copy Automation</option>
+                        <option value="SEO & Growth">ðŸ“ˆ SEO &amp; Growth Hacking</option>
+                        <option value="Social Media">ðŸ“± Social Media Strategies</option>
+                        <option value="Directory & Places">ðŸ“ Directory &amp; Local Business</option>
+                        <option value="Platform News">âœ¨ Platform News &amp; Updates</option>
                     </select>
                 </div>
 
@@ -238,7 +238,7 @@ require_once __DIR__ . '/includes/app_header.php';
                     <input type="file" name="image_file" accept="image/*" class="form-control bg-dark border-secondary text-white font-size-13">
                 </div>
 
-                <div class="text-center text-muted font-size-12 my-2">— OR Image URL —</div>
+                <div class="text-center text-muted font-size-12 my-2">â€” OR Image URL â€”</div>
 
                 <div class="mb-2">
                     <input type="url" name="image_url" class="form-control bg-dark border-secondary text-white font-size-13" 

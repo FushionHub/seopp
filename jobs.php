@@ -94,10 +94,10 @@ require_once __DIR__ . '/includes/header.php';
                 </p>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <a href="<?= BASE_URL ?>/p2p-chat.php" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14 d-flex align-items-center gap-2">
+                <a href="<?= url('p2p-chat') ?>" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14 d-flex align-items-center gap-2">
                     <i class="ph ph-chat-circle-dots"></i> Talent Chat
                 </a>
-                <a href="<?= BASE_URL ?>/create-job.php" class="btn btn-main-600 text-dark fw-bold rounded-pill px-4 py-2 font-size-14 d-flex align-items-center gap-2">
+                <a href="<?= url('create-job') ?>" class="btn btn-main-600 text-dark fw-bold rounded-pill px-4 py-2 font-size-14 d-flex align-items-center gap-2">
                     <i class="ph-bold ph-plus-circle"></i> Post Job or Bounty
                 </a>
             </div>
@@ -105,7 +105,7 @@ require_once __DIR__ . '/includes/header.php';
 
         <!-- Filter & Search Bar -->
         <div class="card rounded-4 p-3 mb-5 shadow-sm" style="background: #0d1524 !important; border: 1px solid rgba(255,255,255,0.08) !important;">
-            <form method="GET" action="<?= BASE_URL ?>/jobs.php" class="row g-3 align-items-center">
+            <form method="GET" action="<?= url('jobs') ?>" class="row g-3 align-items-center">
                 <div class="col-lg-4 col-md-6">
                     <div class="input-group">
                         <span class="input-group-text border-secondary border-opacity-25" style="background:#141f33 !important; color:#cbd5e1 !important;">
@@ -158,7 +158,7 @@ require_once __DIR__ . '/includes/header.php';
                     Try adjusting your search criteria or be the first to post a new job opening or project bounty on the platform.
                 </p>
                 <div>
-                    <a href="<?= BASE_URL ?>/create-job.php" class="btn btn-main-600 text-dark fw-bold rounded-pill px-4 py-2 font-size-14">
+                    <a href="<?= url('create-job') ?>" class="btn btn-main-600 text-dark fw-bold rounded-pill px-4 py-2 font-size-14">
                         Post a Job Opening
                     </a>
                 </div>
@@ -193,7 +193,7 @@ require_once __DIR__ . '/includes/header.php';
 
                                 <!-- Job Title & Summary -->
                                 <h3 class="h4 text-white fw-bold mb-2">
-                                    <a href="<?= BASE_URL ?>/job-details.php?id=<?= $job['id'] ?>" class="text-white text-decoration-none hover-text-main-600">
+                                    <a href="<?= url('job-details', ['id' => $job['id']]) ?>" class="text-white text-decoration-none hover-text-main-600">
                                         <?= e($job['title']) ?>
                                     </a>
                                 </h3>
@@ -231,10 +231,10 @@ require_once __DIR__ . '/includes/header.php';
                                 </div>
 
                                 <div class="d-flex align-items-center gap-2">
-                                    <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= $job['user_id'] ?>&ref_job=<?= $job['id'] ?>" class="btn btn-outline-light rounded-pill px-3 py-1 font-size-13 d-flex align-items-center gap-1" title="Chat directly with employer">
+                                    <a href="<?= url('p2p-chat') . '?user=' . $job['user_id'] . '&ref_job=' . $job['id'] ?>" class="btn btn-outline-light rounded-pill px-3 py-1 font-size-13 d-flex align-items-center gap-1" title="Chat directly with employer">
                                         <i class="ph ph-chat-teardrop-dots"></i> Inquire
                                     </a>
-                                    <a href="<?= BASE_URL ?>/job-details.php?id=<?= $job['id'] ?>" class="btn btn-main-600 text-dark fw-bold rounded-pill px-3 py-1 font-size-13">
+                                    <a href="<?= url('job-details', ['id' => $job['id']]) ?>" class="btn btn-main-600 text-dark fw-bold rounded-pill px-3 py-1 font-size-13">
                                         View Details <i class="ph ph-arrow-right ms-1"></i>
                                     </a>
                                 </div>

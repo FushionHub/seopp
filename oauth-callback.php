@@ -9,7 +9,7 @@ $userId = current_user_id();
 $platform = trim($_GET['platform'] ?? '');
 
 // Support platforms that return state parameter instead of preserving query string.
-// The stored nonce is the source of truth — a bare `state=meta` string is NOT
+// The stored nonce is the source of truth â€” a bare `state=meta` string is NOT
 // accepted, otherwise account linking / login CSRF is possible.
 if ($platform === '' && !empty($_GET['state'])) {
     $rawState = trim((string)$_GET['state']);
@@ -22,7 +22,7 @@ if ($platform === '' && !empty($_GET['state'])) {
             $issued     = (string)($_SESSION['oauth_state_' . $platform] ?? '');
             if ($issued === '' || $stateNonce === '' || !hash_equals($issued, $stateNonce)) {
                 set_flash('error', 'OAuth state could not be verified. Please reconnect the account.');
-                redirect(BASE_URL . '/social-connect.php');
+                redirect(url('social-connect'));
             }
         }
     } else {
@@ -45,7 +45,7 @@ if ($platform === '' && !empty($_GET['state'])) {
 $validPlatforms = ['meta', 'instagram', 'tiktok', 'google_ads', 'snapchat', 'twitter', 'linkedin', 'google_calendar', 'google_business'];
 if (!in_array($platform, $validPlatforms, true)) {
     set_flash('error', 'Unknown OAuth provider.');
-    redirect(BASE_URL . '/social-connect.php');
+    redirect(url('social-connect'));
 }
 
 $code = trim($_GET['code'] ?? '');
@@ -53,12 +53,12 @@ $error = trim($_GET['error'] ?? $_GET['error_description'] ?? '');
 
 if ($error !== '') {
     set_flash('error', 'OAuth authorization failed: ' . htmlspecialchars($error));
-    redirect(BASE_URL . '/social-connect.php');
+    redirect(url('social-connect'));
 }
 
 if ($platform === '' || $code === '') {
     set_flash('error', 'Missing authorization code or platform parameter from OAuth provider.');
-    redirect(BASE_URL . '/social-connect.php');
+    redirect(url('social-connect'));
 }
 
 // Live token exchange based on platform credentials in config/apikeys.php
@@ -258,7 +258,7 @@ try {
 
 if (!$accessToken) {
     set_flash('error', 'OAuth authorization failed: Unable to exchange authorization code with ' . ucfirst($platform) . '. Please ensure live API keys are configured in config/apikeys.php.');
-    redirect(BASE_URL . '/social-connect.php?platform=' . urlencode($platform));
+    redirect(url('social-connect') . '?platform=' . urlencode($platform));
 }
 
 $existing = db()->fetchOne("SELECT id FROM connected_accounts WHERE user_id = ? AND platform = ?", [$userId, $platform]);
@@ -299,4 +299,4 @@ try {
 } catch (\Throwable $e) {}
 
 set_flash('success', ucfirst($platform) . ' successfully authorized and connected via OAuth!');
-redirect(BASE_URL . '/social-connect.php');
+redirect(url('social-connect'));

@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             set_flash('success', "System temporary cache cleared ({$cleared} files purged).");
         }
     }
-    redirect(BASE_URL . '/admin/system-health.php');
+    redirect(url('admin/system-health'));
 }
 
 // Metrics

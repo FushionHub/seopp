@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/jobs.php');
+    redirect(url('admin/jobs'));
 }
 
 $jobs = db()->fetchAll(
@@ -54,7 +54,7 @@ require_once __DIR__ . '/sidebar.php';
         <p class="text-muted font-size-13 mb-0">Review, feature, open, or close marketplace opportunities, contracts, and creative bounties.</p>
     </div>
     <div>
-        <a href="<?= BASE_URL ?>/jobs.php" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-3">
+        <a href="<?= url('jobs') ?>" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-3">
             <i class="ph ph-arrow-square-out me-1"></i> Public Jobs Board
         </a>
     </div>
@@ -83,7 +83,7 @@ require_once __DIR__ . '/sidebar.php';
                     <?php foreach ($jobs as $j): ?>
                         <tr>
                             <td class="ps-4">
-                                <a href="<?= BASE_URL ?>/job-details.php?id=<?= $j['id'] ?>" target="_blank" class="text-white fw-bold d-block text-decoration-none hover-text-main-600">
+                                <a href="<?= url('job-details', ['id' => $j['id']]) ?>" target="_blank" class="text-white fw-bold d-block text-decoration-none hover-text-main-600">
                                     <?= e($j['title']) ?>
                                 </a>
                                 <span class="text-white-50 font-size-12"><?= ucfirst(str_replace('-', ' ', $j['job_type'])) ?> &bull; <?= e($j['location_type']) ?></span>

@@ -231,7 +231,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <button type="button" class="btn-accent" data-bs-toggle="modal" data-bs-target="#profileModal">
                 <i class="ph ph-user-circle-plus me-1"></i> <?= $myProfile ? 'Edit My Connection Profile' : 'Post Date Connection' ?>
             </button>
-            <a href="<?= BASE_URL ?>/p2p-chat.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('p2p-chat') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-chats-circle"></i> P2P Messages
             </a>
         </div>
@@ -241,7 +241,7 @@ require_once __DIR__ . '/includes/app_header.php';
         <div class="alert alert-success" style="padding:14px 20px;border-radius:12px;margin-bottom:24px;">
             <i class="ph ph-heart text-danger me-1"></i> <?= e($success) ?>
             <?php if ($matchedUser): ?>
-                <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= (int)$matchedUser['id'] ?>" class="btn-accent btn-sm ms-3">
+                <a href="<?= url('p2p-chat') ?>?user=<?= (int)$matchedUser['id'] ?>" class="btn-accent btn-sm ms-3">
                     Open Chat Now <i class="ph ph-arrow-right"></i>
                 </a>
             <?php endif; ?>
@@ -369,7 +369,7 @@ require_once __DIR__ . '/includes/app_header.php';
                             <!-- Pair & Connect Action Buttons -->
                             <div style="display:flex;gap:8px;margin-top:auto;">
                                 <?php if ($isMatched): ?>
-                                    <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= (int)$profile['user_id'] ?>" class="btn-accent w-100" style="padding:9px;text-align:center;font-weight:600;font-size:13px;">
+                                    <a href="<?= url('p2p-chat') ?>?user=<?= (int)$profile['user_id'] ?>" class="btn-accent w-100" style="padding:9px;text-align:center;font-weight:600;font-size:13px;">
                                         <i class="ph ph-chats-circle me-1"></i> Chat Now
                                     </a>
                                 <?php else: ?>
@@ -381,7 +381,7 @@ require_once __DIR__ . '/includes/app_header.php';
                                             <i class="ph ph-heart me-1"></i> <?= $hasPaired ? 'Paired' : 'Pair' ?>
                                         </button>
                                     </form>
-                                    <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= (int)$profile['user_id'] ?>" class="btn-outline-dark btn-sm" style="padding:9px 12px;" title="Send direct message">
+                                    <a href="<?= url('p2p-chat') ?>?user=<?= (int)$profile['user_id'] ?>" class="btn-outline-dark btn-sm" style="padding:9px 12px;" title="Send direct message">
                                         <i class="ph ph-chat-circle"></i>
                                     </a>
                                 <?php endif; ?>

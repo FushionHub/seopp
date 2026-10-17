@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/referrals.php');
+    redirect(url('admin/referrals'));
 }
 
 $referrals = db()->fetchAll(

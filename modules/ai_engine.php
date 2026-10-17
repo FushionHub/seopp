@@ -126,13 +126,13 @@ class AIEngine
                         CURLOPT_POSTFIELDS     => $payload,
                         CURLOPT_HTTPHEADER     => ['Authorization: Bearer ' . $groqKey, 'Content-Type: application/json'],
                         CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_TIMEOUT        => 15,
-                        CURLOPT_SSL_VERIFYPEER => true,
-                        ...ca_curl_opts(),
-                        CURLOPT_SSL_VERIFYHOST => 2,
-                    ]);
-                    $response = curl_exec($ch);
-                    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                            CURLOPT_TIMEOUT        => 15,
+                            CURLOPT_SSL_VERIFYPEER => true,
+                            CURLOPT_SSL_VERIFYHOST => 2,
+                        ]);
+                        ca_curl_setopt($ch);
+                        $response = curl_exec($ch);
+                        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                     curl_close($ch);
 
                     if ($code === 200 && $response) {
@@ -275,9 +275,31 @@ class AIEngine
         // Synthesize dynamic prompt
         $imagePrompt = "Raw authentic UGC photo of {$productName}. {$personaDesc}. {$styleDesc}. Targeted for {$targetAudience}. Hyper-detailed, photorealistic, cinematic commercial lighting, 8k resolution, shot on 35mm lens, award-winning ad creative.";
 
-        // Formulate high-res image URL using Flux / Pollinations AI
-        $encodedPrompt = rawurlencode($imagePrompt);
-        $imageUrl = "https://image.pollinations.ai/prompt/{$encodedPrompt}?width={$width}&height={$height}&seed={$seed}&nologo=true&enhance=true";
+        // Generate the image with Google Gemini (Nano Banana 2 first, then
+        // Nano Banana) and store it same-origin. Falls back to curated
+        // first-party stills when no key/quota is available so the creative
+        // card is never broken.
+        $imageUrl = null;
+        $imageProvider = 'gemini-image';
+        try {
+            require_once __DIR__ . '/gemini_engine.php';
+            $generated = GeminiEngine::generateImage($imagePrompt, $width, $height, 'ugc_' . $seed . '_' . $userId);
+            if ($generated !== null) {
+                $imageUrl = $generated['url'];
+                $imageProvider = $generated['model'];
+            }
+        } catch (\Throwable $e) {
+            error_log('Gemini UGC image failed: ' . $e->getMessage());
+        }
+        if ($imageUrl === null) {
+            $imageProvider = 'local-fallback';
+            $fallbacks = [
+                'assets/images/thumbs/about-five-img1.png',
+                'assets/images/thumbs/team-details-img2.png',
+                'assets/images/thumbs/blog-details-img2.png',
+            ];
+            $imageUrl = BASE_URL . '/' . $fallbacks[$seed % count($fallbacks)];
+        }
 
         // Generate AI ad copy and viral hooks using Groq
         $groqKey = self::resolveKey('groq');
@@ -312,7 +334,7 @@ class AIEngine
             'ad_copy'         => $adCopy,
             'badge_text'      => $badgeText,
             'image_prompt'    => $imagePrompt,
-            'provider'        => 'flux-pollinations-ai',
+            'provider'        => $imageProvider,
             'created_at'      => date('Y-m-d H:i:s'),
         ];
 
@@ -323,7 +345,7 @@ class AIEngine
             $imagePrompt,
             json_encode($ugcData),
             $creditCost,
-            'flux-pollinations-ai'
+            $imageProvider
         );
         $ugcData['creative_id'] = $creativeId;
 
@@ -409,12 +431,12 @@ class AIEngine
                         CURLOPT_POSTFIELDS     => $payload,
                         CURLOPT_HTTPHEADER     => ['Authorization: Bearer ' . $groqKey, 'Content-Type: application/json'],
                         CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_TIMEOUT        => 20,
-                        CURLOPT_SSL_VERIFYPEER => true,
-                        ...ca_curl_opts(),
-                        CURLOPT_SSL_VERIFYHOST => 2,
-                    ]);
-                    $resp = curl_exec($ch);
+                            CURLOPT_TIMEOUT        => 20,
+                            CURLOPT_SSL_VERIFYPEER => true,
+                            CURLOPT_SSL_VERIFYHOST => 2,
+                        ]);
+                        ca_curl_setopt($ch);
+                        $resp = curl_exec($ch);
                     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                     curl_close($ch);
 
@@ -652,13 +674,13 @@ class AIEngine
                 CURLOPT_POSTFIELDS     => $payload,
                 CURLOPT_HTTPHEADER     => ['Authorization: Bearer ' . $apiKey, 'Content-Type: application/json'],
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT        => 20,
-                CURLOPT_SSL_VERIFYPEER => true,
-                        ...ca_curl_opts(),
-                CURLOPT_SSL_VERIFYHOST => 2,
-            ]);
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    CURLOPT_TIMEOUT        => 20,
+                    CURLOPT_SSL_VERIFYPEER => true,
+                    CURLOPT_SSL_VERIFYHOST => 2,
+                ]);
+                ca_curl_setopt($ch);
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
             if ($httpCode === 200 && $response) {
@@ -699,12 +721,12 @@ class AIEngine
                 'X-Title: Adsbooster',
             ],
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 25,
-            CURLOPT_SSL_VERIFYPEER => true,
-                        ...ca_curl_opts(),
-            CURLOPT_SSL_VERIFYHOST => 2,
-        ]);
-        $response = curl_exec($ch);
+                CURLOPT_TIMEOUT        => 25,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_SSL_VERIFYHOST => 2,
+            ]);
+            ca_curl_setopt($ch);
+            $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
@@ -732,12 +754,12 @@ class AIEngine
             CURLOPT_POSTFIELDS     => $payload,
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 20,
-            CURLOPT_SSL_VERIFYPEER => true,
-                        ...ca_curl_opts(),
-            CURLOPT_SSL_VERIFYHOST => 2,
-        ]);
-        $response = curl_exec($ch);
+                CURLOPT_TIMEOUT        => 20,
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_SSL_VERIFYHOST => 2,
+            ]);
+            ca_curl_setopt($ch);
+            $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

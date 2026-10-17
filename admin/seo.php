@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/seo.php');
+    redirect(url('admin/seo'));
 }
 
 $seoEntries = db()->fetchAll(

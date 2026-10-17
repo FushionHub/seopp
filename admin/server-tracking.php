@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/server-tracking.php');
+    redirect(url('admin/server-tracking'));
 }
 
 // KPI Metrics

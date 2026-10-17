@@ -10,7 +10,7 @@ $pageTitle = 'Service Details - Adsbooster.net'; require __DIR__ . '/includes/he
             <div class="col-lg-8">
                 <div class="text-center">
                     <ul class="d-inline-flex align-items-center justify-content-center tw-gap-2 bg-white-08 rounded-pill tw-px-5 tw-py-2">
-                        <li><a href="<?= BASE_URL ?>/index.php" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
+                        <li><a href="<?= url('index') ?>" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
                         <li class="text-white tw-text-lg">/</li>
                         <li> <span class="text-white"> Service Details </span> </li>
                     </ul>
@@ -29,7 +29,7 @@ $pageTitle = 'Service Details - Adsbooster.net'; require __DIR__ . '/includes/he
                 <div class="row gy-4">
                     <div class="col-xl-4 pe-lg-4">
                         <div class="d-flex flex-column tw-gap-4">
-                            <a href="<?= BASE_URL ?>/create-ad.php"
+                            <a href="<?= url('create-ad') ?>"
                                 class="bg-neutral-100 tw-py-3 tw-pe-205 tw-ps-6 text-heading hover-text-white hover-bg-main-600 group tw-text-lg fw-bold d-flex align-items-center justify-content-between tw-duration-200 tw-rounded">
                                 Multi-Network Ad Automation
                                 <span
@@ -37,7 +37,7 @@ $pageTitle = 'Service Details - Adsbooster.net'; require __DIR__ . '/includes/he
                                     <i class="ph ph-arrow-right"></i>
                                 </span>
                             </a>
-                            <a href="<?= BASE_URL ?>/ugc-generator.php"
+                            <a href="<?= url('ugc-generator') ?>"
                                 class="bg-neutral-100 tw-py-3 tw-pe-205 tw-ps-6 text-heading hover-text-white hover-bg-main-600 group tw-text-lg fw-bold d-flex align-items-center justify-content-between tw-duration-200 tw-rounded">
                                 AI UGC Video Studio
                                 <span
@@ -45,7 +45,7 @@ $pageTitle = 'Service Details - Adsbooster.net'; require __DIR__ . '/includes/he
                                     <i class="ph ph-arrow-right"></i>
                                 </span>
                             </a>
-                            <a href="<?= BASE_URL ?>/post-creator.php"
+                            <a href="<?= url('post-creator') ?>"
                                 class="bg-neutral-100 tw-py-3 tw-pe-205 tw-ps-6 text-heading hover-text-white hover-bg-main-600 group tw-text-lg fw-bold d-flex align-items-center justify-content-between tw-duration-200 tw-rounded">
                                 Social Post Publishing Queue
                                 <span
@@ -53,7 +53,7 @@ $pageTitle = 'Service Details - Adsbooster.net'; require __DIR__ . '/includes/he
                                     <i class="ph ph-arrow-right"></i>
                                 </span>
                             </a>
-                            <a href="<?= BASE_URL ?>/marketplace.php"
+                            <a href="<?= url('marketplace') ?>"
                                 class="bg-neutral-100 tw-py-3 tw-pe-205 tw-ps-6 text-heading hover-text-white hover-bg-main-600 group tw-text-lg fw-bold d-flex align-items-center justify-content-between tw-duration-200 tw-rounded">
                                 Verified Business Directory
                                 <span
@@ -61,7 +61,7 @@ $pageTitle = 'Service Details - Adsbooster.net'; require __DIR__ . '/includes/he
                                     <i class="ph ph-arrow-right"></i>
                                 </span>
                             </a>
-                            <a href="<?= BASE_URL ?>/dashboard.php"
+                            <a href="<?= url('dashboard') ?>"
                                 class="bg-neutral-100 tw-py-3 tw-pe-205 tw-ps-6 text-heading hover-text-white hover-bg-main-600 group tw-text-lg fw-bold d-flex align-items-center justify-content-between tw-duration-200 tw-rounded">
                                 Heuristic Campaign Doctor
                                 <span
@@ -69,7 +69,7 @@ $pageTitle = 'Service Details - Adsbooster.net'; require __DIR__ . '/includes/he
                                     <i class="ph ph-arrow-right"></i>
                                 </span>
                             </a>
-                            <a href="<?= BASE_URL ?>/send-email.php"
+                            <a href="<?= url('send-email') ?>"
                                 class="bg-neutral-100 tw-py-3 tw-pe-205 tw-ps-6 text-heading hover-text-white hover-bg-main-600 group tw-text-lg fw-bold d-flex align-items-center justify-content-between tw-duration-200 tw-rounded">
                                 HTML Email Outreach Studio
                                 <span

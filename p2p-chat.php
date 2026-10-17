@@ -50,7 +50,7 @@ if ($totalConvs === 0) {
         'conversation_id' => $convId,
         'sender_id'       => AI_BOT_ID,
         'receiver_id'     => $userId,
-        'message'         => "👋 Hello {$currentUser['full_name']}! I'm your Adsbooster AI Growth Consultant. How can I assist you with your ad campaigns, copywriting, or marketplace listings today?",
+        'message'         => "ðŸ‘‹ Hello {$currentUser['full_name']}! I'm your Adsbooster AI Growth Consultant. How can I assist you with your ad campaigns, copywriting, or marketplace listings today?",
         'is_read'         => 0,
         'created_at'      => date('Y-m-d H:i:s'),
     ]);
@@ -188,7 +188,7 @@ function formatChatMessage(string $raw): string {
                 '<div class="d-flex flex-column gap-2">';
         foreach ($steps as $s) {
             $parts = explode(':', trim($s));
-            $num = trim($parts[0] ?? '•');
+            $num = trim($parts[0] ?? 'â€¢');
             $title = trim($parts[1] ?? '');
             $desc = trim($parts[2] ?? '');
             $tool = trim($parts[3] ?? '');
@@ -247,7 +247,7 @@ function formatChatMessage(string $raw): string {
                         continue;
                     }
                     $isTable = true;
-                    $stepNum = $cols[0] ?? '•';
+                    $stepNum = $cols[0] ?? 'â€¢';
                     $stepTitle = $cols[1] ?? '';
                     $stepDesc = $cols[2] ?? '';
                     $stepTool = $cols[3] ?? '';
@@ -295,7 +295,7 @@ function formatChatMessage(string $raw): string {
     $text = preg_replace('/^#{1,3}\s+(.+)$/m', '<div class="fw-bold text-white font-size-14 mt-3 mb-2 pb-1 d-flex align-items-center gap-2" style="border-bottom:1px solid rgba(255,255,255,0.12);"><i class="ph-bold ph-caret-circle-right text-accent font-size-15"></i> $1</div>', $text);
 
     // 6. Clean bullets and numbered lists
-    $text = preg_replace('/^[•\-*]\s+(.+)$/m', '<div class="d-flex align-items-baseline gap-2 my-1" style="padding-left:4px;"><span style="color:#c8ff00;font-size:9px;">●</span><span style="flex:1;font-size:13px;color:#e2e8f0;">$1</span></div>', $text);
+    $text = preg_replace('/^[â€¢\-*]\s+(.+)$/m', '<div class="d-flex align-items-baseline gap-2 my-1" style="padding-left:4px;"><span style="color:#c8ff00;font-size:9px;">â—</span><span style="flex:1;font-size:13px;color:#e2e8f0;">$1</span></div>', $text);
     $text = preg_replace('/^(\d+)\.\s+(.+)$/m', '<div class="d-flex align-items-baseline gap-2 my-1" style="padding-left:4px;"><span style="color:#c8ff00;font-size:11px;font-weight:700;">$1.</span><span style="flex:1;font-size:13px;color:#e2e8f0;">$2</span></div>', $text);
 
     // 7. Clean bold: **text**
@@ -352,7 +352,29 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
             $aiReply = null;
             if ($targetUserId === AI_BOT_ID) {
                 require_once __DIR__ . '/modules/ai_engine.php';
-                $aiResponseText = AIEngine::chatConsultant($message, $userId);
+
+                // If the message contains a URL, scrape live page context via Firecrawl
+                // so the AI can answer questions about that specific page/product.
+                $contextMessage = $message;
+                if (preg_match_all('#https?://[^\s<>"\']+#i', $message, $urlMatches)) {
+                    require_once __DIR__ . '/modules/firecrawl_scraper.php';
+                    $urlContexts = [];
+                    foreach (array_slice(array_unique($urlMatches[0]), 0, 2) as $foundUrl) {
+                        $scraped = FirecrawlScraper::scrapeUrl($foundUrl, ['onlyMainContent' => true]);
+                        if (!empty($scraped['success'])) {
+                            $pageText = trim(preg_replace('/\s+/', ' ', strip_tags($scraped['content'] ?? '')));
+                            if ($pageText !== '') {
+                                $urlContexts[] = "[Live page context from {$foundUrl}]: " . mb_substr($pageText, 0, 2500);
+                            }
+                        }
+                    }
+                    if (!empty($urlContexts)) {
+                        $contextMessage = $message . "\n\n" . implode("\n\n", $urlContexts) .
+                            "\n\nUse the live page context above to answer accurately. If context is missing info, say so.";
+                    }
+                }
+
+                $aiResponseText = AIEngine::chatConsultant($contextMessage, $userId);
 
                 $aiMsgId = db()->insert('p2p_messages', [
                     'conversation_id' => $convId,
@@ -400,7 +422,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
                 exit;
             }
 
-            redirect(BASE_URL . "/p2p-chat.php?user={$targetUserId}");
+            redirect(url('p2p-chat') . "?user={$targetUserId}");
         }
     }
 
@@ -433,7 +455,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
                 'created_at'      => date('Y-m-d H:i:s'),
             ]);
 
-            $dealMsg = "💼 CONTRACT & DEAL PROPOSAL:\n• Title: {$dealTitle}\n• Total Amount: \$" . number_format($dealAmount, 2) . " USD\n• Deliverables & Terms: {$dealTerms}\n• Status: Proposed (Pending Agreement)";
+            $dealMsg = "ðŸ’¼ CONTRACT & DEAL PROPOSAL:\nâ€¢ Title: {$dealTitle}\nâ€¢ Total Amount: \$" . number_format($dealAmount, 2) . " USD\nâ€¢ Deliverables & Terms: {$dealTerms}\nâ€¢ Status: Proposed (Pending Agreement)";
             db()->insert('p2p_messages', [
                 'conversation_id' => $convId,
                 'sender_id'       => $userId,
@@ -443,7 +465,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
                 'created_at'      => date('Y-m-d H:i:s'),
             ]);
             set_flash('success', "Contract proposal dispatched into the chat thread!");
-            redirect(BASE_URL . "/p2p-chat.php?user={$targetUserId}");
+            redirect(url('p2p-chat') . "?user={$targetUserId}");
         }
     }
 }
@@ -486,7 +508,7 @@ if ($chatUserId > 0 && $chatUser) {
     }
 }
 
-$pageTitle = 'P2P Real-Time Messenger — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'P2P Real-Time Messenger â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/app_header.php';
 ?>
 <!-- Chart.js 4 for Modern AI Agent Visualizations -->
@@ -675,7 +697,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <!-- List items -->
             <div style="overflow-y:auto; flex:1;" id="convContainer">
                 <!-- Pinned AI Growth Consultant -->
-                <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= AI_BOT_ID ?>" class="conv-item-box <?= $chatUserId === AI_BOT_ID ? 'active' : '' ?>" data-name="adsbooster ai consultant growth marketing bot" style="background: linear-gradient(90deg, rgba(200,255,0,0.08) 0%, rgba(56,189,248,0.06) 100%); border-bottom: 1px solid rgba(200,255,0,0.15);">
+                <a href="<?= url('p2p-chat') ?>?user=<?= AI_BOT_ID ?>" class="conv-item-box <?= $chatUserId === AI_BOT_ID ? 'active' : '' ?>" data-name="adsbooster ai consultant growth marketing bot" style="background: linear-gradient(90deg, rgba(200,255,0,0.08) 0%, rgba(56,189,248,0.06) 100%); border-bottom: 1px solid rgba(200,255,0,0.15);">
                     <div style="position:relative; flex-shrink:0;">
                         <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, #c8ff00 0%, #38bdf8 100%); display:flex; align-items:center; justify-content:center; color:#080c14; font-size:22px; box-shadow: 0 0 14px rgba(200,255,0,0.35);">
                             <i class="ph-fill ph-sparkle"></i>
@@ -710,7 +732,7 @@ require_once __DIR__ . '/includes/app_header.php';
                     $partnerName = $otherUser['full_name'] ?? 'User #' . $conv['other_user_id'];
                     $initial = strtoupper(substr($partnerName, 0, 1));
                 ?>
-                    <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= (int)$conv['other_user_id'] ?>" class="conv-item-box <?= $isActive ? 'active' : '' ?>" data-name="<?= strtolower(htmlspecialchars($partnerName)) ?>">
+                    <a href="<?= url('p2p-chat') ?>?user=<?= (int)$conv['other_user_id'] ?>" class="conv-item-box <?= $isActive ? 'active' : '' ?>" data-name="<?= strtolower(htmlspecialchars($partnerName)) ?>">
                         <div style="position:relative; flex-shrink:0;">
                             <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, rgba(200,255,0,0.2), rgba(16,185,129,0.2)); border:1px solid rgba(200,255,0,0.3); display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:700; font-size:16px;">
                                 <?= $initial ?>
@@ -752,7 +774,7 @@ require_once __DIR__ . '/includes/app_header.php';
                 <!-- Header -->
                 <div class="chat-header-bar">
                     <div style="display:flex; align-items:center; gap:12px;">
-                        <a href="<?= BASE_URL ?>/p2p-chat.php" class="btn btn-outline-dark btn-sm rounded-circle chat-mobile-back-btn" title="Back to conversations">
+                        <a href="<?= url('p2p-chat') ?>" class="btn btn-outline-dark btn-sm rounded-circle chat-mobile-back-btn" title="Back to conversations">
                             <i class="ph ph-arrow-left"></i>
                         </a>
                         <?php if ($isAIBot): ?>
@@ -774,7 +796,7 @@ require_once __DIR__ . '/includes/app_header.php';
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
                         <?php if (!$isAIBot): ?>
-                            <a href="<?= BASE_URL ?>/portfolio.php?id=<?= $chatUserId ?>" target="_blank" class="btn btn-outline-light rounded-pill btn-sm font-size-12 px-3" title="View Public Portfolio & vCard">
+                            <a href="<?= url('portfolio') ?>?id=<?= $chatUserId ?>" target="_blank" class="btn btn-outline-light rounded-pill btn-sm font-size-12 px-3" title="View Public Portfolio & vCard">
                                 <i class="ph ph-address-book me-1"></i> Portfolio &amp; vCard
                             </a>
                             <button type="button" class="btn btn-accent rounded-pill btn-sm font-size-12 fw-bold text-dark px-3" onclick="document.getElementById('dealModal').style.display='flex'">
@@ -801,21 +823,21 @@ require_once __DIR__ . '/includes/app_header.php';
                             
                             <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
                                 <?php if ($isAIBot): ?>
-                                    <button type="button" class="quick-chip" onclick="quickSend('📈 How can I optimize my Meta & Facebook ROAS?')">📈 Meta ROAS Formula</button>
-                                    <button type="button" class="quick-chip" onclick="quickSend('🎬 Draft a viral 30-second TikTok ad script for my product.')">🎬 TikTok Ad Script</button>
-                                    <button type="button" class="quick-chip" onclick="quickSend('🔍 What is the best SEO title structure for ranking on Google?')">🔍 SEO Ranking Formula</button>
-                                    <button type="button" class="quick-chip" onclick="quickSend('🎯 What audience interests should I target for e-commerce conversions?')">🎯 E-Commerce Targeting</button>
+                                    <button type="button" class="quick-chip" onclick="quickSend('ðŸ“ˆ How can I optimize my Meta & Facebook ROAS?')">ðŸ“ˆ Meta ROAS Formula</button>
+                                    <button type="button" class="quick-chip" onclick="quickSend('ðŸŽ¬ Draft a viral 30-second TikTok ad script for my product.')">ðŸŽ¬ TikTok Ad Script</button>
+                                    <button type="button" class="quick-chip" onclick="quickSend('ðŸ” What is the best SEO title structure for ranking on Google?')">ðŸ” SEO Ranking Formula</button>
+                                    <button type="button" class="quick-chip" onclick="quickSend('ðŸŽ¯ What audience interests should I target for e-commerce conversions?')">ðŸŽ¯ E-Commerce Targeting</button>
                                 <?php else: ?>
-                                    <button type="button" class="quick-chip" onclick="quickSend('👋 Hi there! Let\'s collaborate on Adsbooster.')">👋 Say Hello</button>
-                                    <button type="button" class="quick-chip" onclick="quickSend('💼 I saw your marketplace listing and I\'m interested in discussing details.')">💼 Marketplace Inquiry</button>
-                                    <button type="button" class="quick-chip" onclick="quickSend('❤️ Nice to meet you! Would love to connect and chat.')">❤️ Connect Match</button>
+                                    <button type="button" class="quick-chip" onclick="quickSend('ðŸ‘‹ Hi there! Let\'s collaborate on Adsbooster.')">ðŸ‘‹ Say Hello</button>
+                                    <button type="button" class="quick-chip" onclick="quickSend('ðŸ’¼ I saw your marketplace listing and I\'m interested in discussing details.')">ðŸ’¼ Marketplace Inquiry</button>
+                                    <button type="button" class="quick-chip" onclick="quickSend('â¤ï¸ Nice to meet you! Would love to connect and chat.')">â¤ï¸ Connect Match</button>
                                 <?php endif; ?>
                             </div>
                         </div>
                     <?php else: ?>
                         <?php foreach ($messages as $msg): 
                             $isMine = (int)$msg['sender_id'] === $userId;
-                            $senderLabel = $isMine ? 'You' : ($msg['sender_id'] == AI_BOT_ID ? '🤖 AI Consultant' : htmlspecialchars($msg['sender_name']));
+                            $senderLabel = $isMine ? 'You' : ($msg['sender_id'] == AI_BOT_ID ? 'ðŸ¤– AI Consultant' : htmlspecialchars($msg['sender_name']));
                         ?>
                             <div class="mb-3 <?= $isMine ? 'text-end' : 'text-start' ?>" data-msg-id="<?= $msg['id'] ?>">
                                 <div class="<?= $isMine ? 'msg-bubble-sent' : 'msg-bubble-received' ?>">
@@ -836,14 +858,14 @@ require_once __DIR__ . '/includes/app_header.php';
                         <!-- Quick starters -->
                         <div style="display:flex; gap:6px; margin-bottom:10px; overflow-x:auto; padding-bottom:4px;">
                             <?php if ($isAIBot): ?>
-                                <span class="quick-chip" onclick="quickFill('How do I run a multi-platform ad campaign?')">💡 Multi-platform campaign</span>
-                                <span class="quick-chip" onclick="quickFill('Give me 5 catchy ad headlines for my product.')">🔥 Catchy headlines</span>
-                                <span class="quick-chip" onclick="quickFill('How do I boost my business directory listing?')">⭐ Boost directory ranking</span>
+                                <span class="quick-chip" onclick="quickFill('How do I run a multi-platform ad campaign?')">ðŸ’¡ Multi-platform campaign</span>
+                                <span class="quick-chip" onclick="quickFill('Give me 5 catchy ad headlines for my product.')">ðŸ”¥ Catchy headlines</span>
+                                <span class="quick-chip" onclick="quickFill('How do I boost my business directory listing?')">â­ Boost directory ranking</span>
                             <?php else: ?>
-                                <span class="quick-chip" onclick="quickFill('Sounds great, let\'s proceed!')">🤝 Let's proceed</span>
-                                <span class="quick-chip" onclick="quickFill('Can you share more details?')">📋 More details?</span>
-                                <span class="quick-chip" onclick="quickFill('Thanks for the update!')">🙏 Thank you</span>
-                                <span class="quick-chip" onclick="quickFill('What is your best price/rate?')">💰 Pricing info</span>
+                                <span class="quick-chip" onclick="quickFill('Sounds great, let\'s proceed!')">ðŸ¤ Let's proceed</span>
+                                <span class="quick-chip" onclick="quickFill('Can you share more details?')">ðŸ“‹ More details?</span>
+                                <span class="quick-chip" onclick="quickFill('Thanks for the update!')">ðŸ™ Thank you</span>
+                                <span class="quick-chip" onclick="quickFill('What is your best price/rate?')">ðŸ’° Pricing info</span>
                             <?php endif; ?>
                         </div>
 
@@ -853,7 +875,7 @@ require_once __DIR__ . '/includes/app_header.php';
                             <input type="hidden" name="recipient_id" value="<?= $chatUserId ?>">
                             <input type="hidden" name="ajax" value="1">
 
-                            <input type="text" id="msgInput" name="message" class="form-control" placeholder="<?= $isAIBot ? 'Ask AI Consultant anything about marketing, ads, or copy...' : 'Type your message here (Press Enter to send)...' ?>" autocomplete="off" required style="background:#080c14; border:1px solid rgba(255,255,255,0.12); color:#fff; border-radius:12px; padding:12px 18px; font-size:14px;">
+                            <input type="text" id="msgInput" name="message" class="form-control" placeholder="<?= $isAIBot ? 'Ask AI anything — or paste a product/page URL for live web analysis...' : 'Type your message here (Press Enter to send)...' ?>" autocomplete="off" required style="background:#080c14; border:1px solid rgba(255,255,255,0.12); color:#fff; border-radius:12px; padding:12px 18px; font-size:14px;">
 
                             <button type="submit" id="sendBtn" class="btn-accent" style="padding:12px 22px; border-radius:12px; font-weight:600; white-space:nowrap; display:flex; align-items:center; gap:8px;">
                                 <span>Send</span>
@@ -945,7 +967,7 @@ require_once __DIR__ . '/includes/app_header.php';
                         typingDiv.id = 'aiTypingIndicator';
                         typingDiv.innerHTML = `
                             <div class="msg-bubble-received" style="padding:10px 16px;">
-                                <div style="font-size:11px; opacity:0.65; margin-bottom:3px; font-weight:600;">🤖 AI Consultant</div>
+                                <div style="font-size:11px; opacity:0.65; margin-bottom:3px; font-weight:600;">ðŸ¤– AI Consultant</div>
                                 <span style="font-style:italic; font-size:12px; color:var(--accent);"><i class="ph-bold ph-spinner" style="animation:spin 1s linear infinite;"></i> AI Consultant is analyzing...</span>
                             </div>
                         `;
@@ -1186,7 +1208,7 @@ require_once __DIR__ . '/includes/app_header.php';
                 <div class="d-flex flex-column gap-2">`;
             steps.forEach(s => {
                 const parts = s.split(':').map(str => str.trim());
-                const num = parts[0] || '•';
+                const num = parts[0] || 'â€¢';
                 const title = parts[1] || '';
                 const desc = parts[2] || '';
                 const tool = parts[3] || '';
@@ -1245,7 +1267,7 @@ require_once __DIR__ . '/includes/app_header.php';
                             continue;
                         }
                         isTable = true;
-                        const num = cols[0] ? cols[0].replace(/[*#:]/g, '').trim() : '•';
+                        const num = cols[0] ? cols[0].replace(/[*#:]/g, '').trim() : 'â€¢';
                         const title = cols[1] ? cols[1].replace(/[*]/g, '').trim() : '';
                         const desc = cols[2] ? cols[2].replace(/[*]/g, '').trim() : '';
                         const tool = cols[3] ? cols[3].replace(/[*]/g, '').trim() : '';
@@ -1288,7 +1310,7 @@ require_once __DIR__ . '/includes/app_header.php';
         text = text.replace(/^#{1,3}\s+(.+)$/gm, '<div class="fw-bold text-white font-size-14 mt-3 mb-2 pb-1 d-flex align-items-center gap-2" style="border-bottom:1px solid rgba(255,255,255,0.12);"><i class="ph-bold ph-caret-circle-right text-accent font-size-15"></i> $1</div>');
 
         // 6. Clean bullets and numbered lists
-        text = text.replace(/^[•\-*]\s+(.+)$/gm, '<div class="d-flex align-items-baseline gap-2 my-1" style="padding-left:4px;"><span style="color:#c8ff00;font-size:9px;">●</span><span style="flex:1;font-size:13px;color:#e2e8f0;">$1</span></div>');
+        text = text.replace(/^[â€¢\-*]\s+(.+)$/gm, '<div class="d-flex align-items-baseline gap-2 my-1" style="padding-left:4px;"><span style="color:#c8ff00;font-size:9px;">â—</span><span style="flex:1;font-size:13px;color:#e2e8f0;">$1</span></div>');
         text = text.replace(/^(\d+)\.\s+(.+)$/gm, '<div class="d-flex align-items-baseline gap-2 my-1" style="padding-left:4px;"><span style="color:#c8ff00;font-size:11px;font-weight:700;">$1.</span><span style="flex:1;font-size:13px;color:#e2e8f0;">$2</span></div>');
 
         // 7. Clean bold

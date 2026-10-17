@@ -5,25 +5,46 @@ $adminEmail = $_SESSION['admin_email'] ?? '';
 $currentPage = basename($_SERVER['SCRIPT_NAME'] ?? '');
 
 $navItems = [
-    ['icon' => 'ph-chart-line-up',       'label' => 'Dashboard',     'file' => 'index.php'],
-    ['icon' => 'ph-article',             'label' => 'Blog Posts',    'file' => 'blogs.php'],
-    ['icon' => 'ph-storefront',          'label' => 'Marketplace',   'file' => 'listings.php'],
-    ['icon' => 'ph-briefcase',           'label' => 'Jobs & Bounties','file' => 'jobs.php'],
-    ['icon' => 'ph-star',                'label' => 'Client Reviews', 'file' => 'reviews.php'],
-    ['icon' => 'ph-megaphone',           'label' => 'Campaigns',     'file' => 'campaigns.php'],
-    ['icon' => 'ph-users-three',         'label' => 'Users',         'file' => 'users.php'],
-    ['icon' => 'ph-currency-dollar',     'label' => 'Pricing Plans', 'file' => 'pricing.php'],
-    ['icon' => 'ph-hand-coins',          'label' => 'Payouts',       'file' => 'payouts.php'],
-    ['icon' => 'ph-receipt',             'label' => 'Transactions',  'file' => 'transactions.php'],
-    ['icon' => 'ph-note-pencil',         'label' => 'CMS',           'file' => 'cms.php'],
-    ['icon' => 'ph-chart-bar',           'label' => 'Analytics',     'file' => 'analytics.php'],
-    ['icon' => 'ph-ticket',              'label' => 'Tickets',       'file' => 'tickets.php'],
-    ['icon' => 'ph-chat-circle',         'label' => 'P2P Chat',      'file' => 'p2p-chat.php'],
-    ['icon' => 'ph-magnifying-glass',    'label' => 'SEO',           'file' => 'seo.php'],
-    ['icon' => 'ph-shield-check',        'label' => 'Policy Rules',  'file' => 'policy-rules.php'],
-    ['icon' => 'ph-share-network',       'label' => 'Referrals',     'file' => 'referrals.php'],
-    ['icon' => 'ph-warning-circle',      'label' => 'Fraud Watch',   'file' => 'fraud-watch.php'],
-    ['icon' => 'ph-translate',           'label' => 'Translations',  'file' => 'translations.php'],
+    // Overview
+    ['icon' => 'ph-chart-line-up',    'label' => 'Dashboard',       'file' => 'index.php',           'section' => 'Overview'],
+    ['icon' => 'ph-chart-bar',        'label' => 'Analytics',       'file' => 'analytics.php',       'section' => 'Overview'],
+    ['icon' => 'ph-heartbeat',        'label' => 'System Health',   'file' => 'system-health.php',   'section' => 'Overview'],
+
+    // Users & Access
+    ['icon' => 'ph-users-three',      'label' => 'Users',           'file' => 'users.php',           'section' => 'Users & Access'],
+    ['icon' => 'ph-buildings',        'label' => 'Agency Portals',  'file' => 'agency-approvals.php','section' => 'Users & Access'],
+    ['icon' => 'ph-share-network',    'label' => 'Referrals',       'file' => 'referrals.php',       'section' => 'Users & Access'],
+
+    // Content & Marketplace
+    ['icon' => 'ph-article',          'label' => 'Blog Posts',      'file' => 'blogs.php',           'section' => 'Content & Marketplace'],
+    ['icon' => 'ph-storefront',       'label' => 'Marketplace',     'file' => 'listings.php',        'section' => 'Content & Marketplace'],
+    ['icon' => 'ph-briefcase',        'label' => 'Jobs & Bounties', 'file' => 'jobs.php',            'section' => 'Content & Marketplace'],
+    ['icon' => 'ph-star',             'label' => 'Client Reviews',  'file' => 'reviews.php',         'section' => 'Content & Marketplace'],
+    ['icon' => 'ph-id-card',          'label' => 'Portfolios & vCards', 'file' => 'portfolios-vcards.php', 'section' => 'Content & Marketplace'],
+    ['icon' => 'ph-note-pencil',      'label' => 'CMS',             'file' => 'cms.php',             'section' => 'Content & Marketplace'],
+
+    // Revenue
+    ['icon' => 'ph-currency-dollar',  'label' => 'Pricing Plans',   'file' => 'pricing.php',         'section' => 'Revenue'],
+    ['icon' => 'ph-megaphone',        'label' => 'Campaigns',       'file' => 'campaigns.php',       'section' => 'Revenue'],
+    ['icon' => 'ph-hand-coins',       'label' => 'Payouts',         'file' => 'payouts.php',         'section' => 'Revenue'],
+    ['icon' => 'ph-receipt',          'label' => 'Transactions',    'file' => 'transactions.php',    'section' => 'Revenue'],
+
+    // AI & Automation
+    ['icon' => 'ph-sparkle',          'label' => 'UGC Studio',      'file' => 'ugc-studio.php',      'section' => 'AI & Automation'],
+    ['icon' => 'ph-robot',            'label' => 'AI Media Buyer',  'file' => 'ai-media-buyer.php',  'section' => 'AI & Automation'],
+    ['icon' => 'ph-paper-plane-tilt', 'label' => 'Social Publishing','file' => 'social-media.php',   'section' => 'AI & Automation'],
+    ['icon' => 'ph-radar',            'label' => 'Server Tracking', 'file' => 'server-tracking.php', 'section' => 'AI & Automation'],
+
+    // Communication
+    ['icon' => 'ph-ticket',           'label' => 'Tickets',         'file' => 'tickets.php',         'section' => 'Communication'],
+    ['icon' => 'ph-chat-circle',      'label' => 'P2P Chat',        'file' => 'p2p-chat.php',        'section' => 'Communication'],
+
+    // Safety & Config
+    ['icon' => 'ph-shield-check',     'label' => 'Policy Rules',    'file' => 'policy-rules.php',    'section' => 'Safety & Config'],
+    ['icon' => 'ph-warning-circle',   'label' => 'Fraud Watch',     'file' => 'fraud-watch.php',     'section' => 'Safety & Config'],
+    ['icon' => 'ph-magnifying-glass', 'label' => 'SEO',             'file' => 'seo.php',             'section' => 'Safety & Config'],
+    ['icon' => 'ph-translate',        'label' => 'Translations',    'file' => 'translations.php',    'section' => 'Safety & Config'],
+    ['icon' => 'ph-gear',             'label' => 'Settings',        'file' => 'settings.php',        'section' => 'Safety & Config'],
 ];
 ?>
 <!DOCTYPE html>
@@ -68,6 +89,8 @@ $navItems = [
             overflow-y: auto;
             z-index: 1000;
             transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
         .sidebar-brand {
             padding: 1.25rem 1.25rem 1rem;
@@ -97,7 +120,7 @@ $navItems = [
             font-size: 0.7rem;
             color: var(--admin-text-muted);
         }
-        .sidebar-nav { padding: 0.75rem 0; }
+        .sidebar-nav { padding: 0.75rem 0; flex: 1 0 auto; }
         .sidebar-nav .nav-section {
             padding: 0.5rem 1.25rem 0.35rem;
             font-size: 0.65rem;
@@ -134,10 +157,11 @@ $navItems = [
         .sidebar-user {
             padding: 1rem 1.25rem;
             border-top: 1px solid var(--admin-border);
-            position: absolute;
+            position: sticky;
             bottom: 0;
             width: 100%;
             background: var(--admin-sidebar);
+            flex-shrink: 0;
         }
         .sidebar-user .user-name {
             font-size: 0.85rem;
@@ -410,40 +434,25 @@ $navItems = [
         </div>
     </div>
     <nav class="sidebar-nav">
-        <div class="nav-section">Main</div>
-        <?php foreach (array_slice($navItems, 0, 4) as $item): ?>
-            <a href="<?= BASE_URL ?>/admin/<?= $item['file'] ?>" class="nav-link<?= $currentPage === $item['file'] ? ' active' : '' ?>">
-                <i class="ph-bold <?= $item['icon'] ?>"></i>
-                <?= $item['label'] ?>
-            </a>
-        <?php endforeach; ?>
-
-        <div class="nav-section">Commerce</div>
-        <?php foreach (array_slice($navItems, 4, 3) as $item): ?>
-            <a href="<?= BASE_URL ?>/admin/<?= $item['file'] ?>" class="nav-link<?= $currentPage === $item['file'] ? ' active' : '' ?>">
-                <i class="ph-bold <?= $item['icon'] ?>"></i>
-                <?= $item['label'] ?>
-            </a>
-        <?php endforeach; ?>
-
-        <div class="nav-section">Communication</div>
-        <?php foreach (array_slice($navItems, 7, 3) as $item): ?>
-            <a href="<?= BASE_URL ?>/admin/<?= $item['file'] ?>" class="nav-link<?= $currentPage === $item['file'] ? ' active' : '' ?>">
-                <i class="ph-bold <?= $item['icon'] ?>"></i>
-                <?= $item['label'] ?>
-            </a>
-        <?php endforeach; ?>
-
-        <div class="nav-section">Safety & Tools</div>
-        <?php foreach (array_slice($navItems, 10) as $item): ?>
-            <a href="<?= BASE_URL ?>/admin/<?= $item['file'] ?>" class="nav-link<?= $currentPage === $item['file'] ? ' active' : '' ?>">
+        <?php
+        $lastSection = '';
+        foreach ($navItems as $item):
+            if ($item['section'] !== $lastSection):
+                $lastSection = $item['section'];
+                // Extra breathing room before the lower sections so the long
+                // nav stays scannable.
+                $extra = in_array($lastSection, ['AI & Automation', 'Safety & Config'], true) ? ' mt-3' : '';
+        ?>
+            <div class="nav-section<?= $extra ?>"><?= e($lastSection) ?></div>
+        <?php endif; ?>
+            <a href="<?= BASE_URL ?>/admin/<?= preg_replace('/\.php$/i', '', $item['file']) ?>" class="nav-link<?= $currentPage === $item['file'] ? ' active' : '' ?>">
                 <i class="ph-bold <?= $item['icon'] ?>"></i>
                 <?= $item['label'] ?>
             </a>
         <?php endforeach; ?>
 
         <div class="nav-section mt-3">Account</div>
-        <a href="<?= BASE_URL ?>/admin/login.php" class="nav-link" onclick="return confirm('Logout from admin panel?')">
+        <a href="<?= url('admin/login') ?>" class="nav-link" onclick="return confirm('Logout from admin panel?')">
             <i class="ph-bold ph-sign-out"></i> Logout
         </a>
     </nav>

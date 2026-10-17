@@ -73,7 +73,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="row g-4">
                 <?php foreach ($blogPosts as $post): ?>
                     <div class="col-md-4">
-                        <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($post['slug']) ?>"
+                        <a href="<?= url('blog-details') ?>?slug=<?= e($post['slug']) ?>"
                            class="bg-white-06 border border-neutral-700 tw-rounded-xl overflow-hidden d-block text-decoration-none hover-border-main-600 tw-transition h-100">
                             <?php if (!empty($post['featured_image'])): ?>
                                 <div style="height:180px;">
@@ -100,7 +100,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="row g-4">
                 <?php foreach ($marketplaceItems as $item): ?>
                     <div class="col-md-4">
-                        <a href="<?= BASE_URL ?>/marketplace.php?tab=<?= e($item['item_type'] ?? 'products') ?>"
+                        <a href="<?= url('marketplace') ?>?tab=<?= e($item['item_type'] ?? 'products') ?>"
                            class="bg-white-06 border border-neutral-700 tw-rounded-xl overflow-hidden d-block text-decoration-none hover-border-main-600 tw-transition h-100">
                             <?php if (!empty($item['featured_image'])): ?>
                                 <div style="height:180px;">

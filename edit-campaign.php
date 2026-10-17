@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 require_once __DIR__ . '/config/site_setting_and_config.php';
 
-$pageTitle = 'Edit Campaign — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Edit Campaign â€” ' . get_setting('site_name', 'Adsbooster.net');
 
 $userId = current_user_id();
 $campaignId = (int)($_GET['id'] ?? 0);
 if ($campaignId <= 0) {
     set_flash('error', 'Campaign not found.');
-    redirect(BASE_URL . '/dashboard.php');
+    redirect(url('dashboard'));
 }
 
 $campaign = db()->fetch("SELECT * FROM ad_campaigns WHERE id = ? AND user_id = ?", [$campaignId, $userId]);
 if (!$campaign) {
     set_flash('error', 'Campaign not found.');
-    redirect(BASE_URL . '/dashboard.php');
+    redirect(url('dashboard'));
 }
 
 $spec = [];
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 set_flash('success', 'Campaign updated successfully.');
-                redirect(BASE_URL . '/dashboard.php');
+                redirect(url('dashboard'));
             } catch (Throwable $e) {
                 error_log('Edit campaign failed: ' . $e->getMessage());
                 $errors[] = 'Failed to update campaign. Please try again.';
@@ -149,7 +149,7 @@ $statusBadge = ($campaign['status'] ?? '') === 'active' ? 'badge-active' : 'badg
 <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:start">
     <div class="card-dark">
         <h5 style="margin-bottom:20px"><i class="ph ph-megaphone" style="margin-right:8px"></i>Campaign Details</h5>
-        <form method="POST" action="<?= BASE_URL ?>/edit-campaign.php?id=<?= (int)$campaignId ?>">
+        <form method="POST" action="<?= url('edit-campaign') . '?id=' . (int)$campaignId ?>">
             <?= csrf_field() ?>
             <div style="margin-bottom:16px">
                 <label for="campaign_name" class="form-label">Campaign Name</label>
@@ -220,7 +220,7 @@ $statusBadge = ($campaign['status'] ?? '') === 'active' ? 'badge-active' : 'badg
             </div>
             <div style="display:flex;gap:12px">
                 <button type="submit" class="btn-accent"><i class="ph ph-check"></i>Save Changes</button>
-                <a href="<?= BASE_URL ?>/dashboard.php" class="btn-outline-dark">Cancel</a>
+                <a href="<?= url('dashboard') ?>" class="btn-outline-dark">Cancel</a>
             </div>
         </form>
     </div>

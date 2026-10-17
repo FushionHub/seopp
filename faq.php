@@ -224,7 +224,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="row justify-content-center">
             <div class="col-lg-10 text-center">
                 <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                    <a href="<?= BASE_URL ?>/index.php" class="text-white-50 text-decoration-none hover-text-main-600 font-size-13"><i class="ph ph-house me-1"></i> Home</a>
+                    <a href="<?= url('index') ?>" class="text-white-50 text-decoration-none hover-text-main-600 font-size-13"><i class="ph ph-house me-1"></i> Home</a>
                     <span class="text-white-50 font-size-13">/</span>
                     <span class="text-main-600 font-size-13 fw-semibold">Knowledge Base &amp; FAQ</span>
                 </div>
@@ -611,7 +611,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div>
                             <div class="text-white fw-bold font-size-15">Real-Time P2P &amp; AI Chat</div>
                             <div class="text-white-50 font-size-13 mb-2" style="color: #94a3b8 !important;">Chat with live agents or consult our AI strategist in your portal.</div>
-                            <a href="<?= BASE_URL ?>/p2p-chat.php" class="text-main-600 font-size-13 fw-semibold text-decoration-none hover-underline">
+                            <a href="<?= url('p2p-chat') ?>" class="text-main-600 font-size-13 fw-semibold text-decoration-none hover-underline">
                                 Open Chat Studio &rarr;
                             </a>
                         </div>
@@ -637,7 +637,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div>
                             <div class="text-white fw-bold font-size-15">Security &amp; 2FA Assistance</div>
                             <div class="text-white-50 font-size-13 mb-2" style="color: #94a3b8 !important;">Need to reset backup codes or verify your authenticator app?</div>
-                            <a href="<?= BASE_URL ?>/security-2fa.php" class="text-info font-size-13 fw-semibold text-decoration-none hover-underline">
+                            <a href="<?= url('security-2fa') ?>" class="text-info font-size-13 fw-semibold text-decoration-none hover-underline">
                                 Manage 2FA Settings &rarr;
                             </a>
                         </div>

@@ -4,6 +4,10 @@ require_once __DIR__ . '/config/site_setting_and_config.php';
 require_once __DIR__ . '/config/apikeys.php';   // provides api_key() for the provider checks
 require_once __DIR__ . '/includes/security.php'; // provides ca_bundle_found() for TLS probes
 
+// This page runs DB + multi-host TLS probes; give it real wall-clock room
+// (LiteSpeed/FastCGI default is 60s and a cold remote probe can spike).
+@set_time_limit(120);
+
 $pageTitle = 'System Status — ' . get_setting('site_name', 'Adsbooster.net');
 $pageDescription = 'Live health checks run from our servers. Every number on this page is measured, not estimated.';
 
@@ -148,10 +152,15 @@ $checks = [];
 
 // Remote hosts are probed together first so a slow CDN cannot serialise
 // the page. Local checks are instantaneous and run afterwards.
-$groqKey = function_exists('api_key') ? api_key('GROQ_API_KEY', 'groq_api_key', '') : '';
-$remoteUrls = [
-    'image_cdn' => 'https://image.pollinations.ai/prompt/status-check?width=64&height=64&seed=1&nologo=true&model=flux',
-];
+$groqKey   = function_exists('api_key') ? api_key('GROQ_API_KEY', 'groq_api_key', '') : '';
+$geminiKey = function_exists('api_key') ? api_key('GEMINI_API_KEY', 'gemini_api_key', '') : '';
+$remoteUrls = [];
+if ($geminiKey !== '') {
+    // Authenticated list call — proves generativelanguage.googleapis.com is
+    // reachable and the configured Nano Banana / Veo key is accepted.
+    $remoteUrls['image_cdn'] = 'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1&key='
+        . urlencode($geminiKey);
+}
 if ($groqKey !== '') {
     $remoteUrls['ai_script'] = 'https://api.groq.com/openai/v1/models';
 }
@@ -186,9 +195,17 @@ $checks[] = probe('storage', 'Upload storage', 'Core', function () {
     return [true, 'writable'];
 });
 
-// 4. Image CDN used by the studios.
-$checks[] = probe('image_cdn', 'Image generation CDN', 'AI', function () use ($remote) {
+// 4. Google image generation (Nano Banana 2) used by the studios.
+$checks[] = probe('image_cdn', 'Image generation (Gemini)', 'AI', function () use ($remote, $geminiKey) {
+    if ($geminiKey === '') {
+        return [true, 'not configured on this node'];
+    }
     $r = $remote['image_cdn'] ?? ['ok' => false, 'note' => 'probe not run'];
+    // multiPing counts any non-5xx as "up"; an auth rejection is a real
+    // failure for this check because the key is what the studios need.
+    if (str_contains($r['note'], 'HTTP 401') || str_contains($r['note'], 'HTTP 403')) {
+        return [false, 'API key rejected (' . $r['note'] . ')'];
+    }
     return [$r['ok'], $r['note']];
 });
 

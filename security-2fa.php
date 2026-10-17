@@ -119,7 +119,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="page-subtitle">Protect your account and ad campaign budgets with multi-factor authentication security.</p>
         </div>
         <div>
-            <a href="<?= BASE_URL ?>/profile.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('profile') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-user"></i> Profile Settings
             </a>
         </div>

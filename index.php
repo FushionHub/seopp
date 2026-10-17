@@ -29,7 +29,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
                 <p class="tw-text-lg fw-medium text-white max-w-400-px">Launch ads across Meta, Instagram, TikTok, Google Ads & Snapchat from one dashboard. AI-powered creatives, auto-scheduling, and real-time analytics.</p>
                 <div class="tw-mt-8">
-                    <a href="<?= BASE_URL ?>/register.php"
+                    <a href="<?= url('register') ?>"
                         class="btn btn-main hover-style-four group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill text-heading"
                         data-block="button">
                         <span class="button__flair"></span>
@@ -99,7 +99,7 @@ require_once __DIR__ . '/includes/header.php';
                         Create, launch, and manage ad campaigns across Meta, Instagram, TikTok, Google Ads, and Snapchat — all from a single platform. Our AI generates winning creatives while you focus on growing your business.
                     </p>
                     <div class="tw-mt-11">
-                        <a href="<?= BASE_URL ?>/create-ad.php"
+                        <a href="<?= url('create-ad') ?>"
                             class="btn btn-main hover-style-four group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill text-heading"
                             data-block="button">
                             <span class="button__flair"></span>
@@ -224,7 +224,7 @@ require_once __DIR__ . '/includes/header.php';
                         <h2 class="h4 text-white text-uppercase">Multi-Platform Ad Campaigns</h2>
                         <p class="text-white-8 tw-mt-8">Launch and manage ad campaigns across Meta, Instagram, TikTok, Google Ads, and Snapchat from one unified dashboard.</p>
                         <div class="tw-mt-8 element-double-animation">
-                            <a href="<?= BASE_URL ?>/create-ad.php"
+                            <a href="<?= url('create-ad') ?>"
                                 class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-mai-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item">
                                 <span class="element-double-animation__element hover-element-main-600"
                                     data-content="Read Details">Read Details</span>
@@ -246,7 +246,7 @@ require_once __DIR__ . '/includes/header.php';
                         <h2 class="h4 text-white text-uppercase">AI Content Generation</h2>
                         <p class="text-white-8 tw-mt-8">Generate high-converting ad creatives, copy, and visuals using AI to maximize your campaign performance.</p>
                         <div class="tw-mt-8 element-double-animation">
-                            <a href="<?= BASE_URL ?>/create-ad.php"
+                            <a href="<?= url('create-ad') ?>"
                                 class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-mai-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item">
                                 <span class="element-double-animation__element hover-element-main-600"
                                     data-content="Read Details">Read Details</span>
@@ -268,7 +268,7 @@ require_once __DIR__ . '/includes/header.php';
                         <h2 class="h4 text-white text-uppercase">Social Media Scheduling</h2>
                         <p class="text-white-8 tw-mt-8">Plan, schedule, and automatically publish content across all your connected social media accounts.</p>
                         <div class="tw-mt-8 element-double-animation">
-                            <a href="<?= BASE_URL ?>/post-creator.php"
+                            <a href="<?= url('post-creator') ?>"
                                 class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-mai-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item">
                                 <span class="element-double-animation__element hover-element-main-600"
                                     data-content="Read Details">Read Details</span>
@@ -290,7 +290,7 @@ require_once __DIR__ . '/includes/header.php';
                         <h2 class="h4 text-white text-uppercase">Real-Time Analytics</h2>
                         <p class="text-white-8 tw-mt-8">Track campaign performance with live dashboards, detailed metrics, and AI-driven optimization recommendations.</p>
                         <div class="tw-mt-8 element-double-animation">
-                            <a href="<?= BASE_URL ?>/analytics.php"
+                            <a href="<?= url('analytics') ?>"
                                 class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-mai-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item">
                                 <span class="element-double-animation__element hover-element-main-600"
                                     data-content="Read Details">Read Details</span>
@@ -331,10 +331,10 @@ $featuredListings = db()->fetchAll(
                 <p class="text-white-50 font-size-16 mb-0">Browse top-rated agencies, hotels, hospitals, churches, dining venues, and marketing products. Reach decision-makers directly via WhatsApp or Phone.</p>
             </div>
             <div class="d-flex gap-3 flex-wrap">
-                <a href="<?= BASE_URL ?>/marketplace.php" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14 fw-semibold d-flex align-items-center gap-2">
+                <a href="<?= url('marketplace') ?>" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14 fw-semibold d-flex align-items-center gap-2">
                     <i class="ph ph-squares-four"></i> Browse All Listings
                 </a>
-                <a href="<?= BASE_URL ?>/create-listing.php" class="btn btn-main rounded-pill px-4 py-2 font-size-14 fw-bold text-dark d-flex align-items-center gap-2">
+                <a href="<?= url('create-listing') ?>" class="btn btn-main rounded-pill px-4 py-2 font-size-14 fw-bold text-dark d-flex align-items-center gap-2">
                     <i class="ph-bold ph-plus"></i> List Your Business
                 </a>
             </div>
@@ -342,22 +342,22 @@ $featuredListings = db()->fetchAll(
 
         <!-- Category Shortcuts Bar -->
         <div class="d-flex gap-2 flex-wrap mb-5 pb-2" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
-            <a href="<?= BASE_URL ?>/marketplace.php?tab=business" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
+            <a href="<?= url('marketplace') . '?tab=business' ?>" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
                 🏢 All Businesses
             </a>
-            <a href="<?= BASE_URL ?>/marketplace.php?tab=business&type=hotel" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
+            <a href="<?= url('marketplace') . '?tab=business&type=hotel' ?>" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
                 🏨 Hotels &amp; Resorts
             </a>
-            <a href="<?= BASE_URL ?>/marketplace.php?tab=business&type=hospital" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
+            <a href="<?= url('marketplace') . '?tab=business&type=hospital' ?>" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
                 🏥 Hospitals &amp; Clinics
             </a>
-            <a href="<?= BASE_URL ?>/marketplace.php?tab=business&type=church" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
+            <a href="<?= url('marketplace') . '?tab=business&type=church' ?>" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
                 ⛪ Churches &amp; Places of Worship
             </a>
-            <a href="<?= BASE_URL ?>/marketplace.php?tab=business&type=restaurant" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
+            <a href="<?= url('marketplace') . '?tab=business&type=restaurant' ?>" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
                 🍽️ Restaurants &amp; Dining
             </a>
-            <a href="<?= BASE_URL ?>/marketplace.php?tab=products" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
+            <a href="<?= url('marketplace') . '?tab=products' ?>" class="btn btn-sm bg-white-06 text-white border border-neutral-700 rounded-pill px-3 py-2 font-size-13 hover-border-main-600">
                 📦 Products &amp; Software
             </a>
         </div>
@@ -375,7 +375,7 @@ $featuredListings = db()->fetchAll(
                         <div class="card h-100 bg-white-06 border border-neutral-800 rounded-4 overflow-hidden transition hover-border-main-600 d-flex flex-column" style="box-shadow: 0 10px 30px rgba(0,0,0,0.35);">
                             <!-- Image Header -->
                             <div class="position-relative" style="height: 220px; overflow: hidden; background: #080c14;">
-                                <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $item['id'] ?>" class="d-block w-100 h-100">
+                                <a href="<?= url('listing-details', ['id' => $item['id']]) ?>" class="d-block w-100 h-100">
                                     <img src="<?= e($imgSrc) ?>" alt="<?= e($item['title']) ?>" class="w-100 h-100 object-fit-cover transition hover-scale-105">
                                 </a>
                                 <!-- Badges -->
@@ -416,7 +416,7 @@ $featuredListings = db()->fetchAll(
                                 </div>
 
                                 <h5 class="text-white fw-bold mb-2 line-clamp-1" style="font-size: 1.15rem;">
-                                    <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $item['id'] ?>" class="text-white text-decoration-none hover-text-main-600">
+                                    <a href="<?= url('listing-details', ['id' => $item['id']]) ?>" class="text-white text-decoration-none hover-text-main-600">
                                         <?= e($item['title']) ?>
                                     </a>
                                 </h5>
@@ -453,7 +453,7 @@ $featuredListings = db()->fetchAll(
                                             </a>
                                         <?php endif; ?>
                                     </div>
-                                    <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $item['id'] ?>" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1 font-size-12 fw-medium">
+                                    <a href="<?= url('listing-details', ['id' => $item['id']]) ?>" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1 font-size-12 fw-medium">
                                         Details &rarr;
                                     </a>
                                 </div>
@@ -472,7 +472,7 @@ $featuredListings = db()->fetchAll(
                     <p class="text-white-50 mb-0 font-size-15">Get discovered by thousands of advertisers, agencies, and customers daily. Includes Google Maps pin and direct WhatsApp contact.</p>
                 </div>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="<?= BASE_URL ?>/create-listing.php" class="btn btn-main rounded-pill px-4 py-3 fw-bold text-dark font-size-14">
+                    <a href="<?= url('create-listing') ?>" class="btn btn-main rounded-pill px-4 py-3 fw-bold text-dark font-size-14">
                         <i class="ph-bold ph-plus me-1"></i> Post Your Listing Today
                     </a>
                 </div>
@@ -628,7 +628,7 @@ $featuredListings = db()->fetchAll(
             <div class="">
                 <!-- Rotate Text Start -->
                 <div class="rotate-text-wrapper hover-parallax-wrapper">
-                    <a href="<?= BASE_URL ?>/about.php"
+                    <a href="<?= url('about') ?>"
                         class="position-relative pointer-events-auto group group-item hover-parallax-item bg-white-13 tw-p-4 rounded-circle border border-white blur-style-two">
                         <img src="<?= ASSETS_URL ?>/images/shapes/totate-text-new.png" alt="Rotate Text"
                             class="animation-rotate-right">
@@ -693,7 +693,7 @@ $featuredListings = db()->fetchAll(
                                 class="tw-px-5 tw-py-1 border border-neutral-600 text-white fw-medium rounded-pill hover-bg-white hover-text-heading tw-duration-200">Instagram</a>
                         </div>
                         <h3 class="h4 text-uppercase tw-mt-6">
-                            <a href="<?= BASE_URL ?>/create-ad.php" class="text-white hover-text-main-600">Cross-Platform Ad Campaign Management</a>
+                            <a href="<?= url('create-ad') ?>" class="text-white hover-text-main-600">Cross-Platform Ad Campaign Management</a>
                         </h3>
                     </div>
                 </div>
@@ -714,7 +714,7 @@ $featuredListings = db()->fetchAll(
                                 class="tw-px-5 tw-py-1 border border-neutral-600 text-white fw-medium rounded-pill hover-bg-white hover-text-heading tw-duration-200">Creative</a>
                         </div>
                         <h3 class="h4 text-uppercase tw-mt-6">
-                            <a href="<?= BASE_URL ?>/create-ad.php" class="text-white hover-text-main-600">AI-Powered Creative Generation Engine</a>
+                            <a href="<?= url('create-ad') ?>" class="text-white hover-text-main-600">AI-Powered Creative Generation Engine</a>
                         </h3>
                     </div>
                 </div>
@@ -735,7 +735,7 @@ $featuredListings = db()->fetchAll(
                                 class="tw-px-5 tw-py-1 border border-neutral-600 text-white fw-medium rounded-pill hover-bg-white hover-text-heading tw-duration-200">Automation</a>
                         </div>
                         <h3 class="h4 text-uppercase tw-mt-6">
-                            <a href="<?= BASE_URL ?>/post-creator.php" class="text-white hover-text-main-600">Automated Social Media Scheduling & Posting</a>
+                            <a href="<?= url('post-creator') ?>" class="text-white hover-text-main-600">Automated Social Media Scheduling & Posting</a>
                         </h3>
                     </div>
                 </div>
@@ -756,7 +756,7 @@ $featuredListings = db()->fetchAll(
                                 class="tw-px-5 tw-py-1 border border-neutral-600 text-white fw-medium rounded-pill hover-bg-white hover-text-heading tw-duration-200">Reports</a>
                         </div>
                         <h3 class="h4 text-uppercase tw-mt-6">
-                            <a href="<?= BASE_URL ?>/analytics.php" class="text-white hover-text-main-600">Real-Time Campaign Analytics Dashboard</a>
+                            <a href="<?= url('analytics') ?>" class="text-white hover-text-main-600">Real-Time Campaign Analytics Dashboard</a>
                         </h3>
                     </div>
                 </div>
@@ -892,7 +892,7 @@ if (empty($homeReviews)) {
             </span>
             <h2 class="text-white fw-bold text-uppercase">What Growth Marketers Say</h2>
             <div class="mt-2">
-                <a href="<?= BASE_URL ?>/reviews.php" class="text-main-600 font-size-14 text-decoration-none hover-text-white">
+                <a href="<?= url('reviews') ?>" class="text-main-600 font-size-14 text-decoration-none hover-text-white">
                     View all customer reviews &amp; ratings &rarr;
                 </a>
             </div>
@@ -1049,10 +1049,10 @@ $featuredListings = db()->fetchAll(
                 </p>
             </div>
             <div class="d-flex align-items-center tw-gap-3">
-                <a href="<?= BASE_URL ?>/marketplace.php" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14 fw-medium">
+                <a href="<?= url('marketplace') ?>" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14 fw-medium">
                     View All Directory <i class="ph ph-arrow-right ms-1"></i>
                 </a>
-                <a href="<?= BASE_URL ?>/create-listing.php" class="btn btn-main rounded-pill px-4 py-2 font-size-14 fw-bold">
+                <a href="<?= url('create-listing') ?>" class="btn btn-main rounded-pill px-4 py-2 font-size-14 fw-bold">
                     <i class="ph-bold ph-plus-circle me-1"></i> List Your Business
                 </a>
             </div>
@@ -1096,7 +1096,7 @@ $featuredListings = db()->fetchAll(
                                 </div>
 
                                 <h5 class="mb-2">
-                                    <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $item['id'] ?>" class="text-white hover-text-main-600 fw-bold font-size-16 text-decoration-none line-clamp-2">
+                                    <a href="<?= url('listing-details', ['id' => $item['id']]) ?>" class="text-white hover-text-main-600 fw-bold font-size-16 text-decoration-none line-clamp-2">
                                         <?= e($item['title']) ?>
                                     </a>
                                 </h5>
@@ -1123,7 +1123,7 @@ $featuredListings = db()->fetchAll(
                                         </a>
                                     <?php endif; ?>
                                 </div>
-                                <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $item['id'] ?>" class="text-main-600 font-size-13 fw-bold text-decoration-none hover-underline">
+                                <a href="<?= url('listing-details', ['id' => $item['id']]) ?>" class="text-main-600 font-size-13 fw-bold text-decoration-none hover-underline">
                                     Details &rarr;
                                 </a>
                             </div>
@@ -1170,7 +1170,7 @@ if (empty($homepageReviews)) {
                 </p>
             </div>
             <div>
-                <a href="<?= BASE_URL ?>/reviews.php" class="btn btn-main-600 text-dark fw-bold rounded-pill px-4 py-2 font-size-14 d-inline-flex align-items-center gap-2">
+                <a href="<?= url('reviews') ?>" class="btn btn-main-600 text-dark fw-bold rounded-pill px-4 py-2 font-size-14 d-inline-flex align-items-center gap-2">
                     <span>View All Reviews</span>
                     <i class="ph-bold ph-arrow-right"></i>
                 </a>
@@ -1242,7 +1242,7 @@ $latestPosts = db()->fetchAll("SELECT id, title, slug, excerpt, featured_image, 
                 <div class="col-xl-4 col-md-6 aos-init aos-animate" data-aos="fade-up" data-aos-duration="800"
                     data-aos-delay="<?= ($index + 1) * 200 ?>">
                     <div class="blog-item image-double-animation">
-                        <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= htmlspecialchars($post['slug']) ?>" class="overflow-hidden d-block position-relative view-cursor-show">
+                        <a href="<?= url('blog-details', ['slug' => $post['slug']]) ?>" class="overflow-hidden d-block position-relative view-cursor-show">
                             <?php if ($post['featured_image']): ?>
                                 <img src="<?= ASSETS_URL ?>/<?= htmlspecialchars($post['featured_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>"
                                     class="image-double-animation__element w-100 object-fit-cover">
@@ -1261,9 +1261,9 @@ $latestPosts = db()->fetchAll("SELECT id, title, slug, excerpt, featured_image, 
                                 <span class="tw-text-base fw-medium text-white"><?= date('d M, Y', strtotime($post['published_at'])) ?></span>
                             </div>
                             <h2 class="h4 tw-my-6">
-                                <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= htmlspecialchars($post['slug']) ?>" class="text-white hover-text-main-600 line-clamp-3"><?= htmlspecialchars($post['title']) ?></a>
+                                <a href="<?= url('blog-details', ['slug' => $post['slug']]) ?>" class="text-white hover-text-main-600 line-clamp-3"><?= htmlspecialchars($post['title']) ?></a>
                             </h2>
-                            <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= htmlspecialchars($post['slug']) ?>"
+                            <a href="<?= url('blog-details', ['slug' => $post['slug']]) ?>"
                                 class="text-white fw-semibold border-bottom border-white hover-border-main-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                 <span class="element-double-animation__element" data-content="Read Details">Read
                                     Details</span>

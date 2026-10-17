@@ -419,6 +419,17 @@ require_once __DIR__ . '/includes/app_header.php';
             </div>
 
             <div style="margin-top:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span class="vs-lbl" style="margin:0"><i class="ph-bold ph-lightbulb" style="color:var(--vs-accent)"></i> 1-Click Viral Ideas</span>
+                <span style="font-size:0.68rem;color:var(--vs-muted)">Novice friendly</span>
+              </div>
+              <div class="vs-chips" id="vs-video-inspiration-chips" style="margin-bottom:8px">
+                <button type="button" class="vs-chip" onclick="applyVideoPreset('serum')">🧴 Skincare Glow</button>
+                <button type="button" class="vs-chip" onclick="applyVideoPreset('earbuds')">🎧 Pro Earbuds</button>
+                <button type="button" class="vs-chip" onclick="applyVideoPreset('energy')">⚡ Energy Drink</button>
+                <button type="button" class="vs-chip" onclick="applyVideoPreset('sneakers')">👟 Sneaker Drop</button>
+                <button type="button" class="vs-chip" onclick="applyVideoPreset('saas')">💻 SaaS Tool</button>
+              </div>
               <label class="vs-lbl" for="vs-idea">Describe your video in one line</label>
               <textarea id="vs-idea" class="vs-ta" rows="2" placeholder="e.g. A fun creator review of my new matcha powder that clears skin in 7 days, 50% off launch"></textarea>
               <div class="vs-hint">Write it like you would tell a friend. The AI turns it into a full script and shot list.</div>
@@ -555,6 +566,10 @@ require_once __DIR__ . '/includes/app_header.php';
             <span id="vs-gen-cost">3 credits</span>
             <span id="vs-gen-engine"><?= e($providers[$activeProvider]['label'] ?? '') ?></span>
           </div>
+          <div class="vs-hint" style="text-align:center;margin-top:10px;font-size:0.7rem;color:var(--vs-muted);">
+            <i class="ph-bold ph-shield-check" style="color:var(--vs-accent);vertical-align:-1px;"></i>
+            FTC &amp; Platform Compliant. Automated #ad disclosure &amp; synthetic avatar commercial rights included.
+          </div>
         </div>
 
       </div>
@@ -690,7 +705,7 @@ require_once __DIR__ . '/includes/app_header.php';
 'use strict';
 
 /* ══════════════ CONFIG ══════════════ */
-const ENDPOINT   = <?= json_encode(url('ugc-video-studio')) ?>;
+const ENDPOINT   = window.location.pathname + window.location.search;
 const CSRF       = <?= json_encode(csrf_token()) ?>;
 const BASE       = <?= json_encode(rtrim(BASE_URL, '/')) ?>;
 const PROVIDERS  = <?= json_encode(array_map(fn($p) => ['label'=>$p['label'],'kind'=>$p['kind'],'configured'=>(bool)$p['configured']], $providers)) ?>;
@@ -699,6 +714,94 @@ const VOICES     = <?= json_encode($voices) ?>;
 
 const $  = (s, r) => (r||document).querySelector(s);
 const $$ = (s, r) => Array.from((r||document).querySelectorAll(s));
+
+/* ══════════════ 1-CLICK FLOW INSPIRATION ══════════════ */
+window.applyVideoPreset = function(type) {
+  const presets = {
+    serum: {
+      idea: "A fun, authentic girl review of Lumina Glow serum showing how it cleared morning redness in 7 days",
+      product: "Lumina Glow Serum",
+      benefit: "Clears redness and delivers glass skin in 7 days",
+      dur: 30,
+      hook: "Stop scrolling if you are tired of 10-step skincare routines",
+      body: "I was skeptical, but Lumina Glow actually transformed my morning skin in under a week. It is lightweight, non-greasy, and smells amazing.",
+      cta: "Tap the link below now to claim your 50% launch discount!",
+      avatar: "lexi_genz"
+    },
+    earbuds: {
+      idea: "Tech creator unboxing review of AuraWave Pro ANC earbuds beating $300 alternatives",
+      product: "AuraWave Pro Earbuds",
+      benefit: "Active noise cancellation and 40-hour battery life",
+      dur: 30,
+      hook: "I threw out my $300 headphones after testing these for 48 hours",
+      body: "The active noise cancellation is completely unreal. Crystal clear audio, zero lag for gaming, and a 40-hour battery that refuses to die.",
+      cta: "Grab yours before the weekend flash sale sells out!",
+      avatar: "alex_tech"
+    },
+    energy: {
+      idea: "Fitness athlete gym review of VoltClean zero-crash organic energy drink",
+      product: "VoltClean Energy",
+      benefit: "8 hours of clean organic focus with zero crash",
+      dur: 15,
+      hook: "If your energy drink gives you the 2 PM crash, you need to switch",
+      body: "VoltClean gives you pure, steady focus for 8 hours without any jitters or artificial junk.",
+      cta: "Tap below for free express shipping today!",
+      avatar: "jordan_fitness"
+    },
+    sneakers: {
+      idea: "Urban street style walk review of StrideZero cloud knit running shoes",
+      product: "StrideZero Sneakers",
+      benefit: "Cloud comfort for 20,000 daily steps",
+      dur: 30,
+      hook: "Walking 20,000 steps usually destroys my feet. Not in these.",
+      body: "StrideZero feels like literally walking on clouds. Breathable knit, ultra-lightweight, and looks incredible with everything.",
+      cta: "Get 40% off your first pair with code CLOUD40!",
+      avatar: "lexi_genz"
+    },
+    saas: {
+      idea: "Startup founder breakdown of AdFlow AI autonomous media buyer that scales ROAS",
+      product: "AdFlow AI Engine",
+      benefit: "Automated anti-burn kill-switch and 24/7 ROAS scaling",
+      dur: 45,
+      hook: "How we scaled our e-commerce store to $50k a month on autopilot",
+      body: "We replaced manual ad management with AdFlow AI. The anti-burn daemon automatically pauses bad creatives and scales winners while we sleep.",
+      cta: "Start your 14-day free trial at the link below!",
+      avatar: "marcus_founder"
+    }
+  };
+
+  const p = presets[type];
+  if (!p) return;
+
+  const ideaEl = $('#vs-idea');
+  const prodEl = $('#vs-product');
+  const benEl = $('#vs-benefits');
+  const hookEl = $('#vs-hook');
+  const bodyEl = $('#vs-body');
+  const ctaEl = $('#vs-cta');
+
+  if (ideaEl) ideaEl.value = p.idea;
+  if (prodEl) prodEl.value = p.product;
+  if (benEl) benEl.value = p.benefit;
+  if (hookEl) hookEl.value = p.hook;
+  if (bodyEl) bodyEl.value = p.body;
+  if (ctaEl) ctaEl.value = p.cta;
+
+  // Set duration chip
+  const durBtn = $(`#vs-dur-chips button[data-dur="${p.dur}"]`);
+  if (durBtn) durBtn.click();
+
+  // Select avatar if available
+  const avEl = $(`#vs-avatars .vs-tile[data-id="${p.avatar}"]`);
+  if (avEl) avEl.click();
+
+  // Animate pulse on generate button to guide user
+  const genBtn = $('#btn-generate');
+  if (genBtn) {
+    genBtn.style.transform = 'scale(1.03)';
+    setTimeout(() => { genBtn.style.transform = 'scale(1)'; }, 350);
+  }
+};
 
 /* ══════════════ STATE ══════════════ */
 const S = {
@@ -1116,6 +1219,12 @@ function drawScene(ctx, img, sc, W, H, t){
   ctx.fillStyle = '#05080f';
   ctx.fillRect(0,0,W,H);
 
+  // Declared here (not inside the caption block) because the creator badge
+  // below needs them too — scoping them with `const` inside the caption
+  // `if` threw a ReferenceError on every UGC render.
+  const pad = Math.round(W * 0.045);
+  const fs  = Math.round(W * 0.052);
+
   const zoom = (sc.zoom_from||1) + ((sc.zoom_to||1.18) - (sc.zoom_from||1)) * t;
   if (img){
     const iw = img.width, ih = img.height;
@@ -1146,8 +1255,6 @@ function drawScene(ctx, img, sc, W, H, t){
   const stroke = opt.dataset.stroke || 'none';
   const text = String(sc.caption||'');
   if (text){
-    const pad = Math.round(W * 0.045);
-    const fs = Math.round(W * 0.052);
     ctx.font = '800 ' + fs + 'px system-ui, -apple-system, "Segoe UI", sans-serif';
     ctx.textBaseline = 'top';
     const maxW = W - pad*2;
@@ -1156,7 +1263,7 @@ function drawScene(ctx, img, sc, W, H, t){
     const boxH = lines.length * lineH + pad*1.4;
     const boxY = H - boxH - Math.round(H*0.10);
 
-    ctx.fillStyle = bg.startsWith('rgba') ? bg : bg;
+    ctx.fillStyle = bg;
     roundRect(ctx, pad*0.5, boxY, W - pad, boxH, Math.round(W*0.03));
     ctx.fill();
 
@@ -1233,6 +1340,20 @@ async function runClientRender(){
 
   const cv = $('#vs-canvas');
   const stream = cv.captureStream(30);
+  const mix = $('#vs-mix').value;
+
+  // Build the beat graph BEFORE creating the recorder and attach its output
+  // as a second track. MediaRecorder snapshots the track list at
+  // construction time, so adding it later would produce a silent file.
+  if (mix !== 'voice_only'){
+    const actx = ensureAudioCapture();
+    if (actx){
+      if (actx.state === 'suspended') actx.resume();
+      const audioTracks = S.audioDest ? S.audioDest.stream.getAudioTracks() : [];
+      for (const at of audioTracks) stream.addTrack(at);
+    }
+  }
+
   let rec;
   try { rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: Math.min(8_000_000, Math.max(2_500_000, W*H*4)) }); }
   catch(e){
@@ -1246,8 +1367,7 @@ async function runClientRender(){
   const finished = new Promise(res => { rec.onstop = () => res(); });
   rec.start(250);
 
-  // Background beat
-  const mix = $('#vs-mix').value;
+  // Start the beat now that the recorder is attached and capturing.
   if (mix !== 'voice_only') startBeat();
 
   const total = S.duration;
@@ -1256,6 +1376,17 @@ async function runClientRender(){
   let acc = 0;
   for (const sc of S.scenes){ sceneOffsets.push(acc); acc += (sc.length || 3); }
   const planned = acc || total;
+
+  // Recording a zero-scene storyboard would divide by zero below and hand
+  // MediaRecorder an unchanging canvas; refuse instead of producing junk.
+  if (!S.scenes.length || !planned || !isFinite(planned)){
+    stopBeat();
+    rec.stop();
+    await finished;
+    overlay(false);
+    toast('This storyboard has no scenes to record. Generate the shots again.','err');
+    return;
+  }
 
   await new Promise(resolve => {
     function tick(now){
@@ -1268,7 +1399,8 @@ async function runClientRender(){
       // find active scene
       let idx = 0;
       for (let i=0; i<sceneOffsets.length; i++){ if (el >= sceneOffsets[i]) idx = i; }
-      const local = (el - sceneOffsets[idx]) / Math.max(0.001, (S.scenes[idx].length || 3));
+      const scene = S.scenes[idx] || { length: 1, caption: '' };
+      const local = (el - sceneOffsets[idx]) / Math.max(0.001, (scene.length || 3));
       S.currentScene = idx;
       drawFrame(idx, Math.max(0, Math.min(1, local)));
 
@@ -1308,8 +1440,9 @@ async function runClientRender(){
     let data; try { data = JSON.parse(txt); } catch(e){ throw new Error('Unexpected server response.'); }
     if (!data.success) throw new Error(data.error || 'Could not save the video.');
     overlay(false);
+    S.recordedSeconds = planned;
     showCompleted(data.video.video_url, data.video.thumbnail_url, blob);
-    toast('Your video is ready','ok', Math.round(blob.size/1024) + ' KB · ' + S.duration + 's');
+    toast('Your video is ready','ok', Math.round(blob.size/1024) + ' KB · ' + Math.round(planned) + 's');
   }catch(e){
     overlay(false);
     toast(e.message,'err');
@@ -1317,10 +1450,33 @@ async function runClientRender(){
 }
 
 /* ══════════════ BEAT ══════════════ */
+/**
+ * Set up an AudioContext whose output is a MediaStream we can hand to
+ * MediaRecorder. Without this the beat only reached the speakers and the
+ * exported file came out silent.
+ */
+function ensureAudioCapture(){
+  if (S.audioCtx) return S.audioCtx;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  try{
+    S.audioCtx  = new AC();
+    S.audioDest = S.audioCtx.createMediaStreamDestination();
+  }catch(e){ return null; }
+  return S.audioCtx;
+}
+
 function startBeat(){
   try{
-    if (!S.audioCtx) S.audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-    if (S.audioCtx.state === 'suspended') S.audioCtx.resume();
+    const ctx = ensureAudioCapture();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+
+    // Everything is wired to the capture node so it lands in the file.
+    // Nothing is sent to the speakers: monitoring would bleed an echo into
+    // the recording on machines with a live mic.
+    const sink = S.audioDest || ctx.destination;
+
     const opt = $('#vs-track').selectedOptions[0] || {};
     const bpm = parseInt(opt.dataset.bpm||100,10);
     const wave = opt.dataset.wave||'sine';
@@ -1334,13 +1490,13 @@ function startBeat(){
         const o = S.audioCtx.createOscillator(), g = S.audioCtx.createGain();
         o.type='sine'; o.frequency.setValueAtTime(130, now); o.frequency.exponentialRampToValueAtTime(35, now+0.12);
         g.gain.setValueAtTime(vol*1.6, now); g.gain.exponentialRampToValueAtTime(0.0001, now+0.14);
-        o.connect(g); g.connect(S.audioCtx.destination); o.start(now); o.stop(now+0.15);
+        o.connect(g); g.connect(sink); o.start(now); o.stop(now+0.15);
       }
       const h = S.audioCtx.createOscillator(), hg = S.audioCtx.createGain();
       h.type = wave==='sine' ? 'triangle' : 'square';
       h.frequency.setValueAtTime(3800, now);
       hg.gain.setValueAtTime(vol*0.32, now); hg.gain.exponentialRampToValueAtTime(0.0001, now+0.04);
-      h.connect(hg); hg.connect(S.audioCtx.destination); h.start(now); h.stop(now+0.05);
+      h.connect(hg); hg.connect(sink); h.start(now); h.stop(now+0.05);
       step++;
     }, stepMs);
   }catch(e){}
@@ -1352,6 +1508,7 @@ function showCompleted(url, thumb, blob){
   S.status = 'completed';
   S.resultUrl = url || (blob ? URL.createObjectURL(blob) : '');
   S.resultThumb = thumb || '';
+  S.resultMime = blob && blob.type ? blob.type : (S.resultMime || '');
 
   $('#vs-empty').style.display = 'none';
   const video = $('#vs-video');
@@ -1364,16 +1521,21 @@ function showCompleted(url, thumb, blob){
   if (S.resultThumb) video.poster = S.resultThumb;
   video.play().catch(()=>{});
 
+  // A blob: URL has no usable file extension — take it from the recorded
+  // MIME type instead so the download is always named render.mp4/webm.
+  const recordedExt = (String(S.resultMime||'').indexOf('mp4') > -1) ? 'mp4' : 'webm';
+
   $('#btn-download').style.display = '';
   $('#btn-download').onclick = () => {
     const a = document.createElement('a');
-    a.href = S.resultUrl; a.download = 'adsbooster-video.' + (S.resultUrl.split('.').pop()||'mp4');
+    a.href = S.resultUrl;
+    a.download = 'adsbooster-video.' + recordedExt;
     document.body.appendChild(a); a.click(); a.remove();
   };
   $('#btn-publish').style.display = '';
   $('#btn-runad').style.display = '';
 
-  const total = Math.max(1, S.duration);
+  const total = Math.max(1, S.recordedSeconds || S.duration);
   $('#vs-total').textContent = fmtTime(total);
 }
 

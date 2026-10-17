@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/listings.php');
+    redirect(url('admin/listings'));
 }
 
 $statusFilter = $_GET['status'] ?? 'all';
@@ -92,10 +92,10 @@ require_once __DIR__ . '/sidebar.php';
         <p class="text-muted mb-0 font-size-13">Moderate verified businesses, places, products, and partner listings.</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="<?= BASE_URL ?>/marketplace.php" target="_blank" class="btn-admin btn-admin-outline">
+        <a href="<?= url('marketplace') ?>" target="_blank" class="btn-admin btn-admin-outline">
             <i class="ph-bold ph-arrow-square-out"></i> View Directory
         </a>
-        <a href="<?= BASE_URL ?>/create-listing.php" target="_blank" class="btn-admin btn-admin-green">
+        <a href="<?= url('create-listing') ?>" target="_blank" class="btn-admin btn-admin-green">
             <i class="ph-bold ph-plus"></i> Post Listing
         </a>
     </div>
@@ -168,7 +168,7 @@ require_once __DIR__ . '/sidebar.php';
                                 <div class="d-flex align-items-center gap-2">
                                     <img src="<?= htmlspecialchars($imgSrc) ?>" class="rounded-2" style="width:44px; height:34px; object-fit:cover; flex-shrink:0;">
                                     <div style="min-width:0;">
-                                        <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $l['id'] ?>" target="_blank" class="text-white fw-medium font-size-13 text-truncate d-block" title="<?= htmlspecialchars($l['title']) ?>">
+                                        <a href="<?= url('listing-details', ['id' => $l['id']]) ?>" target="_blank" class="text-white fw-medium font-size-13 text-truncate d-block" title="<?= htmlspecialchars($l['title']) ?>">
                                             <?= htmlspecialchars($l['title']) ?>
                                         </a>
                                         <span class="text-muted font-size-11"><?= htmlspecialchars($l['category'] ?? 'General') ?></span>
@@ -212,7 +212,7 @@ require_once __DIR__ . '/sidebar.php';
                             </td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-1">
-                                    <a href="<?= BASE_URL ?>/listing-details.php?id=<?= $l['id'] ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Listing Live">
+                                    <a href="<?= url('listing-details', ['id' => $l['id']]) ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Listing Live">
                                         <i class="ph-bold ph-eye"></i>
                                     </a>
 

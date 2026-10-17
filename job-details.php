@@ -4,7 +4,7 @@ require_once __DIR__ . '/config/site_setting_and_config.php';
 
 $jobId = (int)($_GET['id'] ?? 0);
 if ($jobId <= 0) {
-    redirect(BASE_URL . '/jobs.php');
+    redirect(url('jobs'));
 }
 
 $job = db()->fetchOne(
@@ -17,7 +17,7 @@ $job = db()->fetchOne(
 
 if (!$job) {
     set_flash('error', 'Opportunity not found or expired.');
-    redirect(BASE_URL . '/jobs.php');
+    redirect(url('jobs'));
 }
 
 // Increment views
@@ -25,7 +25,7 @@ try {
     db()->query("UPDATE jobs SET views_count = views_count + 1 WHERE id = ?", [$jobId]);
 } catch (\Throwable $e) {}
 
-$pageTitle = e($job['title']) . ' — Advertising & Growth Jobs — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = e($job['title']) . ' â€” Advertising & Growth Jobs â€” ' . get_setting('site_name', 'Adsbooster.net');
 $pageDescription = e(mb_substr(strip_tags($job['description']), 0, 160));
 
 $currentUserId = is_logged_in() ? current_user_id() : 0;
@@ -49,9 +49,9 @@ require_once __DIR__ . '/includes/header.php';
 
         <!-- Breadcrumbs -->
         <div class="d-flex align-items-center gap-2 text-white-50 font-size-13 mb-4">
-            <a href="<?= BASE_URL ?>/index.php" class="text-white-50 text-decoration-none hover-text-main-600">Home</a>
+            <a href="<?= url('index') ?>" class="text-white-50 text-decoration-none hover-text-main-600">Home</a>
             <span>/</span>
-            <a href="<?= BASE_URL ?>/jobs.php" class="text-white-50 text-decoration-none hover-text-main-600">Jobs &amp; Bounties</a>
+            <a href="<?= url('jobs') ?>" class="text-white-50 text-decoration-none hover-text-main-600">Jobs &amp; Bounties</a>
             <span>/</span>
             <span class="text-main-600"><?= e($job['category']) ?></span>
         </div>
@@ -139,7 +139,7 @@ require_once __DIR__ . '/includes/header.php';
                     </span>
 
                     <div class="d-grid gap-2">
-                        <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= $job['user_id'] ?>&ref_job=<?= $job['id'] ?>" class="btn btn-main-600 text-dark fw-bold rounded-pill py-2 font-size-15 d-flex align-items-center justify-content-center gap-2">
+                        <a href="<?= url('p2p-chat') ?>?user=<?= $job['user_id'] ?>&ref_job=<?= $job['id'] ?>" class="btn btn-main-600 text-dark fw-bold rounded-pill py-2 font-size-15 d-flex align-items-center justify-content-center gap-2">
                             <i class="ph-bold ph-chat-circle-dots"></i> Message &amp; Apply Directly
                         </a>
                         <?php if (!empty($job['author_phone'])): ?>
@@ -167,7 +167,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                     </div>
                     <div class="d-grid">
-                        <a href="<?= BASE_URL ?>/profile.php?u=<?= urlencode($job['author_email']) ?>" class="btn btn-outline-light rounded-pill font-size-13 py-2">
+                        <a href="<?= url('profile') ?>?u=<?= urlencode($job['author_email']) ?>" class="btn btn-outline-light rounded-pill font-size-13 py-2">
                             <i class="ph ph-user me-1"></i> View Public Portfolio &amp; vCard
                         </a>
                     </div>
@@ -180,7 +180,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="d-flex flex-column gap-3">
                             <?php foreach ($relatedJobs as $rel): ?>
                                 <div class="p-2 border-bottom border-secondary border-opacity-10 pb-2">
-                                    <a href="<?= BASE_URL ?>/job-details.php?id=<?= $rel['id'] ?>" class="text-white text-decoration-none hover-text-main-600 fw-semibold font-size-13 d-block mb-1">
+                                    <a href="<?= url('job-details') ?>?id=<?= $rel['id'] ?>" class="text-white text-decoration-none hover-text-main-600 fw-semibold font-size-13 d-block mb-1">
                                         <?= e($rel['title']) ?>
                                     </a>
                                     <div class="d-flex align-items-center justify-content-between font-size-11 text-white-50">

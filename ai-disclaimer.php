@@ -67,8 +67,8 @@ require_once __DIR__ . '/includes/header.php';
             <div class="tw-mt-8 pt-4 border-top border-neutral-800 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <span class="text-white-50 tw-text-xs">Questions? <a href="mailto:legal@adsbooster.net" class="text-main-600">legal@adsbooster.net</a></span>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="<?= BASE_URL ?>/terms.php" class="text-main-600 fw-semibold tw-text-sm">Terms &rarr;</a>
-                    <a href="<?= BASE_URL ?>/dmca.php" class="text-main-600 fw-semibold tw-text-sm">DMCA &rarr;</a>
+                    <a href="<?= url('terms') ?>" class="text-main-600 fw-semibold tw-text-sm">Terms &rarr;</a>
+                    <a href="<?= url('dmca') ?>" class="text-main-600 fw-semibold tw-text-sm">DMCA &rarr;</a>
                 </div>
             </div>
         </div>

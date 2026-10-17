@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/agency-approvals.php');
+    redirect(url('admin/agency-approvals'));
 }
 
 // KPI Metrics

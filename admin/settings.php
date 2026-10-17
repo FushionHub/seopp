@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             set_flash('success', 'Platform settings and integration keys saved successfully.');
         }
     }
-    redirect(BASE_URL . '/admin/settings.php');
+    redirect(url('admin/settings'));
 }
 
 // Load current settings as associative map
@@ -109,7 +109,16 @@ require_once __DIR__ . '/sidebar.php';
                 <div class="mb-3">
                     <label class="form-label-admin">Google Gemini API Key</label>
                     <input type="password" name="settings[gemini_api_key]" class="form-control-admin w-100" value="<?= sval($currentSettings, 'gemini_api_key') ?>" placeholder="AIzaSy...">
-                    <small class="text-muted" style="font-size: 11px;">Powers UGC copy generator, AI video scripts, and Chat Consultant.</small>
+                    <small class="text-muted" style="font-size: 11px;">Powers Nano Banana 2 image generation (UGC Studio), Veo video rendering, and scene stills. Get a key at aistudio.google.com/apikey.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label-admin">Default Video Provider</label>
+                    <select name="settings[ai_video_provider]" class="form-select-admin w-100">
+                        <option value="" <?= sval($currentSettings, 'ai_video_provider') === '' ? 'selected' : '' ?>>Auto (Veo when keyed, else Storyboard Studio)</option>
+                        <option value="veo" <?= sval($currentSettings, 'ai_video_provider') === 'veo' ? 'selected' : '' ?>>Google Veo (requires Gemini key)</option>
+                        <option value="storyboard" <?= sval($currentSettings, 'ai_video_provider') === 'storyboard' ? 'selected' : '' ?>>Storyboard Studio only (free, browser-rendered)</option>
+                    </select>
+                    <small class="text-muted" style="font-size: 11px;">Cloud renders automatically fall back to Storyboard Studio if the provider rejects a request.</small>
                 </div>
                 <div class="mb-3">
                     <label class="form-label-admin">Groq Fast LLM API Key</label>
@@ -186,6 +195,34 @@ require_once __DIR__ . '/sidebar.php';
                     <div class="col-md-6">
                         <label class="form-label-admin">Refill Reward Credits</label>
                         <input type="number" name="settings[auto_refill_reward_credits]" class="form-control-admin w-100" value="<?= sval($currentSettings, 'auto_refill_reward_credits', '10') ?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Site Access & Maintenance -->
+        <div class="col-12">
+            <div class="admin-card">
+                <h6 class="text-white fw-bold mb-3"><i class="ph-bold ph-power text-danger"></i> Site Access & Maintenance</h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label-admin">Maintenance Mode</label>
+                        <select name="settings[maintenance_mode]" class="form-select-admin w-100">
+                            <option value="0" <?= sval($currentSettings, 'maintenance_mode', '0') === '0' ? 'selected' : '' ?>>Off — site fully public</option>
+                            <option value="1" <?= sval($currentSettings, 'maintenance_mode') === '1' ? 'selected' : '' ?>>On — public sees a maintenance page (admins still have access)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label-admin">Open Registration</label>
+                        <select name="settings[registration_open]" class="form-select-admin w-100">
+                            <option value="1" <?= sval($currentSettings, 'registration_open', '1') === '1' ? 'selected' : '' ?>>Open — anyone can create an account</option>
+                            <option value="0" <?= sval($currentSettings, 'registration_open') === '0' ? 'selected' : '' ?>>Closed — registration page shows a waiting notice</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label-admin">New User AI Credit Grant</label>
+                        <input type="number" name="settings[signup_ai_credits]" class="form-control-admin w-100" value="<?= sval($currentSettings, 'signup_ai_credits', '100') ?>" min="0">
+                        <small class="text-muted" style="font-size: 11px;">AI credits granted automatically when a new user registers.</small>
                     </div>
                 </div>
             </div>

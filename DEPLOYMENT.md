@@ -301,16 +301,15 @@ expose_php = Off
 
 ## 4. Third-Party Services & API Keys
 
-### Groq Cloud, Gemini & Flux Image Engines
-Adsbooster utilizes Groq's high-speed LPUs for ultra-fast ad copy generation, campaign audits, P2P AI chat, and resume parsing. Flux.1-Schnell and Pollinations AI power instant photorealistic UGC image synthesis.
-1. Obtain an API key from [Groq Console](https://console.groq.com/keys).
+### Groq Cloud, Gemini (Nano Banana 2) & Veo Video Engines
+Adsbooster utilizes Groq's high-speed LPUs for ultra-fast ad copy generation, campaign audits, P2P AI chat, and resume parsing. Google Gemini image models power photorealistic UGC image synthesis and Google Veo powers text-to-video rendering.
+1. Obtain a Groq API key from [Groq Console](https://console.groq.com/keys) and a Google AI Studio key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
 2. The system automatically handles model failovers in priority order:
-   - `openai/gpt-oss-120b` (Default High Performance)
-   - `qwen/qwen3.8-27b`
-   - `openai/gpt-oss-20b`
-   - `llama-3.3-70b-versatile`
-3. Enter keys in `config/apikeys.php` under `'groq_api_key'` and `'gemini_api_key'`.
-4. If external AI endpoints suffer transient timeouts, automated fallback heuristics prevent session drops.
+   - Text (Groq): `openai/gpt-oss-120b` (Default High Performance), `qwen/qwen3.8-27b`, `openai/gpt-oss-20b`, `llama-3.3-70b-versatile`
+   - Images (Gemini): `gemini-3-pro-image-preview` (Nano Banana 2) → `gemini-2.5-flash-image` (Nano Banana) → `gemini-2.0-flash-preview-image-generation`
+   - Video (Gemini): `veo-3.1-generate-preview` → `veo-3.0-generate-preview` → `veo-3.0-generate-001`, then automatic fallback to the built-in Storyboard Studio renderer
+3. Enter keys in `config/apikeys.php` under `'groq_api_key'` and `'gemini_api_key'`, or set the `GEMINI_API_KEY` environment variable on the server.
+4. If external AI endpoints suffer transient timeouts, automated fallback heuristics prevent session drops (curated first-party stills for images, Storyboard Studio for video).
 
 ### Social Media & Ad Network OAuth Connections
 Adsbooster supports 100% real-time OAuth 2.0 connectivity and live multi-network dispatch. In your third-party developer accounts, configure the following Authorized Redirect URIs pointing to your production domain:

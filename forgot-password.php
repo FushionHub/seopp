@@ -4,7 +4,7 @@ require_once __DIR__ . '/config/site_setting_and_config.php';
 require_once __DIR__ . '/modules/email_service.php';
 
 if (is_logged_in()) {
-    redirect(BASE_URL . '/dashboard.php');
+    redirect(url('dashboard'));
 }
 
 $errors = [];
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     unset($_SESSION['reset_step'], $_SESSION['reset_user_id'], $_SESSION['reset_code'], $_SESSION['reset_expires'], $_SESSION['reset_email']);
 
                     set_flash('success', 'Your password has been successfully reset! You can now log in.');
-                    redirect(BASE_URL . '/login.php');
+                    redirect(url('login'));
                 } elseif (empty($errors)) {
                     $errors[] = 'Invalid verification code. Please check and try again.';
                 }
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Reset Password — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Reset Password â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -159,7 +159,7 @@ require_once __DIR__ . '/includes/header.php';
 
         <div class="card bg-white-06 border border-neutral-800 tw-rounded-xl tw-p-6">
             <?php if ($step === 1): ?>
-                <form method="POST" action="<?= BASE_URL ?>/forgot-password.php">
+                <form method="POST" action="<?= url('forgot-password') ?>">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="request_code">
 
@@ -179,13 +179,13 @@ require_once __DIR__ . '/includes/header.php';
                     </button>
                 </form>
             <?php else: ?>
-                <form method="POST" action="<?= BASE_URL ?>/forgot-password.php">
+                <form method="POST" action="<?= url('forgot-password') ?>">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="reset_password">
 
                     <div class="d-flex justify-content-between align-items-center tw-mb-4 pb-2 border-bottom border-neutral-800">
                         <span class="text-white-50 tw-text-xs">Resetting for: <strong class="text-white"><?= e($resetEmail) ?></strong></span>
-                        <a href="<?= BASE_URL ?>/forgot-password.php?action=restart" onclick="<?php unset($_SESSION['reset_step']); ?>" class="text-main-600 tw-text-xs text-decoration-underline">Change Email</a>
+                        <a href="<?= url('forgot-password') ?>?action=restart" onclick="<?php unset($_SESSION['reset_step']); ?>" class="text-main-600 tw-text-xs text-decoration-underline">Change Email</a>
                     </div>
 
                     <div class="tw-mb-4">
@@ -217,7 +217,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <div class="text-center tw-mt-6">
-            <a href="<?= BASE_URL ?>/login.php" class="text-white-50 hover-text-main-600 tw-text-sm d-inline-flex align-items-center tw-gap-1">
+            <a href="<?= url('login') ?>" class="text-white-50 hover-text-main-600 tw-text-sm d-inline-flex align-items-center tw-gap-1">
                 <i class="ph ph-arrow-left"></i> Back to Login
             </a>
         </div>

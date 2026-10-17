@@ -50,7 +50,7 @@ require_once __DIR__ . '/includes/app_header.php';
                 <p class="page-subtitle">Choose which AI powers your content generation. Configure API keys and set your default provider.</p>
             </div>
             <div>
-                <a href="<?= BASE_URL ?>/post-creator.php" class="btn-outline-dark btn-sm">
+                <a href="<?= url('post-creator') ?>" class="btn-outline-dark btn-sm">
                     <i class="ph ph-note-pencil"></i> Post Creator
                 </a>
             </div>

@@ -247,7 +247,7 @@ $platformBadges = [
                                 <i class="ph ph-stack"></i> <?= $test['variant_count'] ?> Total Variants
                             </div>
                             <div style="display:flex;gap:8px;">
-                                <a href="<?= BASE_URL ?>/create-ad.php?campaign_id=<?= $test['id'] ?>" class="btn-outline-dark btn-sm">
+                                <a href="<?= url('create-ad') ?>?campaign_id=<?= $test['id'] ?>" class="btn-outline-dark btn-sm">
                                     <i class="ph ph-gear"></i> Campaign
                                 </a>
                                 <?php if (!$test['has_winner']): ?>

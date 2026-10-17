@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } catch (\Throwable $e) {}
 
                 session_destroy();
-                redirect(BASE_URL . '/login.php?deleted=1');
+                redirect(url('login') . '?deleted=1');
             }
         }
     }
@@ -126,7 +126,7 @@ $latestConsent = !empty($consentHistory) ? $consentHistory[0] : null;
 $hasAnalytics = $latestConsent ? (bool)$latestConsent['analytics'] : true;
 $hasMarketing = $latestConsent ? (bool)$latestConsent['marketing'] : true;
 
-$pageTitle = 'Privacy Center & Data Rights — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Privacy Center & Data Rights â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/app_header.php';
 ?>
 
@@ -137,7 +137,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="page-subtitle">Manage your personal data exports, cookie tracking preferences, and GDPR / CCPA privacy rights.</p>
         </div>
         <div>
-            <a href="<?= BASE_URL ?>/profile.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('profile') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-user"></i> My Profile
             </a>
         </div>

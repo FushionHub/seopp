@@ -12,13 +12,17 @@ declare(strict_types=1);
  *   3. `fal`       — fal.ai queue (FAL_KEY)
  *   4. `runway`    — Runway Gen-3 Alpha Turbo (RUNWAY_API_KEY)
  *   5. `luma`      — Luma Dream Machine (LUMA_API_KEY)
- *   6. `storyboard`— Built-in keyless renderer. Generates photoreal scene
- *                    stills server-side, then the browser composites them
- *                    (Ken Burns + captions + voiceover) into a real MP4/WebM
- *                    via canvas.captureStream() + MediaRecorder.
+ *   6. `storyboard`— Built-in renderer. Photoreal scene stills come from
+ *                    Google Gemini image models (Nano Banana 2) when a key
+ *                    is configured, curated first-party stills otherwise;
+ *                    the browser composites them (Ken Burns + captions +
+ *                    voiceover) into a real MP4/WebM via canvas.captureStream
+ *                    + MediaRecorder.
  *
  * Credits are only consumed once a real artifact exists.
  */
+
+require_once __DIR__ . '/gemini_engine.php';
 
 class AIVideoEngine
 {
@@ -177,11 +181,11 @@ class AIVideoEngine
     /**
      * Resolve the active provider.
      *
-     * The built-in Storyboard Studio is the default: it needs no API key and
-     * always produces a real video. A cloud renderer (Veo, Replicate, fal.ai,
-     * Runway, Luma) is only used when explicitly requested via `?provider=`
-     * or the `ai_video_provider` site setting — and even then the engine falls
-     * back to Storyboard if the submission is rejected (revoked key, quota…).
+     * Priority: explicit `?provider=` → `ai_video_provider` site setting →
+     * Google Veo when a Gemini key is configured (full Google pipeline) →
+     * the built-in Storyboard Studio (no key required, always produces a
+     * real video). Cloud submissions that fail (revoked key, quota…) still
+     * fall back to Storyboard automatically inside createVideoCreative().
      */
     public static function resolveProvider(?string $requested = null): string
     {
@@ -200,6 +204,11 @@ class AIVideoEngine
                     return $pref;
                 }
             } catch (\Throwable $e) { /* DB unavailable */ }
+        }
+
+        // Default to the full Google pipeline whenever the key is present.
+        if (!empty($providers['veo']['configured'])) {
+            return 'veo';
         }
 
         return 'storyboard';
@@ -454,98 +463,33 @@ class AIVideoEngine
     }
 
     // ───────────────────────────────────────────────────────────
-    //  Scene still generation (keyless, server-side)
+    //  Scene stills: Gemini first, curated local stills as fallback
     // ───────────────────────────────────────────────────────────
 
     /**
-     * Build a Pollinations image URL for a scene still.
+     * Curated same-origin stills used when no Gemini key/quota is available.
+     * Always returns a real, web-accessible image path so the storyboard
+     * browser compositor always has first-party pixels to work with.
      */
-    public static function sceneImageUrl(string $prompt, int $w, int $h, int $seed, string $model = 'flux'): string
+    public static function scenePlaceholderStill(int $seed): string
     {
-        $w = max(256, min(1600, $w));
-        $h = max(256, min(1600, $h));
-        return 'https://image.pollinations.ai/prompt/' . rawurlencode($prompt)
-            . '?' . http_build_query([
-                'width'  => $w,
-                'height' => $h,
-                'seed'   => $seed,
-                'nologo' => 'true',
-                'model'  => $model,
-                'safe'   => 'false',
-            ]);
-    }
-
-    /**
-     * Download a scene still to disk so it is served same-origin (required for
-     * an untainted canvas). Returns a web-relative path, or null on failure.
-     *
-     * Pollinations rate-limits bursts, so a couple of quick retries with a
-     * short backoff are applied before giving up. The browser will fall back
-     * to fetching the public URL directly when this returns null.
-     */
-    public static function fetchSceneStill(string $url, string $filename): ?string
-    {
-        // The image CDN returns HTTP 402 when requests arrive in a tight
-        // burst; it recovers within a few seconds. Back off generously rather
-        // than burning the request and leaving a blank scene.
-        for ($attempt = 1; $attempt <= 4; $attempt++) {
-            $result = self::fetchSceneOnce($url, $filename);
-            if ($result !== null) {
-                return $result;
-            }
-            if ($attempt < 4) {
-                sleep([0, 5, 12, 25][$attempt] ?? 25);
+        $pool = [
+            'assets/images/thumbs/about-five-img1.png',
+            'assets/images/thumbs/team-details-img2.png',
+            'assets/images/thumbs/blog-details-img2.png',
+            'assets/images/thumbs/team-details-img3.png',
+            'assets/images/thumbs/blog-details-img1.png',
+        ];
+        $pick = $pool[abs($seed) % count($pool)];
+        // Skip missing files (partial uploads) — fall back to the first present one.
+        if (!is_readable(ROOT_PATH . '/' . $pick)) {
+            foreach ($pool as $candidate) {
+                if (is_readable(ROOT_PATH . '/' . $candidate)) {
+                    return $candidate;
+                }
             }
         }
-        return null;
-    }
-
-    private static function fetchSceneOnce(string $url, string $filename): ?string
-    {
-        $dir = ROOT_PATH . '/' . self::SCENE_DIR;
-        if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            return null;
-        }
-
-        $sslVerify = self::caBundleAvailable();
-        $c = curl_init($url);
-        curl_setopt_array($c, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT        => 90,
-            CURLOPT_CONNECTTIMEOUT => 20,
-            CURLOPT_USERAGENT      => 'AdsboosterVideoEngine/2.0',
-            CURLOPT_SSL_VERIFYPEER => $sslVerify,
-            CURLOPT_SSL_VERIFYHOST => $sslVerify ? 2 : 0,
-        ]);
-        if ($sslVerify) {
-            curl_setopt($c, CURLOPT_CAINFO, self::caBundlePath());
-        }
-        $binary = curl_exec($c);
-        $code   = (int)curl_getinfo($c, CURLINFO_HTTP_CODE);
-        $ctype  = (string)curl_getinfo($c, CURLINFO_CONTENT_TYPE);
-        curl_close($c);
-
-        if ($binary === false || $code < 200 || $code >= 300 || strlen($binary) < 512) {
-            return null;
-        }
-
-        $isJpeg = substr($binary, 0, 2) === "\xFF\xD8";
-        $isPng  = substr($binary, 0, 4) === "\x89PNG";
-        $isWebp = substr($binary, 0, 4) === 'RIFF';
-        if (!str_contains($ctype, 'image') && !$isJpeg && !$isPng && !$isWebp) {
-            return null;
-        }
-        if (!$isJpeg && !$isPng && !$isWebp) {
-            return null;
-        }
-
-        $path = $dir . '/' . $filename;
-        if (@file_put_contents($path, $binary) === false) {
-            return null;
-        }
-        @chmod($path, 0644);
-        return self::SCENE_DIR . '/' . $filename;
+        return $pick;
     }
 
     /** Absolute path to a usable CA bundle, or '' when verification is impossible. */
@@ -747,22 +691,41 @@ class AIVideoEngine
         $seed   = random_int(1, 999999);
         $scenes = $plan['scenes'];
 
+        require_once __DIR__ . '/gemini_engine.php';
+
         foreach ($scenes as $i => &$sc) {
-            $url = self::sceneImageUrl($sc['visual_prompt'], $res['w'], $res['h'], $seed + ($i * 7));
-            $sc['image_url']  = $url;   // browser-side fallback
             $sc['local_path'] = null;
 
-            // Best-effort server download so the canvas stays untainted.
-            // Requests are staggered several seconds apart: the image CDN
-            // answers HTTP 402 to tight bursts, which is what made scenes
-            // 2 and 3 of 3 intermittently come back empty.
-            if ($i > 0) {
-                sleep(4);
+            // 1st choice: Google Gemini image models (Nano Banana 2 first)
+            // generate the scene still server-side and store it same-origin,
+            // so the canvas stays untainted and there are no CDN rate limits.
+            $generated = null;
+            if (GeminiEngine::hasKey()) {
+                try {
+                    $generated = GeminiEngine::generateImage(
+                        $sc['visual_prompt'],
+                        $res['w'],
+                        $res['h'],
+                        'scene_' . $seed . '_' . ($i + 1)
+                    );
+                } catch (\Throwable $e) {
+                    error_log('Gemini scene still failed: ' . $e->getMessage());
+                }
             }
-            $local = self::fetchSceneStill($url, 'scene_' . $seed . '_' . ($i + 1) . '.jpg');
-            if ($local !== null) {
-                $sc['local_path'] = $local;
-                $sc['local_url']  = BASE_URL . '/' . $local;
+
+            if ($generated !== null) {
+                $sc['local_path']  = $generated['path'];
+                $sc['local_url']   = $generated['url'];
+                $sc['image_url']   = $generated['url'];
+                $sc['image_source'] = $generated['model'];
+            } else {
+                // No Gemini key / quota exhausted: curated same-origin stills
+                // keep the storyboard compositing a real video regardless.
+                $placeholder = self::scenePlaceholderStill($seed + $i);
+                $sc['local_path']  = $placeholder;
+                $sc['local_url']   = BASE_URL . '/' . $placeholder;
+                $sc['image_url']   = $sc['local_url'];
+                $sc['image_source'] = 'local-placeholder';
             }
         }
         unset($sc);
@@ -771,13 +734,8 @@ class AIVideoEngine
         $metadata['provider_label'] = $providerLabel;
         $metadata['scenes']         = $scenes;
         $metadata['seed']           = $seed;
-
-        $downloaded = count(array_filter($scenes, fn($s) => !empty($s['local_path'])));
-        if ($downloaded === 0 && count($scenes) > 0) {
-            // Nothing was downloadable server-side; the browser will fetch the
-            // Pollinations URLs directly (they send `Access-Control-Allow-Origin: *`).
-            $metadata['scene_source'] = 'client';
-        }
+        $metadata['scene_source']   = count(array_filter($scenes, fn($s) => ($s['image_source'] ?? '') !== 'local-placeholder')) > 0
+            ? 'gemini' : 'local-placeholder';
 
         if (!empty($scenes[0]['local_path'])) {
             $thumb = $scenes[0]['local_path'];
@@ -1031,18 +989,39 @@ class AIVideoEngine
                         'durationSeconds'=> min(8, max(4, (int)ceil($dur / 4))),
                     ],
                 ]);
-                $resp = self::http('POST', $provider['endpoint'] . '?key=' . urlencode($key), $body, [
-                    'Content-Type: application/json',
-                ]);
-                if ($resp['code'] < 200 || $resp['code'] >= 300) {
-                    return ['error' => self::providerError('Google Veo', $resp)];
+                // Walk the Veo model list newest-first; stop at the first
+                // endpoint that accepts the request (404 = model not yet
+                // enabled for this key/project → try the next one).
+                $lastError = '';
+                $taskName  = '';
+                foreach (GeminiEngine::VIDEO_MODELS as $veoModel) {
+                    $endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' . $veoModel . ':predictLongRunning';
+                    $resp = self::http('POST', $endpoint . '?key=' . urlencode($key), $body, [
+                        'Content-Type: application/json',
+                    ]);
+                    if ($resp['code'] === 404) {
+                        $lastError = "{$veoModel} not available for this API key";
+                        continue;
+                    }
+                    if ($resp['code'] < 200 || $resp['code'] >= 300) {
+                        $lastError = self::providerError('Google Veo (' . $veoModel . ')', $resp);
+                        // Auth/param errors apply to every model — do not retry them.
+                        if ($resp['code'] !== 404 && ($resp['code'] < 500)) {
+                            break;
+                        }
+                        continue;
+                    }
+                    $json = json_decode($resp['body'], true) ?: [];
+                    $taskName = (string)($json['name'] ?? '');
+                    if ($taskName !== '') {
+                        break;
+                    }
+                    $lastError = 'Google Veo did not return an operation name.';
                 }
-                $json = json_decode($resp['body'], true) ?: [];
-                $name = $json['name'] ?? '';
-                if ($name === '') {
-                    return ['error' => 'Google Veo did not return an operation name.'];
+                if ($taskName === '') {
+                    return ['error' => $lastError !== '' ? $lastError : 'Google Veo did not return an operation name.'];
                 }
-                return ['task_id' => $name, 'task_url' => ''];
+                return ['task_id' => $taskName, 'task_url' => ''];
 
             case 'replicate':
                 $token = self::key('REPLICATE_API_TOKEN', 'replicate_api_token');

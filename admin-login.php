@@ -12,7 +12,7 @@ if (!empty($_SESSION['flash_success'])) {
 }
 
 if (!empty($_SESSION['admin_id'])) {
-    redirect(BASE_URL . '/admin/index.php');
+    redirect(url('admin/index'));
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -41,11 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 if (!empty($admin['totp_enabled']) || !empty($admin['two_factor_enabled'])) {
                     $_SESSION['admin_pending_totp'] = (int)$admin['id'];
-                    redirect(BASE_URL . '/admin/totp-verify.php');
+                    redirect(url('admin/totp-verify'));
                 }
 
                 auth_admin_login($admin);
-                redirect(BASE_URL . '/admin/index.php');
+                redirect(url('admin/index'));
             }
         }
     }
@@ -56,7 +56,7 @@ if (!empty($_SESSION['flash_error'])) {
     unset($_SESSION['flash_error']);
 }
 
-$pageTitle = 'Admin Login — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Admin Login â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -88,7 +88,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/admin-login.php" class="auth-form">
+        <form method="POST" action="<?= url('admin-login') ?>" class="auth-form">
             <?= csrf_field() ?>
 
             <div class="tw-mb-5">
@@ -116,7 +116,7 @@ require_once __DIR__ . '/includes/header.php';
         </form>
 
         <p class="text-center text-white-50 tw-mt-6 tw-text-sm">
-            <a href="<?= BASE_URL ?>/login.php" class="text-white-50 hover-text-main-600">
+            <a href="<?= url('login') ?>" class="text-white-50 hover-text-main-600">
                 <i class="ph ph-arrow-left tw-me-1"></i> Back to user login
             </a>
         </p>

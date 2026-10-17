@@ -30,14 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             set_flash('success', "Connected social account #{$accId} unlinked.");
         }
     }
-    redirect(BASE_URL . '/admin/social-media.php');
+    redirect(url('admin/social-media'));
 }
 
 // KPI Metrics
 $totalAccounts  = db()->count('connected_accounts');
 $queuedPosts    = db()->count('scheduled_posts', "status='scheduled'");
 $publishedPosts = db()->count('scheduled_posts', "status='published'");
-$inboxMessages  = db()->count('social_inbox_messages');
 
 $tab = $_GET['tab'] ?? 'posts';
 $filterStatus = $_GET['status'] ?? '';
@@ -72,14 +71,6 @@ $accounts = db()->fetchAll(
      ORDER BY a.created_at DESC LIMIT 50"
 );
 
-// Inbox messages
-$messages = db()->fetchAll(
-    "SELECT m.*, u.full_name 
-     FROM social_inbox_messages m
-     LEFT JOIN users u ON u.id = m.user_id
-     ORDER BY m.received_at DESC LIMIT 40"
-);
-
 require_once __DIR__ . '/sidebar.php';
 ?>
 
@@ -111,15 +102,6 @@ require_once __DIR__ . '/sidebar.php';
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="admin-card d-flex align-items-center gap-3">
-            <div class="card-icon purple"><i class="ph-bold ph-chats-circle"></i></div>
-            <div>
-                <div class="card-title">Inbox Messages</div>
-                <div class="card-value"><?= number_format($inboxMessages) ?></div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
@@ -129,9 +111,6 @@ require_once __DIR__ . '/sidebar.php';
         </a>
         <a href="?tab=accounts" class="btn-admin <?= $tab === 'accounts' ? 'btn-admin-green' : 'btn-admin-outline' ?>">
             <i class="ph-bold ph-users"></i> Linked Channels (<?= $totalAccounts ?>)
-        </a>
-        <a href="?tab=inbox" class="btn-admin <?= $tab === 'inbox' ? 'btn-admin-green' : 'btn-admin-outline' ?>">
-            <i class="ph-bold ph-chat-teardrop-dots"></i> Social Inbox (<?= $inboxMessages ?>)
         </a>
     </div>
 </div>
@@ -281,73 +260,6 @@ require_once __DIR__ . '/sidebar.php';
                                             <i class="ph-bold ph-plugs-connected"></i> Unlink
                                         </button>
                                     </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
-    </div>
-
-<?php else: ?>
-    <div class="admin-card">
-        <h6 class="text-white fw-bold mb-3">Social Inbox Messages & Inquiries</h6>
-        <?php if (empty($messages)): ?>
-            <p class="text-muted py-4 text-center">No inbox messages recorded.</p>
-        <?php else: ?>
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Platform</th>
-                            <th>Sender</th>
-                            <th>Message</th>
-                            <th>Sentiment</th>
-                            <th>AI Auto-Replied</th>
-                            <th>Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($messages as $m): ?>
-                            <tr>
-                                <td>
-                                    <span class="badge bg-dark border border-secondary text-info text-capitalize">
-                                        <?= htmlspecialchars($m['platform']) ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="text-white fw-semibold small"><?= htmlspecialchars($m['sender_name'] ?? 'User') ?></div>
-                                </td>
-                                <td style="max-width: 320px;">
-                                    <div class="small text-white text-truncate" title="<?= htmlspecialchars($m['message_text'] ?? '') ?>">
-                                        <?= htmlspecialchars($m['message_text'] ?? '') ?>
-                                    </div>
-                                    <?php if (!empty($m['auto_reply_text'])): ?>
-                                        <div class="small text-success mt-1 text-truncate" title="<?= htmlspecialchars($m['auto_reply_text']) ?>">
-                                            <i class="ph-bold ph-robot"></i> <?= htmlspecialchars($m['auto_reply_text']) ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    $sentMap = [
-                                        'high_intent_buy' => 'badge-status active',
-                                        'positive' => 'badge-status success',
-                                        'neutral' => 'badge-status pending',
-                                        'negative' => 'badge-status rejected'
-                                    ];
-                                    $sCls = $sentMap[$m['sentiment']] ?? 'badge-status pending';
-                                    ?>
-                                    <span class="<?= $sCls ?>"><?= ucwords(str_replace('_', ' ', $m['sentiment'] ?? 'neutral')) ?></span>
-                                </td>
-                                <td>
-                                    <span class="badge-status <?= $m['ai_auto_replied'] ? 'active' : 'inactive' ?>">
-                                        <?= $m['ai_auto_replied'] ? 'Yes' : 'No' ?>
-                                    </span>
-                                </td>
-                                <td class="text-muted small">
-                                    <?= date('M j, H:i', strtotime($m['received_at'])) ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

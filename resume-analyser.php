@@ -136,376 +136,326 @@ $_appPage = 'resume-analyser';
 require_once __DIR__ . '/includes/app_header.php';
 ?>
 
-<div class="container-fluid px-0">
+<div class="content-body">
+<div class="container-fluid py-4">
 
-    <!-- Header Banner -->
-    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <!-- Page head -->
+    <div class="fl-stagehead">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="badge rounded-pill px-3 py-1 font-size-11 fw-bold" style="background: rgba(200,255,0,0.12); color: var(--accent); border: 1px solid rgba(200,255,0,0.3);">
-                    <i class="ph-bold ph-magic-wand me-1"></i> Groq LPU &amp; ATS Algorithm Auditor
-                </span>
-                <span class="text-white-50 font-size-12">Recruiter Screening Optimizer</span>
+            <div class="pill-row mb-2">
+                <span class="pill on"><i class="ph ph-magic-wand"></i> Groq LPU &amp; ATS algorithm auditor</span>
+                <span class="pill"><span class="dot-live"></span> Recruiter screening optimizer</span>
             </div>
-            <h1 class="page-title text-white fw-bold mb-1">
-                <i class="ph-bold ph-file-text text-accent me-2"></i> AI Resume Analyser &amp; ATS Optimizer
-            </h1>
-            <p class="text-muted mb-0 font-size-14">
-                Audit your resume against modern Applicant Tracking Systems, discover high-impact keyword gaps, and sync your profile into your shareable Digital vCard &amp; Portfolio with one click.
-            </p>
+            <h1 class="h3 fw-bold mb-1">AI Resume Analyser &amp; ATS Optimizer</h1>
+            <p class="text-secondary mb-0" style="max-width:80ch">Audit your resume against modern applicant tracking systems, close high-impact keyword gaps, then sync the polished profile into your public portfolio and digital vCard in one click.</p>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <a href="<?= BASE_URL ?>/portfolio-builder.php" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-13 d-flex align-items-center gap-2">
-                <i class="ph ph-paint-brush"></i> Portfolio Studio
-            </a>
-            <a href="<?= BASE_URL ?>/vcard.php" target="_blank" class="btn btn-accent rounded-pill px-4 py-2 font-size-13 text-dark fw-bold d-flex align-items-center gap-2">
-                <i class="ph-bold ph-address-book"></i> View My vCard
-            </a>
+        <div class="pill-row">
+            <a href="<?= url('portfolio-builder') ?>" class="fl-act"><i class="ph ph-paint-brush"></i> Portfolio studio</a>
+            <a href="<?= url('vcard') ?>" target="_blank" rel="noopener" class="fl-act pri"><i class="ph ph-address-book"></i> View my vCard</a>
         </div>
     </div>
 
-    <!-- Alert Messages -->
     <?php if (!empty($successMessage)): ?>
-        <div class="alert alert-success bg-success bg-opacity-10 border border-success border-opacity-25 text-success rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div class="d-flex align-items-center gap-2">
-                <i class="ph-bold ph-check-circle font-size-20"></i>
-                <span><?= e($successMessage) ?></span>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <a href="<?= BASE_URL ?>/portfolio.php" target="_blank" class="btn btn-sm btn-success rounded-pill px-3 py-1 font-size-12 fw-bold text-dark">
-                    View Portfolio <i class="ph ph-arrow-square-out ms-1"></i>
-                </a>
-                <a href="<?= BASE_URL ?>/vcard.php" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 font-size-12">
-                    View Digital Card <i class="ph ph-address-book ms-1"></i>
-                </a>
+        <div class="fl-alert ok">
+            <i class="ph ph-check-circle"></i>
+            <div style="flex:1"><?= e($successMessage) ?></div>
+            <div class="pill-row" style="flex:0 0 auto">
+                <a href="<?= url('portfolio') ?>" target="_blank" rel="noopener" class="fl-act" style="padding:5px 12px;font-size:11.5px">View portfolio <i class="ph ph-arrow-square-out"></i></a>
+                <a href="<?= url('vcard') ?>" target="_blank" rel="noopener" class="fl-act" style="padding:5px 12px;font-size:11.5px">View digital card</a>
             </div>
         </div>
     <?php endif; ?>
 
     <?php if (!empty($errorMessage)): ?>
-        <div class="alert alert-danger bg-danger bg-opacity-10 border border-danger border-opacity-25 text-danger rounded-4 p-3 mb-4 d-flex align-items-center gap-2">
-            <i class="ph-bold ph-warning-circle font-size-20"></i>
-            <span><?= e($errorMessage) ?></span>
-        </div>
+        <div class="fl-alert bad"><i class="ph ph-warning-circle"></i><div><?= e($errorMessage) ?></div></div>
     <?php endif; ?>
 
-    <!-- Main Grid: Uploader & Live Results -->
-    <div class="row g-4">
+    <div class="fl-shell fl-2">
 
-        <!-- Left Column: Resume Input Form -->
-        <div class="col-lg-5">
-            <div class="card-dark rounded-4 p-4 h-100" style="background: #0d1524 !important; border: 1px solid rgba(255,255,255,0.08) !important;">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h3 class="h5 text-white fw-bold mb-0">Input Resume / CV</h3>
-                    <button type="button" onclick="loadSampleResume()" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1 font-size-11">
-                        <i class="ph ph-lightning me-1"></i> Load Sample
-                    </button>
-                </div>
-
-                <p class="font-size-13 text-white-50 mb-3" style="line-height: 1.5;">
-                    Upload a file or paste your resume text. Our AI extracts your career history, quantifies your commercial achievements, and calculates your ATS readiness score.
-                </p>
-
-                <form method="POST" enctype="multipart/form-data">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="analyze">
-
-                    <!-- File Dropzone -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold font-size-13 text-white">Upload Resume File (.PDF, .DOCX, .TXT)</label>
-                        <div class="p-4 rounded-4 text-center cursor-pointer position-relative" style="background:#080c14;border:2px dashed rgba(255,255,255,0.15);transition:border-color 0.2s;" id="dropzoneBox">
-                            <input type="file" name="resume_file" id="resumeFileInput" accept=".pdf,.docx,.txt" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" onchange="handleFileSelect(this)">
-                            <div style="width:48px;height:48px;border-radius:12px;background:rgba(200,255,0,0.12);display:inline-flex;align-items:center;justify-content:center;color:var(--accent);margin-bottom:10px;">
-                                <i class="ph-bold ph-cloud-arrow-up font-size-24"></i>
-                            </div>
-                            <div class="text-white fw-bold font-size-13 mb-1" id="fileLabelTitle">Choose file or drag &amp; drop</div>
-                            <div class="text-white-50 font-size-11" id="fileLabelSub">Supported formats: PDF, Microsoft Word (.docx), Plain Text</div>
-                        </div>
-                    </div>
-
-                    <!-- Direct Textarea -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold font-size-13 text-white">Or Paste Resume Content</label>
-                        <textarea name="resume_text" id="resumeTextArea" rows="7" class="form-control font-size-12 font-monospace" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:12px;line-height:1.6;" placeholder="Paste raw resume text, LinkedIn profile export, or experience summary here..."><?= e($rawInputText) ?></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-accent rounded-pill w-100 py-3 fw-bold text-dark font-size-14 d-flex align-items-center justify-content-center gap-2">
-                        <i class="ph-bold ph-cpu font-size-18"></i> Run Deep ATS Analysis
-                    </button>
-                </form>
+        <!-- ── Uploader ──────────────────────────────────────── -->
+        <div class="fl-panel">
+            <div class="fl-stagehead" style="margin-bottom:14px">
+                <div class="t"><i class="ph ph-file-text" style="color:var(--accent,#c8ff00)"></i> Input resume</div>
+                <button type="button" class="fl-act" onclick="loadSampleResume()"><i class="ph ph-lightning"></i> Load sample</button>
             </div>
+            <p class="fl-help" style="margin:0 0 14px">Upload a file or paste your resume text. The AI extracts your career history, quantifies commercial achievements and computes an ATS readiness score.</p>
+
+            <form method="POST" enctype="multipart/form-data">
+                <?= csrf_field() ?>
+                <input type="hidden" name="action" value="analyze">
+
+                <div class="fl-lbl"><span class="step">1</span> Upload a file</div>
+                <label for="resumeFileInput" id="dropzoneBox" style="display:block;border:2px dashed var(--border2,rgba(255,255,255,.14));border-radius:16px;padding:26px 16px;text-align:center;cursor:pointer;transition:border-color .18s,background .18s;background:var(--bg,#080c14)">
+                    <input type="file" name="resume_file" id="resumeFileInput" accept=".pdf,.docx,.txt" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden" onchange="handleFileSelect(this)">
+                    <div style="width:46px;height:46px;border-radius:13px;background:var(--accent-dim,rgba(200,255,0,.12));color:var(--accent,#c8ff00);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px">
+                        <i class="ph-bold ph-cloud-arrow-up" style="font-size:23px"></i>
+                    </div>
+                    <div style="color:var(--fg,#fff);font-weight:700;font-size:13px;margin-bottom:4px" id="fileLabelTitle">Choose a file or drag &amp; drop</div>
+                    <div style="color:var(--fg3,#64748b);font-size:11.5px" id="fileLabelSub">PDF, Microsoft Word (.docx) or plain text</div>
+                </label>
+
+                <div class="fl-lbl"><span class="step">2</span> Or paste the text</div>
+                <textarea name="resume_text" id="resumeTextArea" rows="9" class="fl-in" style="font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.65;min-height:190px" placeholder="Paste raw resume text, a LinkedIn export, or an experience summary…"><?= e($rawInputText) ?></textarea>
+
+                <button type="submit" class="fl-go">
+                    <i class="ph ph-cpu"></i> Run deep ATS analysis
+                </button>
+            </form>
         </div>
 
-        <!-- Right Column: ATS Report Dashboard -->
-        <div class="col-lg-7">
-            <?php if (!empty($analysisResult)): ?>
-                <?php
-                    $atsScore   = (int)($analysisResult['ats_score'] ?? 85);
-                    $subScores  = $analysisResult['sub_scores'] ?? [];
-                    $candidate  = $analysisResult['candidate'] ?? [];
-                    $skills     = $analysisResult['skills'] ?? [];
-                    $flatSkills = $analysisResult['flat_skills'] ?? [];
-                    $strengths  = $analysisResult['strengths'] ?? [];
-                    $missingKw  = $analysisResult['missing_keywords'] ?? [];
-                    $improvements = $analysisResult['actionable_improvements'] ?? [];
-                    $portfolioItems = $analysisResult['portfolio_items'] ?? [];
+        <!-- ── Report ────────────────────────────────────────── -->
+        <div style="display:grid;gap:16px;align-content:start">
+        <?php if (!empty($analysisResult)): ?>
+            <?php
+                $atsScore   = (int)($analysisResult['ats_score'] ?? 85);
+                $subScores  = $analysisResult['sub_scores'] ?? [];
+                $candidate  = $analysisResult['candidate'] ?? [];
+                $skills     = $analysisResult['skills'] ?? [];
+                $flatSkills = $analysisResult['flat_skills'] ?? [];
+                $strengths  = $analysisResult['strengths'] ?? [];
+                $missingKw  = $analysisResult['missing_keywords'] ?? [];
+                $improvements = $analysisResult['actionable_improvements'] ?? [];
+                $portfolioItems = $analysisResult['portfolio_items'] ?? [];
 
-                    $gaugeColor = $atsScore >= 85 ? '#c8ff00' : ($atsScore >= 75 ? '#38bdf8' : '#f59e0b');
-                    $strokeDash = (int)(2 * M_PI * 45); // Circumference for r=45 is ~282.7
-                    $strokeOffset = $strokeDash - ($strokeDash * $atsScore / 100);
-                ?>
+                $gaugeColor = $atsScore >= 85 ? '#c8ff00' : ($atsScore >= 75 ? '#38bdf8' : '#f59e0b');
+                $strokeDash = (int)(2 * M_PI * 45);
+                $strokeOffset = $strokeDash - ($strokeDash * $atsScore / 100);
+            ?>
 
-                <!-- Score Banner Card -->
-                <div class="card-dark rounded-4 p-4 mb-4 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="row align-items-center g-4">
-                        <!-- Circular SVG Gauge -->
-                        <div class="col-sm-auto text-center">
-                            <div class="position-relative d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
-                                <svg width="120" height="120" viewBox="0 0 100 100" class="transform -rotate-90">
-                                    <circle cx="50" cy="50" r="45" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="none" />
-                                    <circle cx="50" cy="50" r="45" stroke="<?= $gaugeColor ?>" stroke-width="8" stroke-dasharray="<?= $strokeDash ?>" stroke-dashoffset="<?= $strokeOffset ?>" stroke-linecap="round" fill="none" style="transition: stroke-dashoffset 1s ease;" />
-                                </svg>
-                                <div class="position-absolute text-center">
-                                    <span class="text-white fw-bold font-size-26 d-block" style="line-height:1;"><?= $atsScore ?></span>
-                                    <span class="font-size-11 text-white-50">/ 100</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Score Details -->
-                        <div class="col-sm">
-                            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                                <span class="badge rounded-pill px-3 py-1 font-size-12 fw-bold" style="background: <?= $gaugeColor ?>20; color: <?= $gaugeColor ?>; border: 1px solid <?= $gaugeColor ?>50;">
-                                    GRADE: <?= e($analysisResult['grade'] ?? 'A') ?>
-                                </span>
-                                <span class="text-white fw-bold font-size-14"><?= e($analysisResult['verdict'] ?? 'ATS Ready') ?></span>
-                            </div>
-                            <p class="text-white-75 font-size-13 mb-3">
-                                Candidate: <strong class="text-white"><?= e($candidate['display_name'] ?? 'Candidate') ?></strong> &bull;
-                                Target Role: <span style="color: var(--accent);"><?= e($candidate['job_title'] ?? 'Growth Marketer') ?></span>
-                            </p>
-
-                            <!-- Sub-Metrics Bars -->
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between font-size-11 text-white-50 mb-1">
-                                        <span>Readability</span>
-                                        <span class="text-white"><?= (int)($subScores['readability'] ?? 90) ?>%</span>
-                                    </div>
-                                    <div class="progress" style="height: 5px; background: rgba(255,255,255,0.1);">
-                                        <div class="progress-bar bg-success" style="width: <?= (int)($subScores['readability'] ?? 90) ?>%;"></div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between font-size-11 text-white-50 mb-1">
-                                        <span>Keyword Density</span>
-                                        <span class="text-white"><?= (int)($subScores['keyword_optimization'] ?? 85) ?>%</span>
-                                    </div>
-                                    <div class="progress" style="height: 5px; background: rgba(255,255,255,0.1);">
-                                        <div class="progress-bar bg-info" style="width: <?= (int)($subScores['keyword_optimization'] ?? 85) ?>%;"></div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between font-size-11 text-white-50 mb-1">
-                                        <span>Impact &amp; Metrics</span>
-                                        <span class="text-white"><?= (int)($subScores['impact_metrics'] ?? 88) ?>%</span>
-                                    </div>
-                                    <div class="progress" style="height: 5px; background: rgba(255,255,255,0.1);">
-                                        <div class="progress-bar bg-warning" style="width: <?= (int)($subScores['impact_metrics'] ?? 88) ?>%;"></div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between font-size-11 text-white-50 mb-1">
-                                        <span>ATS Structure</span>
-                                        <span class="text-white"><?= (int)($subScores['structure'] ?? 92) ?>%</span>
-                                    </div>
-                                    <div class="progress" style="height: 5px; background: rgba(255,255,255,0.1);">
-                                        <div class="progress-bar bg-accent" style="width: <?= (int)($subScores['structure'] ?? 92) ?>%;"></div>
-                                    </div>
-                                </div>
-                            </div>
+            <!-- Score -->
+            <div class="fl-panel" style="max-height:none">
+                <div style="display:flex;gap:26px;align-items:center;flex-wrap:wrap">
+                    <div class="gauge">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="track" cx="50" cy="50" r="45"></circle>
+                            <circle class="bar" cx="50" cy="50" r="45" stroke="<?= $gaugeColor ?>"
+                                    stroke-dasharray="<?= $strokeDash ?>" stroke-dashoffset="<?= $strokeOffset ?>"></circle>
+                        </svg>
+                        <div class="lbl">
+                            <span class="n"><?= $atsScore ?></span>
+                            <span class="d">ATS score</span>
                         </div>
                     </div>
 
-                    <!-- 1-Click Sync CTA Bar -->
-                    <div class="mt-4 pt-3 border-top border-secondary border-opacity-15 d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <span class="font-size-13 text-white-75">
-                            <i class="ph-bold ph-sparkle text-accent me-1"></i> Apply these ATS-optimized results to your public portfolio &amp; vCard?
-                        </span>
-                        <form method="POST" class="m-0">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="action" value="sync_to_portfolio">
-                            <button type="submit" class="btn btn-accent rounded-pill px-4 py-2 font-size-13 fw-bold text-dark d-flex align-items-center gap-1">
-                                <i class="ph-bold ph-arrows-clockwise"></i> 1-Click Sync to Portfolio &amp; vCard
-                            </button>
-                        </form>
+                    <div style="flex:1;min-width:240px">
+                        <div class="pill-row" style="margin-bottom:9px">
+                            <span class="pill on" style="font-size:12px">Grade <?= e($analysisResult['grade'] ?? 'A') ?></span>
+                            <span class="pill good" style="font-size:12px"><i class="ph ph-check-circle"></i> <?= e($analysisResult['verdict'] ?? 'ATS Ready') ?></span>
+                        </div>
+                        <div style="font-size:13.5px;color:var(--fg2,#94a3b8);line-height:1.6;margin-bottom:14px">
+                            Candidate <strong style="color:var(--fg,#fff)"><?= e($candidate['display_name'] ?? 'Candidate') ?></strong> &bull;
+                            targeting <strong style="color:var(--accent,#c8ff00)"><?= e($candidate['job_title'] ?? 'Growth Marketer') ?></strong>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 22px">
+                            <?php
+                            $meters = [
+                                ['Readability', (int)($subScores['readability'] ?? 90)],
+                                ['Keyword density', (int)($subScores['keyword_optimization'] ?? 85)],
+                                ['Impact & metrics', (int)($subScores['impact_metrics'] ?? 88)],
+                                ['ATS structure', (int)($subScores['structure'] ?? 92)],
+                            ];
+                            foreach ($meters as $mtr): ?>
+                            <div class="meter">
+                                <div class="r"><span><?= e($mtr[0]) ?></span><b><?= $mtr[1] ?>%</b></div>
+                                <div class="fl-progress"><i style="width:<?= $mtr[1] ?>%"></i></div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Extracted Profile & Bio -->
-                <div class="card-dark rounded-4 p-4 mb-4 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h4 class="h6 text-white fw-bold mb-0">
-                            <i class="ph-bold ph-identification-badge text-accent me-1"></i> AI-Polished Executive Summary
-                        </h4>
-                        <button type="button" onclick="navigator.clipboard.writeText('<?= addslashes($candidate['bio'] ?? '') ?>'); alert('Bio copied to clipboard!');" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1 font-size-11">
-                            <i class="ph ph-copy me-1"></i> Copy Bio
-                        </button>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--border,rgba(255,255,255,.08))">
+                    <div style="font-size:13px;color:var(--fg2,#94a3b8)">
+                        <i class="ph ph-sparkle" style="color:var(--accent,#c8ff00)"></i>
+                        Apply these ATS-optimized results to your public portfolio &amp; vCard?
                     </div>
-                    <p class="font-size-14 text-white fw-semibold mb-2" style="color: var(--accent) !important;">
-                        "<?= e($candidate['headline'] ?? '') ?>"
-                    </p>
-                    <p class="font-size-13 text-white-75 mb-3" style="line-height: 1.7;">
-                        <?= nl2br(e($candidate['bio'] ?? '')) ?>
-                    </p>
+                    <form method="POST" class="m-0">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="action" value="sync_to_portfolio">
+                        <button type="submit" class="fl-act pri"><i class="ph ph-arrows-clockwise"></i> 1-click sync to portfolio &amp; vCard</button>
+                    </form>
+                </div>
+            </div>
 
-                    <!-- Extracted Contact Details -->
-                    <div class="d-flex flex-wrap gap-3 font-size-12 text-white-50 pt-2 border-top border-secondary border-opacity-15">
-                        <?php if (!empty($candidate['email'])): ?>
-                            <div><i class="ph ph-envelope-simple text-white-75 me-1"></i> <?= e($candidate['email']) ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($candidate['phone'])): ?>
-                            <div><i class="ph ph-phone text-white-75 me-1"></i> <?= e($candidate['phone']) ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($candidate['location'])): ?>
-                            <div><i class="ph ph-map-pin text-white-75 me-1"></i> <?= e($candidate['location']) ?></div>
-                        <?php endif; ?>
-                        <?php if (!empty($candidate['company'])): ?>
-                            <div><i class="ph ph-buildings text-white-75 me-1"></i> <?= e($candidate['company']) ?></div>
-                        <?php endif; ?>
+            <!-- Executive summary -->
+            <div class="fl-panel" style="max-height:none">
+                <div class="fl-stagehead" style="margin-bottom:12px">
+                    <div class="t"><i class="ph ph-identification-badge" style="color:var(--accent,#c8ff00)"></i> AI-polished executive summary</div>
+                    <button type="button" class="fl-act" id="btnCopyBio"><i class="ph ph-copy"></i> Copy bio</button>
+                </div>
+                <p style="color:var(--accent,#c8ff00);font-weight:700;font-size:14px;margin:0 0 10px">“<?= e($candidate['headline'] ?? '') ?>”</p>
+                <p style="color:var(--fg2,#94a3b8);font-size:13.5px;line-height:1.8;margin:0"><?= nl2br(e($candidate['bio'] ?? '')) ?></p>
+
+                <div class="pill-row" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border,rgba(255,255,255,.08))">
+                    <?php if (!empty($candidate['email'])): ?><span class="pill" style="font-size:11.5px"><i class="ph ph-envelope-simple"></i> <?= e($candidate['email']) ?></span><?php endif; ?>
+                    <?php if (!empty($candidate['phone'])): ?><span class="pill" style="font-size:11.5px"><i class="ph ph-phone"></i> <?= e($candidate['phone']) ?></span><?php endif; ?>
+                    <?php if (!empty($candidate['location'])): ?><span class="pill" style="font-size:11.5px"><i class="ph ph-map-pin"></i> <?= e($candidate['location']) ?></span><?php endif; ?>
+                    <?php if (!empty($candidate['company'])): ?><span class="pill" style="font-size:11.5px"><i class="ph ph-buildings"></i> <?= e($candidate['company']) ?></span><?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Skills -->
+            <div class="fl-panel" style="max-height:none">
+                <div class="fl-stagehead" style="margin-bottom:12px">
+                    <div class="t"><i class="ph ph-check-square-offset" style="color:var(--accent,#c8ff00)"></i> Core competencies &amp; platforms found</div>
+                    <div class="m"><?= count($flatSkills) ?> detected</div>
+                </div>
+                <div class="pill-row">
+                    <?php foreach ($flatSkills as $sk): ?>
+                        <span class="kw have"><i class="ph ph-check"></i> <?= e($sk) ?></span>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Case studies -->
+            <?php if (!empty($portfolioItems)): ?>
+                <div class="fl-panel" style="max-height:none">
+                    <div class="fl-stagehead" style="margin-bottom:12px">
+                        <div class="t"><i class="ph ph-trophy" style="color:var(--accent,#c8ff00)"></i> Extracted quantifiable case studies</div>
+                    </div>
+                    <div class="fl-lib">
+                        <?php foreach ($portfolioItems as $item): ?>
+                            <div class="fl-card" style="min-height:120px">
+                                <div class="bd">
+                                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:9px;margin-bottom:7px">
+                                        <h5 style="margin:0;font-size:13px;font-weight:800;color:var(--fg,#fff)"><?= e($item['title'] ?? 'Campaign result') ?></h5>
+                                        <?php if (!empty($item['metric'])): ?>
+                                            <span class="pill on" style="font-size:10.5px;font-family:'JetBrains Mono',monospace;flex:0 0 auto"><?= e($item['metric']) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <p style="margin:0;color:var(--fg2,#94a3b8);font-size:12.5px;line-height:1.55"><?= e($item['description'] ?? '') ?></p>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
+            <?php endif; ?>
 
-                <!-- Skills Breakdown -->
-                <div class="card-dark rounded-4 p-4 mb-4 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                    <h4 class="h6 text-white fw-bold mb-3">
-                        <i class="ph-bold ph-check-square-offset text-accent me-1"></i> Core Competencies &amp; Platforms Found
-                    </h4>
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <?php foreach ($flatSkills as $sk): ?>
-                            <span class="badge rounded-pill px-3 py-2 font-size-12 fw-semibold" style="background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15);">
-                                <i class="ph-bold ph-check text-accent me-1"></i> <?= e($sk) ?>
-                            </span>
+            <!-- Gaps + advice -->
+            <div class="fl-shell" style="grid-template-columns:1fr 1fr">
+                <div class="fl-panel" style="max-height:none">
+                    <div class="fl-stagehead" style="margin-bottom:10px">
+                        <div class="t"><i class="ph ph-warning-diamond" style="color:#fb923c"></i> Missing high-impact keywords</div>
+                    </div>
+                    <p class="fl-help" style="margin:0 0 12px">Adding these target terms raises your ATS screening pass rate.</p>
+                    <div class="pill-row">
+                        <?php foreach ($missingKw as $kw): ?>
+                            <span class="kw miss">+ <?= e($kw) ?></span>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- Case Studies & Quantified Results -->
-                <?php if (!empty($portfolioItems)): ?>
-                    <div class="card-dark rounded-4 p-4 mb-4 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                        <h4 class="h6 text-white fw-bold mb-3">
-                            <i class="ph-bold ph-trophy text-accent me-1"></i> Extracted Quantifiable Case Studies
-                        </h4>
-                        <div class="row g-3">
-                            <?php foreach ($portfolioItems as $item): ?>
-                                <div class="col-md-6">
-                                    <div class="p-3 rounded-3" style="background: #080c14; border: 1px solid rgba(255,255,255,0.1);">
-                                        <div class="d-flex align-items-center justify-content-between mb-1">
-                                            <span class="text-white fw-bold font-size-13"><?= e($item['title'] ?? 'Campaign Result') ?></span>
-                                            <?php if (!empty($item['metric'])): ?>
-                                                <span class="badge bg-main-600 text-dark fw-bold rounded-pill px-2 py-1 font-size-11">
-                                                    <?= e($item['metric']) ?>
-                                                </span>
-                                            <?php endif; ?>
-                                        </div>
-                                        <p class="text-white-50 font-size-12 mb-0" style="line-height: 1.5;">
-                                            <?= e($item['description'] ?? '') ?>
-                                        </p>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+                <div class="fl-panel" style="max-height:none">
+                    <div class="fl-stagehead" style="margin-bottom:10px">
+                        <div class="t"><i class="ph ph-lightbulb" style="color:var(--accent,#c8ff00)"></i> Actionable ATS improvements</div>
                     </div>
-                <?php endif; ?>
-
-                <!-- ATS Audit: Strengths, Missing Keywords & Actionable Advice -->
-                <div class="row g-3">
-                    <!-- Missing High-Value Keywords -->
-                    <div class="col-md-6">
-                        <div class="card-dark rounded-4 p-4 h-100 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                            <h4 class="h6 text-warning fw-bold mb-2">
-                                <i class="ph-bold ph-warning-diamond me-1"></i> Missing High-Impact Keywords
-                            </h4>
-                            <p class="font-size-12 text-white-50 mb-3">Adding these target terms will increase your ATS screening pass rate:</p>
-                            <div class="d-flex flex-wrap gap-2">
-                                <?php foreach ($missingKw as $kw): ?>
-                                    <span class="badge rounded-pill px-3 py-1 font-size-11" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">
-                                        + <?= e($kw) ?>
-                                    </span>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actionable ATS Recommendations -->
-                    <div class="col-md-6">
-                        <div class="card-dark rounded-4 p-4 h-100 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                            <h4 class="h6 text-accent fw-bold mb-2">
-                                <i class="ph-bold ph-lightbulb me-1"></i> Actionable ATS Improvements
-                            </h4>
-                            <ul class="font-size-12 text-white-75 ps-3 mb-0" style="line-height: 1.6;">
-                                <?php foreach ($improvements as $imp): ?>
-                                    <li class="mb-1"><?= e($imp) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    </div>
+                    <ul style="margin:0;padding-left:18px;color:var(--fg2,#94a3b8);font-size:13px;line-height:1.65">
+                        <?php foreach ($improvements as $imp): ?>
+                            <li style="margin-bottom:7px"><?= e($imp) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
+            </div>
 
-            <?php else: ?>
-                <!-- Empty Placeholder State -->
-                <div class="card-dark rounded-4 p-5 text-center h-100 d-flex flex-column align-items-center justify-content-center" style="background: #0d1524 !important; border: 1px dashed rgba(255,255,255,0.12) !important; min-height: 480px;">
-                    <div style="width:72px;height:72px;border-radius:20px;background:rgba(200,255,0,0.1);display:inline-flex;align-items:center;justify-content:center;color:var(--accent);margin-bottom:18px;">
-                        <i class="ph-bold ph-gauge font-size-36"></i>
-                    </div>
-                    <h3 class="h4 text-white fw-bold mb-2">No Active Analysis Yet</h3>
-                    <p class="font-size-14 text-white-50 max-w-450-px mb-4" style="line-height: 1.6;">
-                        Upload your resume in PDF or Word DOCX format, or paste your career summary on the left to receive an instant ATS score, keyword audit, and 1-click sync into your portfolio.
-                    </p>
-                    <button type="button" onclick="loadSampleResume()" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-13">
-                        <i class="ph-bold ph-file-text me-1"></i> Load Sample Media Buyer Resume
+        <?php else: ?>
+            <div class="fl-panel" style="max-height:none;display:flex;align-items:center;justify-content:center;min-height:480px">
+                <div class="fl-empty" style="max-width:420px">
+                    <i class="ph ph-gauge"></i>
+                    <h4>No active analysis yet</h4>
+                    <p>Upload your resume as PDF or Word, or paste a career summary on the left, to get an instant ATS score, keyword audit and one-click portfolio sync.</p>
+                    <button type="button" class="fl-act" style="margin-top:18px" onclick="loadSampleResume()">
+                        <i class="ph ph-file-text"></i> Load sample media-buyer resume
                     </button>
                 </div>
-            <?php endif; ?>
+            </div>
+        <?php endif; ?>
         </div>
 
     </div>
-
+</div>
 </div>
 
 <script>
 function handleFileSelect(input) {
     if (input.files && input.files[0]) {
-        const file = input.files[0];
-        document.getElementById('fileLabelTitle').innerText = file.name;
-        document.getElementById('fileLabelSub').innerText = (file.size / 1024).toFixed(1) + ' KB — Ready for analysis';
-        document.getElementById('dropzoneBox').style.borderColor = 'var(--accent)';
+        var file = input.files[0];
+        document.getElementById('fileLabelTitle').textContent = file.name;
+        document.getElementById('fileLabelSub').textContent = (file.size / 1024).toFixed(1) + ' KB — ready for analysis';
+        var dz = document.getElementById('dropzoneBox');
+        dz.style.borderColor = 'var(--accent)';
+        dz.style.background = 'var(--accent-dim, rgba(200,255,0,.07))';
     }
 }
 
+(function () {
+    var box = document.getElementById('dropzoneBox');
+    if (!box) return;
+    ['dragenter', 'dragover'].forEach(function (ev) {
+        box.addEventListener(ev, function (e) { e.preventDefault(); box.style.borderColor = 'var(--accent)'; });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+        box.addEventListener(ev, function (e) { e.preventDefault(); if (ev === 'dragleave') box.style.borderColor = ''; });
+    });
+    box.addEventListener('drop', function (e) {
+        var input = document.getElementById('resumeFileInput');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+            input.files = e.dataTransfer.files;
+            handleFileSelect(input);
+        }
+    });
+})();
+
+(function () {
+    var btn = document.getElementById('btnCopyBio');
+    if (!btn) return;
+    var el = document.querySelector('p[style*="accent"]');
+    btn.addEventListener('click', function () {
+        var panels = document.querySelectorAll('.fl-panel p');
+        var text = '';
+        for (var i = 0; i < panels.length; i++) {
+            if (panels[i].textContent.indexOf('“') === 0) { text = panels[i].textContent.trim(); break; }
+        }
+        if (!text && el) text = el.textContent.trim();
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text);
+        toast('Bio copied');
+    });
+
+    var toastEl;
+    function toast(msg) {
+        if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'copy-toast'; document.body.appendChild(toastEl); }
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastEl._t);
+        toastEl._t = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+    }
+})();
+
 function loadSampleResume() {
-    const sample = `Alex Rivera
-Senior Omnichannel Media Buyer & Creative Strategist
-Email: alex.rivera@adsbooster.net | Phone: +1 (555) 019-2831 | New York, NY / Remote
-Portfolio: https://adsbooster.net/portfolio.php?u=alexrivera
+    var sample = 'Alex Rivera\n' +
+'Senior Omnichannel Media Buyer & Creative Strategist\n' +
+'Email: alex.rivera@adsbooster.net | Phone: +1 (555) 019-2831 | New York, NY / Remote\n' +
+'Portfolio: https://adsbooster.net/portfolio.php?u=alexrivera\n' +
+'\n' +
+'SUMMARY:\n' +
+'Results-driven Performance Marketing Director with 6+ years orchestrating profitable omnichannel ad campaigns across Meta Ads, TikTok Ads, and Google Ads. Managed over $3.2M in annual ad spend, delivering an average blended ROAS of 4.4x for fast-growing DTC eCommerce and B2B SaaS brands. Expert in UGC creative iteration, Landing Page CRO, and full-funnel attribution modeling.\n' +
+'\n' +
+'CORE SKILLS:\n' +
+'Meta Ads Manager, TikTok Ads Manager, Google Performance Max, UGC Creative Testing, Copywriting, Conversion Rate Optimization (CRO), Shopify Plus, Triple Whale Attribution, Klaviyo Retention Marketing, Budget Allocation.\n' +
+'\n' +
+'PROVEN CAMPAIGN HIGHLIGHTS:\n' +
+'1. Omnichannel DTC Apparel Brand Scaling: Scaled monthly ad spend from $14k to $145k across Meta and TikTok while increasing blended ROAS from 3.1x to 4.8x.\n' +
+'2. B2B SaaS Acquisition Sprint: Revamped creative hooks and landing page sales copy, slashing cost-per-qualified-lead (CPA) by 41% and driving $320k in pipeline value.\n' +
+'\n' +
+'SERVICES OFFERED:\n' +
+'- Full Omnichannel Media Buying Retainer: $2,500/month\n' +
+'- High-Converting UGC Creative Testing Sprint: $750/campaign\n' +
+'- Paid Ads Account & CRO Audit: $450/audit';
 
-SUMMARY:
-Results-driven Performance Marketing Director with 6+ years orchestrating profitable omnichannel ad campaigns across Meta Ads, TikTok Ads, and Google Ads. Managed over $3.2M in annual ad spend, delivering an average blended ROAS of 4.4x for fast-growing DTC eCommerce and B2B SaaS brands. Expert in UGC creative iteration, Landing Page CRO, and full-funnel attribution modeling.
-
-CORE SKILLS:
-Meta Ads Manager, TikTok Ads Manager, Google Performance Max, UGC Creative Testing, Copywriting, Conversion Rate Optimization (CRO), Shopify Plus, Triple Whale Attribution, Klaviyo Retention Marketing, Budget Allocation.
-
-PROVEN CAMPAIGN HIGHLIGHTS:
-1. Omnichannel DTC Apparel Brand Scaling: Scaled monthly ad spend from $14k to $145k across Meta and TikTok while increasing blended ROAS from 3.1x to 4.8x.
-2. B2B SaaS Acquisition Sprint: Revamped creative hooks and landing page sales copy, slashing cost-per-qualified-lead (CPA) by 41% and driving $320k in pipeline value.
-
-SERVICES OFFERED:
-- Full Omnichannel Media Buying Retainer: $2,500/month
-- High-Converting UGC Creative Testing Sprint: $750/campaign
-- Paid Ads Account & CRO Audit: $450/audit`;
-
-    document.getElementById('resumeTextArea').value = sample;
-    document.getElementById('resumeTextArea').focus();
+    var ta = document.getElementById('resumeTextArea');
+    ta.value = sample;
+    ta.focus();
 }
 </script>
 

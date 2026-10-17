@@ -121,10 +121,10 @@ $remainingThisMin = max(0, 60 - $usedThisMin);
             <p class="page-subtitle">Unified programmatic access to launch ads, generate AI UGC creatives, auto-publish across 6 social networks, and subscribe to signed webhooks.</p>
         </div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <a href="<?= BASE_URL ?>/developer-docs.php" class="btn-outline-dark" style="display:inline-flex;align-items:center;gap:8px;">
+            <a href="<?= url('developer-docs') ?>" class="btn-outline-dark" style="display:inline-flex;align-items:center;gap:8px;">
                 <i class="ph ph-book-open" style="font-size:18px"></i> Full A-Z Docs
             </a>
-            <a href="<?= BASE_URL ?>/status.php" class="btn-outline-dark" style="display:inline-flex;align-items:center;gap:8px;">
+            <a href="<?= url('status') ?>" class="btn-outline-dark" style="display:inline-flex;align-items:center;gap:8px;">
                 <i class="ph ph-activity" style="font-size:18px"></i> API Health
             </a>
             <button class="btn-accent" data-bs-toggle="modal" data-bs-target="#generateKeyModal" style="display:inline-flex;align-items:center;gap:8px;">

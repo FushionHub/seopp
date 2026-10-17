@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/config/site_setting_and_config.php';
 
-$pageTitle = 'Platform Reviews & Testimonials — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Platform Reviews & Testimonials â€” ' . get_setting('site_name', 'Adsbooster.net');
 $currentUserId = is_logged_in() ? current_user_id() : 0;
 $currentUser   = is_logged_in() ? current_user() : null;
 
@@ -50,7 +50,7 @@ if ($currentUserId) {
 if (isset($_GET['skip']) && $_GET['skip'] === '1') {
     $_SESSION['review_prompt_dismissed'] = time() + (86400 * 7);
     setcookie('review_prompt_dismissed', (string)(time() + (86400 * 7)), time() + (86400 * 7), '/');
-    redirect(BASE_URL . '/dashboard.php');
+    redirect(url('dashboard'));
 }
 
 // Handle Submission
@@ -102,7 +102,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify() && is_logg
         }
     } elseif ($action === 'skip_review') {
         $_SESSION['review_prompt_dismissed'] = time() + (86400 * 7); // dismiss for 7 days
-        redirect(BASE_URL . '/dashboard.php');
+        redirect(url('dashboard'));
 
     }
 }
@@ -237,7 +237,7 @@ require_once __DIR__ . '/includes/header.php';
                         <p class="text-muted font-size-14 max-w-600-px mx-auto mb-3">
                             <?= e($eligibilityReason) ?>
                         </p>
-                        <a href="<?= BASE_URL ?>/pricing-plan.php" class="btn btn-outline-warning rounded-pill px-4 py-2 font-size-13">
+                        <a href="<?= url('pricing-plan') ?>" class="btn btn-outline-warning rounded-pill px-4 py-2 font-size-13">
                             <i class="ph ph-lightning me-1"></i> Upgrade to Pro Plan for Instant Review Access
                         </a>
                     </div>

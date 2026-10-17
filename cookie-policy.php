@@ -71,7 +71,7 @@ $cookies = [
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">5. Changing your choice</h3>
             <p>
-                You can change your cookie preferences at any time in the <a href="<?= BASE_URL ?>/privacy-center.php" class="text-main-600 text-decoration-underline">Privacy Center</a>, or clear cookies through your browser settings. Turning off strictly necessary cookies will sign you out and break login.
+                You can change your cookie preferences at any time in the <a href="<?= url('privacy-center') ?>" class="text-main-600 text-decoration-underline">Privacy Center</a>, or clear cookies through your browser settings. Turning off strictly necessary cookies will sign you out and break login.
             </p>
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">6. Do Not Track and Global Privacy Control</h3>
@@ -82,8 +82,8 @@ $cookies = [
             <div class="tw-mt-8 pt-4 border-top border-neutral-800 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <span class="text-white-50 tw-text-xs">Questions about privacy? <a href="mailto:<?= e(get_setting('site_email', 'support@adsbooster.net')) ?>" class="text-main-600"><?= e(get_setting('site_email', 'support@adsbooster.net')) ?></a></span>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="<?= BASE_URL ?>/privacy.php" class="text-main-600 fw-semibold tw-text-sm">Privacy Policy &rarr;</a>
-                    <a href="<?= BASE_URL ?>/privacy-center.php" class="text-main-600 fw-semibold tw-text-sm">Privacy Center &rarr;</a>
+                    <a href="<?= url('privacy') ?>" class="text-main-600 fw-semibold tw-text-sm">Privacy Policy &rarr;</a>
+                    <a href="<?= url('privacy-center') ?>" class="text-main-600 fw-semibold tw-text-sm">Privacy Center &rarr;</a>
                 </div>
             </div>
         </div>

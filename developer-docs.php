@@ -73,10 +73,10 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="page-subtitle mb-0">Build automated workflows, generate AI UGC ad imagery, publish posts live to connected social networks, manage ad budgets, and receive signed webhooks.</p>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <a href="<?= BASE_URL ?>/api-settings.php" class="btn btn-accent btn-sm rounded-pill px-3">
+            <a href="<?= url('api-settings') ?>" class="btn btn-accent btn-sm rounded-pill px-3">
                 <i class="ph ph-key me-1"></i> Developer Console
             </a>
-            <a href="<?= BASE_URL ?>/status.php" class="btn btn-outline-light btn-sm rounded-pill px-3">
+            <a href="<?= url('status') ?>" class="btn btn-outline-light btn-sm rounded-pill px-3">
                 <i class="ph ph-activity me-1"></i> System Status (99.99%)
             </a>
         </div>
@@ -149,7 +149,7 @@ GET <?= BASE_URL ?>/api/v1/credits.php?api_key=adsb_live_your_api_key_here
                 </div>
                 <div class="p-3 rounded-3" style="background:rgba(200,255,0,0.05);border:1px solid rgba(200,255,0,0.2);">
                     <span class="text-accent fw-bold font-size-13">Security Note:</span>
-                    <span class="text-white-50 font-size-13">Your API key is hashed with SHA-256 in our database. If an API key is compromised, you can revoke and regenerate it instantly from your <a href="<?= BASE_URL ?>/api-settings.php" class="text-accent text-decoration-none hover-underline">API Settings</a> console.</span>
+                    <span class="text-white-50 font-size-13">Your API key is hashed with SHA-256 in our database. If an API key is compromised, you can revoke and regenerate it instantly from your <a href="<?= url('api-settings') ?>" class="text-accent text-decoration-none hover-underline">API Settings</a> console.</span>
                 </div>
             </div>
 
@@ -592,7 +592,7 @@ curl -X GET "<?= BASE_URL ?>/api/v1/credits.php" \
 {
   "success": true,
   "creative": {
-    "image_url": "https://image.pollinations.ai/prompt/...",
+    "image_url": "/assets/uploads/ai/gemini/ugc_482910_1.png",
     "hook_headline": "Stop wasting budget on 10-step routines",
     "ad_copy": "Grab yours today with free express shipping!",
     "badge_text": "⭐⭐⭐⭐⭐ Top Rated",

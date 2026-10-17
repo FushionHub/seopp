@@ -9,19 +9,19 @@ $isAdmin = ($user['role'] ?? 'user') === 'admin';
 
 $postId = (int)($_GET['id'] ?? 0);
 if ($postId <= 0) {
-    redirect(BASE_URL . '/blog-manage.php');
+    redirect(url('blog-manage'));
 }
 
 $post = db()->fetchOne("SELECT * FROM blog_posts WHERE id = ?", [$postId]);
 if (!$post) {
     set_flash('error', 'Article not found.');
-    redirect(BASE_URL . '/blog-manage.php');
+    redirect(url('blog-manage'));
 }
 
 // Authorization check: must be author or platform admin
 if (!$isAdmin && (int)$post['author_id'] !== $userId) {
     set_flash('error', 'You do not have permission to edit this article.');
-    redirect(BASE_URL . '/blog-manage.php');
+    redirect(url('blog-manage'));
 }
 
 $errors = [];
@@ -106,11 +106,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
         db()->update('blog_posts', $updateData, 'id = ?', [$postId]);
 
         set_flash('success', "Article '{$title}' updated successfully!");
-        redirect(BASE_URL . '/blog-manage.php');
+        redirect(url('blog-manage'));
     }
 }
 
-$pageTitle = 'Edit Article: ' . e($post['title']) . ' — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Edit Article: ' . e($post['title']) . ' â€” ' . get_setting('site_name', 'Adsbooster.net');
 $_appPage = 'blog-manage';
 require_once __DIR__ . '/includes/app_header.php';
 ?>
@@ -127,10 +127,10 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="text-muted mb-0 font-size-14">Update content, SEO slugs, and publication status.</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($post['slug']) ?>" target="_blank" class="btn btn-outline-light rounded-pill px-3">
+            <a href="<?= url('blog-details') ?>?slug=<?= e($post['slug']) ?>" target="_blank" class="btn btn-outline-light rounded-pill px-3">
                 <i class="ph ph-eye me-1"></i> View Live
             </a>
-            <a href="<?= BASE_URL ?>/blog-manage.php" class="btn btn-outline-light rounded-pill px-4">
+            <a href="<?= url('blog-manage') ?>" class="btn btn-outline-light rounded-pill px-4">
                 <i class="ph ph-arrow-left me-1"></i> Back to Articles
             </a>
         </div>
@@ -198,8 +198,8 @@ require_once __DIR__ . '/includes/app_header.php';
                     <label class="form-label text-muted font-size-13">Status</label>
                     <?php $currStatus = $_POST['status'] ?? $post['status']; ?>
                     <select name="status" class="form-select bg-dark border-secondary text-white rounded-3">
-                        <option value="published" <?= $currStatus === 'published' ? 'selected' : '' ?>>🚀 Published (Live on Site)</option>
-                        <option value="draft" <?= $currStatus === 'draft' ? 'selected' : '' ?>>📝 Draft</option>
+                        <option value="published" <?= $currStatus === 'published' ? 'selected' : '' ?>>ðŸš€ Published (Live on Site)</option>
+                        <option value="draft" <?= $currStatus === 'draft' ? 'selected' : '' ?>>ðŸ“ Draft</option>
                     </select>
                 </div>
 
@@ -207,12 +207,12 @@ require_once __DIR__ . '/includes/app_header.php';
                     <label class="form-label text-muted font-size-13">Category</label>
                     <?php $currCat = $_POST['category'] ?? $post['category']; ?>
                     <select name="category" class="form-select bg-dark border-secondary text-white rounded-3">
-                        <option value="Advertising" <?= $currCat === 'Advertising' ? 'selected' : '' ?>>📢 Advertising &amp; Campaigns</option>
-                        <option value="AI & Automation" <?= $currCat === 'AI & Automation' ? 'selected' : '' ?>>🤖 AI &amp; Copy Automation</option>
-                        <option value="SEO & Growth" <?= $currCat === 'SEO & Growth' ? 'selected' : '' ?>>📈 SEO &amp; Growth Hacking</option>
-                        <option value="Social Media" <?= $currCat === 'Social Media' ? 'selected' : '' ?>>📱 Social Media Strategies</option>
-                        <option value="Directory & Places" <?= $currCat === 'Directory & Places' ? 'selected' : '' ?>>📍 Directory &amp; Local Business</option>
-                        <option value="Platform News" <?= $currCat === 'Platform News' ? 'selected' : '' ?>>✨ Platform News &amp; Updates</option>
+                        <option value="Advertising" <?= $currCat === 'Advertising' ? 'selected' : '' ?>>ðŸ“¢ Advertising &amp; Campaigns</option>
+                        <option value="AI & Automation" <?= $currCat === 'AI & Automation' ? 'selected' : '' ?>>ðŸ¤– AI &amp; Copy Automation</option>
+                        <option value="SEO & Growth" <?= $currCat === 'SEO & Growth' ? 'selected' : '' ?>>ðŸ“ˆ SEO &amp; Growth Hacking</option>
+                        <option value="Social Media" <?= $currCat === 'Social Media' ? 'selected' : '' ?>>ðŸ“± Social Media Strategies</option>
+                        <option value="Directory & Places" <?= $currCat === 'Directory & Places' ? 'selected' : '' ?>>ðŸ“ Directory &amp; Local Business</option>
+                        <option value="Platform News" <?= $currCat === 'Platform News' ? 'selected' : '' ?>>âœ¨ Platform News &amp; Updates</option>
                     </select>
                 </div>
 
@@ -253,7 +253,7 @@ require_once __DIR__ . '/includes/app_header.php';
                     <input type="file" name="image_file" accept="image/*" class="form-control bg-dark border-secondary text-white font-size-13">
                 </div>
 
-                <div class="text-center text-muted font-size-12 my-2">— OR Image URL —</div>
+                <div class="text-center text-muted font-size-12 my-2">â€” OR Image URL â€”</div>
 
                 <div class="mb-2">
                     <input type="url" name="image_url" class="form-control bg-dark border-secondary text-white font-size-13" 

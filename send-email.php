@@ -88,7 +88,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="page-subtitle">Compose and send professional, branded HTML emails directly to clients, partners, and contacts.</p>
         </div>
         <div>
-            <a href="<?= BASE_URL ?>/dashboard.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('dashboard') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-arrow-left"></i> Dashboard
             </a>
         </div>

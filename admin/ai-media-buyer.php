@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/ai-media-buyer.php');
+    redirect(url('admin/ai-media-buyer'));
 }
 
 // KPI Metrics

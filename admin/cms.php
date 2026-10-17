@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/cms.php');
+    redirect(url('admin/cms'));
 }
 
 $entries = db()->fetchAll("SELECT * FROM dynamic_content ORDER BY page_slug, section_key, item_key");
@@ -100,7 +100,7 @@ require_once __DIR__ . '/sidebar.php';
                     <i class="ph-bold ph-floppy-disk"></i> Save Content
                 </button>
                 <?php if ($editEntry): ?>
-                    <a href="<?= BASE_URL ?>/admin/cms.php" class="btn-admin btn-admin-outline ms-2">Cancel</a>
+                    <a href="<?= url('admin/cms') ?>" class="btn-admin btn-admin-outline ms-2">Cancel</a>
                 <?php endif; ?>
             </form>
         </div>

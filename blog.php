@@ -62,14 +62,14 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="d-flex gap-2">
                 <?php if (is_logged_in()): ?>
-                    <a href="<?= BASE_URL ?>/blog-create.php" class="btn btn-main rounded-pill px-4 fw-bold d-flex align-items-center gap-2">
+                    <a href="<?= url('blog-create') ?>" class="btn btn-main rounded-pill px-4 fw-bold d-flex align-items-center gap-2">
                         <i class="ph-bold ph-plus"></i> Write Article
                     </a>
-                    <a href="<?= BASE_URL ?>/blog-manage.php" class="btn bg-white-06 border border-neutral-700 text-white rounded-pill px-3">
+                    <a href="<?= url('blog-manage') ?>" class="btn bg-white-06 border border-neutral-700 text-white rounded-pill px-3">
                         <i class="ph ph-folder-simple me-1"></i> My Articles
                     </a>
                 <?php else: ?>
-                    <a href="<?= BASE_URL ?>/login.php" class="btn btn-main rounded-pill px-4 fw-bold d-flex align-items-center gap-2">
+                    <a href="<?= url('login') ?>" class="btn btn-main rounded-pill px-4 fw-bold d-flex align-items-center gap-2">
                         <i class="ph-bold ph-pencil-simple"></i> Submit an Article
                     </a>
                 <?php endif; ?>
@@ -97,7 +97,7 @@ require_once __DIR__ . '/includes/header.php';
 
                 <!-- Search Input -->
                 <div class="col-lg-4">
-                    <form method="GET" action="<?= BASE_URL ?>/blog.php" class="position-relative">
+                    <form method="GET" action="<?= url('blog') ?>" class="position-relative">
                         <?php if ($searchCategory): ?>
                             <input type="hidden" name="category" value="<?= e($searchCategory) ?>">
                         <?php endif; ?>
@@ -117,7 +117,7 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="ph ph-article-ny-times fs-1 text-white-50 mb-3 d-block"></i>
                 <h4 class="text-white fw-bold mb-2">No articles match your search</h4>
                 <p class="text-white-50 font-size-14 mb-4">Try different keywords or browse all categories.</p>
-                <a href="<?= BASE_URL ?>/blog.php" class="btn btn-main rounded-pill px-4 fw-bold">Clear Filters</a>
+                <a href="<?= url('blog') ?>" class="btn btn-main rounded-pill px-4 fw-bold">Clear Filters</a>
             </div>
         <?php else: ?>
             <div class="row g-4">
@@ -129,7 +129,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="bg-white-06 border border-neutral-700 rounded-4 overflow-hidden d-flex flex-column h-100 hover-border-main-600 transition">
                             <!-- Image with category tag -->
                             <div class="position-relative" style="height:210px; overflow:hidden;">
-                                <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($post['slug']) ?>">
+                                <a href="<?= url('blog-details', ['slug' => $post['slug']]) ?>">
                                     <img src="<?= e($imgSrc) ?>" alt="<?= e($post['title']) ?>" class="w-100 h-100 object-fit-cover">
                                 </a>
                                 <span class="badge bg-main-600 text-black position-absolute top-0 start-0 m-3 px-3 py-1 rounded-pill font-size-11 fw-bold">
@@ -150,7 +150,7 @@ require_once __DIR__ . '/includes/header.php';
                                 </div>
 
                                 <h5 class="text-white fw-bold mb-2 line-clamp-2" style="font-size: 1.1rem; line-height: 1.4;">
-                                    <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($post['slug']) ?>" class="text-white text-decoration-none hover-text-main-600">
+                                    <a href="<?= url('blog-details', ['slug' => $post['slug']]) ?>" class="text-white text-decoration-none hover-text-main-600">
                                         <?= e($post['title']) ?>
                                     </a>
                                 </h5>
@@ -166,7 +166,7 @@ require_once __DIR__ . '/includes/header.php';
                                         </div>
                                         <span class="text-white font-size-13 fw-medium"><?= e($post['author_name'] ?? 'Adsbooster Team') ?></span>
                                     </div>
-                                    <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($post['slug']) ?>" class="text-main-600 font-size-13 fw-semibold text-decoration-none d-flex align-items-center gap-1">
+                                    <a href="<?= url('blog-details', ['slug' => $post['slug']]) ?>" class="text-main-600 font-size-13 fw-semibold text-decoration-none d-flex align-items-center gap-1">
                                         Read <i class="ph ph-arrow-right"></i>
                                     </a>
                                 </div>

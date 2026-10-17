@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/campaigns.php');
+    redirect(url('admin/campaigns'));
 }
 
 $filterStatus = $_GET['status'] ?? '';

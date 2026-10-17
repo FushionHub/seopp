@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/translations.php');
+    redirect(url('admin/translations'));
 }
 
 $filterLocale = $_GET['locale'] ?? '';

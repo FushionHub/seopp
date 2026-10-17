@@ -103,10 +103,10 @@ function verify_live_social_token(string $platform, string $token, string $handl
         CURLOPT_HTTPHEADER     => $headers,
         CURLOPT_TIMEOUT        => 8,
         CURLOPT_CONNECTTIMEOUT => 5,
-        CURLOPT_SSL_VERIFYPEER => true,
-                        ...ca_curl_opts(),
-        CURLOPT_USERAGENT      => 'Adsbooster-API-Client/2.0'
-    ]);
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_USERAGENT      => 'Adsbooster-API-Client/2.0'
+        ]);
+        ca_curl_setopt($ch);
     $resp = curl_exec($ch);
     $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $latencyMs = (int)round((microtime(true) - $start) * 1000);
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $liveCheck = verify_live_social_token($targetPlatform, $apiToken, $handleOrId);
                 if (!$liveCheck['success']) {
                     set_flash('error', 'Live verification failed: ' . $liveCheck['error']);
-                    redirect(BASE_URL . '/social-connect.php?platform=' . urlencode($targetPlatform));
+                    redirect(url('social-connect') . '?platform=' . urlencode($targetPlatform));
                 }
                 if ($accountName === '' && !empty($liveCheck['name'])) {
                     $accountName = $liveCheck['name'];
@@ -254,7 +254,7 @@ $redirectUri = BASE_URL . '/oauth-callback.php';
 
 // Single platform view
 if ($platform !== '' && in_array($platform, $validPlatforms, true)) {
-    $pageTitle = 'OAuth Connection: ' . ($platformLabels[$platform] ?? $platform) . ' — ' . get_setting('site_name', 'Adsbooster.net');
+    $pageTitle = 'OAuth Connection: ' . ($platformLabels[$platform] ?? $platform) . ' â€” ' . get_setting('site_name', 'Adsbooster.net');
     $isConn = isset($connectedMap[$platform]);
     $accData = $connectedMap[$platform] ?? null;
     $meta = $accData ? (json_decode($accData['metadata_json'] ?? '{}', true) ?: []) : [];
@@ -267,7 +267,7 @@ if ($platform !== '' && in_array($platform, $validPlatforms, true)) {
     ?>
     <div style="max-width:720px;margin:0 auto">
         <div style="margin-bottom:24px;">
-            <a href="<?= BASE_URL ?>/social-connect.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('social-connect') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-arrow-left"></i> All Social Networks
             </a>
         </div>
@@ -372,7 +372,7 @@ if ($platform !== '' && in_array($platform, $validPlatforms, true)) {
                         </div>
                         <code style="color:var(--accent);font-size:12.5px;word-break:break-all;display:block;background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:6px;"><?= e($platformCallbackUri) ?></code>
                         <div style="font-size:11.5px;color:var(--fg3);margin-top:6px;">
-                            Paste this exact callback URL into your <a href="<?= BASE_URL ?>/developer-docs.php#oauth-redirects" target="_blank" style="color:var(--accent);text-decoration:none;">developer console</a> under Allowed Redirect URIs. Universal fallback: <code><?= e($redirectUri) ?></code>
+                            Paste this exact callback URL into your <a href="<?= url('developer-docs') ?>#oauth-redirects" target="_blank" style="color:var(--accent);text-decoration:none;">developer console</a> under Allowed Redirect URIs. Universal fallback: <code><?= e($redirectUri) ?></code>
                         </div>
                     </div>
 
@@ -427,7 +427,7 @@ if ($platform !== '' && in_array($platform, $validPlatforms, true)) {
     <?php require_once __DIR__ . '/includes/app_footer.php'; return;
 }
 
-$pageTitle = 'Social Media OAuth Connections — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Social Media OAuth Connections â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/app_header.php';
 ?>
 
@@ -509,7 +509,7 @@ require_once __DIR__ . '/includes/app_header.php';
                     </div>
 
                     <div style="display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-                        <a href="<?= BASE_URL ?>/social-connect.php?platform=<?= e($p) ?>" class="btn-outline-dark btn-sm" style="flex:1;text-align:center;">
+                        <a href="<?= url('social-connect') ?>?platform=<?= e($p) ?>" class="btn-outline-dark btn-sm" style="flex:1;text-align:center;">
                             <?= $isC ? '<i class="ph ph-gear"></i> Manage' : '<i class="ph ph-lock-key"></i> Connect with OAuth' ?>
                         </a>
                         <?php if ($isC): ?>

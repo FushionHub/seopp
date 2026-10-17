@@ -4,7 +4,7 @@ if (!defined('ROOT_PATH')) {
 }
 if (!is_logged_in()) {
     set_flash('error', 'Please log in to access this page.');
-    redirect(BASE_URL . '/login.php');
+    redirect(url('login'));
 }
 $_app_user = current_user();
 $_app_userId = current_user_id();
@@ -33,6 +33,7 @@ $_siteName = get_setting('site_name', 'Adsbooster.net');
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/studio-ui.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <!-- CKEditor 5 Free Classic Build CDN -->
 <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
@@ -1272,6 +1273,13 @@ body.nav-open { overflow: hidden; touch-action: none; }
 </style>
 </head>
 <body>
+<?php if (!empty($_SESSION['impersonator'])): ?>
+<div style="background:#eab308;color:#1a1a1a;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:14px;font-size:13.5px;font-weight:700;position:sticky;top:0;z-index:9999;">
+    <i class="ph-bold ph-mask-happy"></i>
+    <span>Viewing as <strong><?= e($_app_user['full_name'] ?? $_app_user['email'] ?? 'user') ?></strong> — you are impersonating this account.</span>
+    <a href="<?= url('admin/exit-impersonate') ?>" style="background:#1a1a1a;color:#eab308;padding:4px 12px;border-radius:6px;text-decoration:none;font-weight:700;">Exit to Admin</a>
+</div>
+<?php endif; ?>
 <div class="app-layout" id="appLayout">
   <!-- Mobile Backdrop Overlay -->
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileNav()"></div>
@@ -1279,7 +1287,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <a href="<?= BASE_URL ?>/dashboard.php" class="sidebar-brand d-flex align-items-center gap-2">
+      <a href="<?= url('dashboard') ?>" class="sidebar-brand d-flex align-items-center gap-2">
         <img src="<?= BASE_URL ?>/assets/images/logo/logo-green.png" alt="<?= e($_siteName) ?>" style="height: 32px; width: auto; object-fit: contain;">
         <span class="brand-badge" style="font-size: 10px; background: rgba(200,255,0,0.15); color: #c8ff00; padding: 2px 7px; border-radius: 6px; font-weight: 700;">PRO</span>
       </a>
@@ -1292,10 +1300,10 @@ body.nav-open { overflow: hidden; touch-action: none; }
       <!-- Search: the fastest way for anyone to find a tool -->
       <div class="nav-search">
         <i class="ph ph-magnifying-glass"></i>
-        <input type="search" id="navSearch" placeholder="Search tools…" aria-label="Search tools" autocomplete="off">
+        <input type="search" id="navSearch" placeholder="Search toolsâ€¦" aria-label="Search tools" autocomplete="off">
       </div>
 
-      <!-- ── Start here ─────────────────────────────────────── -->
+      <!-- â”€â”€ Start here â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="start" aria-expanded="true">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Start here</span><i class="ph ph-caret-down caret"></i>
@@ -1310,7 +1318,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
         </div>
       </div>
 
-      <!-- ── Make something ─────────────────────────────────── -->
+      <!-- â”€â”€ Make something â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="create" aria-expanded="true">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Make something</span><i class="ph ph-caret-down caret"></i>
@@ -1331,7 +1339,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
         </div>
       </div>
 
-      <!-- ── Grow ───────────────────────────────────────────── -->
+      <!-- â”€â”€ Grow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="grow" aria-expanded="true">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Grow your sales</span><i class="ph ph-caret-down caret"></i>
@@ -1355,7 +1363,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
         </div>
       </div>
 
-      <!-- ── Connect ────────────────────────────────────────── -->
+      <!-- â”€â”€ Connect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="connect" aria-expanded="false">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Connect &amp; publish</span><i class="ph ph-caret-down caret"></i>
@@ -1363,9 +1371,6 @@ body.nav-open { overflow: hidden; touch-action: none; }
         <div class="nav-group-body">
           <a href="<?= url('social-connect') ?>" class="nav-item <?= $_appPage==='social-connect'?'active':'' ?>">
             <i class="ph ph-link"></i> <span>Link your accounts</span>
-          </a>
-          <a href="<?= url('social-inbox') ?>" class="nav-item <?= $_appPage==='social-inbox'?'active':'' ?>">
-            <i class="ph ph-chats-circle"></i> <span>Messages</span>
           </a>
           <a href="<?= url('calendar') ?>" class="nav-item <?= $_appPage==='calendar'?'active':'' ?>">
             <i class="ph ph-calendar-blank"></i> <span>Content calendar</span>
@@ -1379,7 +1384,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
         </div>
       </div>
 
-      <!-- ── Earn & hire ────────────────────────────────────── -->
+      <!-- â”€â”€ Earn & hire â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="work" aria-expanded="false">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Find work &amp; hire</span><i class="ph ph-caret-down caret"></i>
@@ -1409,7 +1414,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
         </div>
       </div>
 
-      <!-- ── Your account ───────────────────────────────────── -->
+      <!-- â”€â”€ Your account â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="account" aria-expanded="false">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Your account</span><i class="ph ph-caret-down caret"></i>
@@ -1445,7 +1450,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
         </div>
       </div>
 
-      <!-- ── Advanced ───────────────────────────────────────── -->
+      <!-- â”€â”€ Advanced â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="advanced" aria-expanded="false">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Advanced</span><i class="ph ph-caret-down caret"></i>
@@ -1472,7 +1477,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
         </div>
       </div>
 
-      <!-- ── Help ───────────────────────────────────────────── -->
+      <!-- â”€â”€ Help â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="nav-group" data-group="help" aria-expanded="false">
         <button class="nav-group-label nav-group-toggle" type="button" onclick="toggleNavGroup(this)">
           <span>Help</span><i class="ph ph-caret-down caret"></i>
@@ -1481,10 +1486,10 @@ body.nav-open { overflow: hidden; touch-action: none; }
           <a href="<?= url('tickets') ?>" class="nav-item <?= $_appPage==='tickets'?'active':'' ?>">
             <i class="ph ph-lifebuoy"></i> <span>Contact support</span>
           </a>
-          <a href="<?= BASE_URL ?>/ai-disclaimer.php" class="nav-item">
+          <a href="<?= url('ai-disclaimer') ?>" class="nav-item">
             <i class="ph ph-info"></i> <span>How the AI works</span>
           </a>
-          <a href="<?= BASE_URL ?>/refund-policy.php" class="nav-item">
+          <a href="<?= url('refund-policy') ?>" class="nav-item">
             <i class="ph ph-arrow-u-up-left"></i> <span>Refund policy</span>
           </a>
         </div>
@@ -1492,7 +1497,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
     </nav>
 
     <script>
-    /* ── Sidebar: collapsible groups, remembered between visits ── */
+    /* â”€â”€ Sidebar: collapsible groups, remembered between visits â”€â”€ */
     (function () {
       const KEY = 'ab.nav.groups';
       let saved = {};
@@ -1572,7 +1577,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
 
       <div class="topbar-right">
         <!-- Quick Balance / Topup Pill -->
-        <a href="<?= BASE_URL ?>/billing.php" class="topbar-pill-wallet" title="Ad & AI Credits - Click to Manage">
+        <a href="<?= url('billing') ?>" class="topbar-pill-wallet" title="Ad & AI Credits - Click to Manage">
           <i class="ph ph-monetization-on" style="color:var(--accent)"></i>
           <span class="wallet-credits">$<?= number_format($_adCredits, 2) ?></span>
           <span class="wallet-divider"></span>
@@ -1603,7 +1608,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
             <div class="notif-header">
               <h6>Notifications</h6>
               <?php if ($_notifCount > 0): ?>
-                <a href="<?= BASE_URL ?>/notifications.php?action=mark_all" id="markAllRead">Mark all read</a>
+                <a href="<?= url('notifications') ?>?action=mark_all" id="markAllRead">Mark all read</a>
               <?php endif; ?>
             </div>
             <div class="notif-list" id="notifList">
@@ -1622,7 +1627,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
                     <div class="notif-icon <?= $_nType ?>"><i class="ph <?= $_nIcon ?>"></i></div>
                     <div class="notif-body">
                       <p><?= e($n['title'] ?? 'Notification') ?></p>
-                      <small><?= e(mb_substr($n['body'] ?? '', 0, 80)) ?> · <?= $_timeAgo ?></small>
+                      <small><?= e(mb_substr($n['body'] ?? '', 0, 80)) ?> Â· <?= $_timeAgo ?></small>
                     </div>
                   </div>
                 <?php endforeach; ?>
@@ -1630,7 +1635,7 @@ body.nav-open { overflow: hidden; touch-action: none; }
             </div>
             <?php if (!empty($_recentNotifs)): ?>
               <div style="padding:10px 18px;border-top:1px solid var(--border);text-align:center;background:rgba(0,0,0,0.15)">
-                <a href="<?= BASE_URL ?>/notifications.php" style="font-size:12.5px;font-weight:600;color:var(--accent)">View all notifications</a>
+                <a href="<?= url('notifications') ?>" style="font-size:12.5px;font-weight:600;color:var(--accent)">View all notifications</a>
               </div>
             <?php endif; ?>
           </div>
@@ -1651,29 +1656,29 @@ body.nav-open { overflow: hidden; touch-action: none; }
               <div class="udh-name"><?= $_appName ?></div>
               <div class="udh-email"><?= $_appEmail ?></div>
             </div>
-            <a href="<?= BASE_URL ?>/profile.php" class="user-dropdown-item">
+            <a href="<?= url('profile') ?>" class="user-dropdown-item">
               <i class="ph ph-user"></i> Profile &amp; Account
             </a>
-            <a href="<?= BASE_URL ?>/security-2fa.php" class="user-dropdown-item">
+            <a href="<?= url('security-2fa') ?>" class="user-dropdown-item">
               <i class="ph ph-shield-check"></i> 2FA Security
             </a>
-            <a href="<?= BASE_URL ?>/send-email.php" class="user-dropdown-item">
+            <a href="<?= url('send-email') ?>" class="user-dropdown-item">
               <i class="ph ph-paper-plane-tilt"></i> Email Outreach
             </a>
-            <a href="<?= BASE_URL ?>/billing.php" class="user-dropdown-item">
+            <a href="<?= url('billing') ?>" class="user-dropdown-item">
               <i class="ph ph-credit-card"></i> Billing &amp; Wallet
             </a>
-            <a href="<?= BASE_URL ?>/pricing-plan.php" class="user-dropdown-item">
+            <a href="<?= url('pricing-plan') ?>" class="user-dropdown-item">
               <i class="ph ph-crown"></i> Upgrade Plan
             </a>
-            <a href="<?= BASE_URL ?>/referrals.php" class="user-dropdown-item">
+            <a href="<?= url('referrals') ?>" class="user-dropdown-item">
               <i class="ph ph-share-network"></i> Referral Earnings
             </a>
-            <a href="<?= BASE_URL ?>/tickets.php" class="user-dropdown-item">
+            <a href="<?= url('tickets') ?>" class="user-dropdown-item">
               <i class="ph ph-lifebuoy"></i> Help &amp; Support
             </a>
             <div style="height:1px;background:var(--border);margin:6px 0"></div>
-            <a href="<?= BASE_URL ?>/logout.php" class="user-dropdown-item text-danger">
+            <a href="<?= url('logout') ?>" class="user-dropdown-item text-danger">
               <i class="ph ph-sign-out"></i> Sign Out
             </a>
           </div>

@@ -10,7 +10,7 @@ $pageTitle = 'Project Details - Adsbooster.net'; require __DIR__ . '/includes/he
             <div class="col-lg-8">
                 <div class="text-center">
                     <ul class="d-inline-flex align-items-center justify-content-center tw-gap-2 bg-white-08 rounded-pill tw-px-5 tw-py-2">
-                        <li><a href="<?= BASE_URL ?>/index.php" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
+                        <li><a href="<?= url('index') ?>" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
                         <li class="text-white tw-text-lg">/</li>
                         <li> <span class="text-white"> Project Details </span> </li>
                     </ul>

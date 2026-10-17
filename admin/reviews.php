@@ -39,7 +39,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/reviews.php');
+    redirect(BASE_URL . '/admin/reviews');
 }
 
 $reviews = db()->fetchAll(
@@ -58,7 +58,7 @@ require_once __DIR__ . '/sidebar.php';
         <p class="text-muted font-size-13 mb-0">Approve, feature, and moderate user ratings and testimonials displayed on the homepage.</p>
     </div>
     <div>
-        <a href="<?= BASE_URL ?>/reviews.php" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-3">
+        <a href="<?= url('reviews') ?>" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-3">
             <i class="ph ph-arrow-square-out me-1"></i> Public Reviews Page
         </a>
     </div>

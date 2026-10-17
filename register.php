@@ -25,8 +25,14 @@ if ($refCode !== '') {
     $referrerUser = db()->fetch("SELECT id, full_name FROM users WHERE referral_code = ?", [$refCode]);
 }
 
+// Admins can close registration from Settings → Site Access. Team-invite
+// signups are always allowed so invited members can still join.
+$registrationClosed = (get_setting('registration_open', '1') === '0') && !$inviteData;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!csrf_verify()) {
+    if ($registrationClosed) {
+        $errors[] = 'Registration is currently closed. Please check back later or contact support.';
+    } elseif (!csrf_verify()) {
         $errors[] = 'Invalid security token. Please try again.';
     } else {
         $fullName    = trim($_POST['full_name'] ?? '');
@@ -72,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'referral_code'      => $referralCode,
                 'onboarding_completed' => 0,
                 'status'             => 'active',
+                'ai_credits'         => max(0, (int)get_setting('signup_ai_credits', '100')),
             ]);
 
             // Link referral if registered via referral code
@@ -102,17 +109,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $siteName = get_setting('site_name', 'Adsbooster.net');
             $subject  = "Welcome to {$siteName}!";
-            $body     = "Hi {$fullName},\n\nYour account has been created. Start exploring your dashboard:\n\n" . BASE_URL . "/dashboard.php\n\n– The {$siteName} Team";
+            $body     = "Hi {$fullName},\n\nYour account has been created. Start exploring your dashboard:\n\n" . BASE_URL . "/dashboard.php\n\nâ€“ The {$siteName} Team";
             mail($email, $subject, $body);
 
             auth_login(db()->fetch("SELECT * FROM users WHERE id = ?", [$userId]));
 
-            redirect(BASE_URL . '/onboarding.php');
+            redirect(url('onboarding'));
         }
     }
 }
 
-$pageTitle = 'Register — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Register â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -154,7 +161,15 @@ require_once __DIR__ . '/includes/header.php';
             <?php unset($_SESSION['flash_error']); ?>
         <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/register.php<?= $inviteToken ? '?invite=' . e($inviteToken) : '' ?>" class="auth-form">
+        <?php if ($registrationClosed): ?>
+            <div class="alert" style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.4);color:#fbbf24;border-radius:14px;padding:26px 22px;text-align:center;" role="alert">
+                <i class="ph-bold ph-lock" style="font-size:30px;display:block;margin-bottom:10px;"></i>
+                <h5 class="fw-bold mb-2">Registration is currently closed</h5>
+                <p class="mb-3" style="font-size:13.5px;opacity:.9;">New accounts are temporarily disabled. Please check back later or <a href="<?= url('contact') ?>" style="color:#fff;text-decoration:underline;">contact support</a> for early access.</p>
+                <a href="<?= url('login') ?>" class="btn btn-main rounded-pill px-4 py-2 fw-semibold">Log in instead</a>
+            </div>
+        <?php else: ?>
+        <form method="POST" action="<?= url('register') . ($inviteToken ? '?invite=' . e($inviteToken) : '') ?>" class="auth-form">
             <?= csrf_field() ?>
             <input type="hidden" name="ref_code" value="<?= htmlspecialchars($refCode) ?>">
 
@@ -192,8 +207,8 @@ require_once __DIR__ . '/includes/header.php';
                     <input type="checkbox" id="accept_terms" name="accept_terms" value="1"
                         class="form-check-input tw-border-neutral-700" required>
                     <label for="accept_terms" class="form-check-label text-white-50 tw-text-sm">
-                        I agree to the <a href="<?= BASE_URL ?>/terms.php" class="text-main-600 text-decoration-underline" target="_blank">Terms of Service</a>
-                        and <a href="<?= BASE_URL ?>/privacy.php" class="text-main-600 text-decoration-underline" target="_blank">Privacy Policy</a>
+                        I agree to the <a href="<?= url('terms') ?>" class="text-main-600 text-decoration-underline" target="_blank">Terms of Service</a>
+                        and <a href="<?= url('privacy') ?>" class="text-main-600 text-decoration-underline" target="_blank">Privacy Policy</a>
                     </label>
                 </div>
             </div>
@@ -223,9 +238,10 @@ require_once __DIR__ . '/includes/header.php';
 
             <p class="text-white-50 tw-mt-6">
                 Already have an account?
-                <a href="<?= BASE_URL ?>/login.php" class="text-main-600 fw-semibold text-decoration-underline">Log in</a>
+                <a href="<?= url('login') ?>" class="text-main-600 fw-semibold text-decoration-underline">Log in</a>
             </p>
         </div>
+        <?php endif; ?>
     </div>
 </section>
 

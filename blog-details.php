@@ -4,7 +4,7 @@ require_once __DIR__ . '/config/site_setting_and_config.php';
 
 $slug = trim($_GET['slug'] ?? $_GET['id'] ?? '');
 if (empty($slug)) {
-    redirect(BASE_URL . '/blog.php');
+    redirect(url('blog'));
 }
 
 $post = db()->fetchOne(
@@ -17,7 +17,7 @@ $post = db()->fetchOne(
 );
 
 if (!$post) {
-    redirect(BASE_URL . '/blog.php');
+    redirect(url('blog'));
 }
 
 // Increment views counter
@@ -63,9 +63,9 @@ require_once __DIR__ . '/includes/header.php';
         <!-- Breadcrumb & Category Header -->
         <div class="mb-4">
             <div class="d-flex align-items-center gap-2 text-white-50 font-size-13 mb-3">
-                <a href="<?= BASE_URL ?>/index.php" class="text-white-50 text-decoration-none hover-text-main-600">Home</a>
+                <a href="<?= url('index') ?>" class="text-white-50 text-decoration-none hover-text-main-600">Home</a>
                 <span>/</span>
-                <a href="<?= BASE_URL ?>/blog.php" class="text-white-50 text-decoration-none hover-text-main-600">Blog</a>
+                <a href="<?= url('blog') ?>" class="text-white-50 text-decoration-none hover-text-main-600">Blog</a>
                 <span>/</span>
                 <span class="text-main-600"><?= e($post['category'] ?? 'Insights') ?></span>
             </div>
@@ -75,7 +75,7 @@ require_once __DIR__ . '/includes/header.php';
                     <?= e($post['title']) ?>
                 </h1>
                 <?php if ($canEdit): ?>
-                    <a href="<?= BASE_URL ?>/blog-edit.php?id=<?= $post['id'] ?>" class="btn btn-outline-warning rounded-pill px-3 font-size-13 d-flex align-items-center gap-1">
+                    <a href="<?= url('blog-edit') . '?id=' . $post['id'] ?>" class="btn btn-outline-warning rounded-pill px-3 font-size-13 d-flex align-items-center gap-1">
                         <i class="ph ph-pencil-simple"></i> Edit Article
                     </a>
                 <?php endif; ?>
@@ -125,7 +125,7 @@ require_once __DIR__ . '/includes/header.php';
                             $cleanTag = trim($t);
                             if (empty($cleanTag)) continue;
                         ?>
-                            <a href="<?= BASE_URL ?>/blog.php?q=<?= urlencode($cleanTag) ?>" class="badge bg-white-06 text-white border border-neutral-700 px-3 py-2 rounded-pill font-size-12 text-decoration-none hover-border-main-600">
+                            <a href="<?= url('blog') . '?q=' . urlencode($cleanTag) ?> ?>" class="badge bg-white-06 text-white border border-neutral-700 px-3 py-2 rounded-pill font-size-12 text-decoration-none hover-border-main-600">
                                 #<?= e($cleanTag) ?>
                             </a>
                         <?php endforeach; ?>
@@ -155,7 +155,7 @@ require_once __DIR__ . '/includes/header.php';
                         </h6>
                         <div class="d-flex flex-column gap-2">
                             <?php foreach ($categories as $cat): ?>
-                                <a href="<?= BASE_URL ?>/blog.php?category=<?= urlencode($cat['category']) ?>" 
+                                <a href="<?= url('blog') . '?category=' . urlencode($cat['category']) ?> ?>" 
                                    class="d-flex align-items-center justify-content-between text-decoration-none py-2 px-3 rounded-3 bg-dark border border-neutral-800 text-white-50 hover-text-white transition">
                                     <span class="font-size-13"><?= e($cat['category']) ?></span>
                                     <span class="badge bg-main-600 text-black font-size-10 rounded-pill"><?= $cat['cnt'] ?></span>
@@ -174,7 +174,7 @@ require_once __DIR__ . '/includes/header.php';
                                 $rImg = !empty($r['featured_image']) ? $r['featured_image'] : 'images/thumbs/blog-page-img1.png';
                                 $rImgSrc = str_starts_with($rImg, 'http') ? $rImg : ASSETS_URL . '/' . $rImg;
                             ?>
-                                <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($r['slug']) ?>" class="d-flex gap-3 text-decoration-none group">
+                                <a href="<?= url('blog-details', ['slug' => $r['slug']]) ?>" class="d-flex gap-3 text-decoration-none group">
                                     <img src="<?= e($rImgSrc) ?>" class="rounded-3" style="width:70px; height:54px; object-fit:cover; flex-shrink:0;">
                                     <div style="min-width:0;">
                                         <h6 class="text-white font-size-13 fw-semibold mb-1 line-clamp-2"><?= e($r['title']) ?></h6>
@@ -190,7 +190,7 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="ph-bold ph-rocket text-main-600 fs-1 mb-2 d-inline-block"></i>
                         <h5 class="text-white fw-bold mb-2">Automate Your Ads</h5>
                         <p class="text-white-50 font-size-13 mb-3">Launch cross-platform campaigns on Meta, TikTok, and Google Ads with one unified budget.</p>
-                        <a href="<?= BASE_URL ?>/create-ad.php" class="btn btn-main rounded-pill w-100 fw-bold font-size-13">Start Scaling &rarr;</a>
+                        <a href="<?= url('create-ad') ?>" class="btn btn-main rounded-pill w-100 fw-bold font-size-13">Start Scaling &rarr;</a>
                     </div>
                 </div>
             </div>

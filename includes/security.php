@@ -500,11 +500,23 @@ if (!function_exists('ca_bundle_available')) {
 
 if (!function_exists('ca_curl_opts')) {
     /**
-     * Curl options to attach to a request. Returns an empty array when no
-     * bundle is available so cURL falls back to its own defaults — passing
-     * CURLOPT_CAINFO with an empty string would make every request fail.
+     * Curl options to attach to a request, keyed by CURLOPT_* constant.
      *
-     * Usage: curl_setopt_array($ch, array_merge($opts, ca_curl_opts()));
+     * ⚠ NEVER spread this into an array literal (`...ca_curl_opts()`) and
+     * never `array_merge()` it. Both renumber integer keys, which silently
+     * turns CURLOPT_SSL_VERIFYPEER(64) into a meaningless id like 1000.
+     * cURL then throws "must contain only valid cURL options", and any code
+     * that catches it quietly degrades to fake data.
+     *
+     * Correct usage — apply straight onto the handle:
+     *
+     *     $ch = curl_init($url);
+     *     curl_setopt_array($ch, $opts);
+     *     ca_curl_setopt($ch);
+     *
+     * or, if you must merge, use the union operator (left side wins):
+     *
+     *     curl_setopt_array($ch, $opts + ca_curl_opts());
      */
     function ca_curl_opts(): array
     {
@@ -523,6 +535,26 @@ if (!function_exists('ca_curl_opts')) {
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_CAINFO         => $bundle,
         ];
+    }
+}
+
+if (!function_exists('ca_curl_setopt')) {
+    /**
+     * Apply the TLS options onto a cURL handle. This is the safe way to use
+     * ca_curl_opts() — it never touches array keys, so it cannot be broken by
+     * spread/array_merge semantics.
+     *
+     * Returns the handle so it can be used inline: $ch = ca_curl_setopt($ch);
+     */
+    function ca_curl_setopt($ch)
+    {
+        if (!is_resource($ch) && !is_object($ch)) {
+            return $ch;
+        }
+        foreach (ca_curl_opts() as $opt => $val) {
+            curl_setopt($ch, (int)$opt, $val);
+        }
+        return $ch;
     }
 }
 

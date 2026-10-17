@@ -137,7 +137,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="page-subtitle">Get direct help, open tickets, and track resolution progress.</p>
         </div>
         <div>
-            <a href="<?= BASE_URL ?>/dashboard.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('dashboard') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-arrow-left"></i> Dashboard
             </a>
         </div>
@@ -158,7 +158,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <!-- Ticket Thread View -->
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
-                    <a href="<?= BASE_URL ?>/tickets.php" class="text-main-600 small text-decoration-none">
+                    <a href="<?= url('tickets') ?>" class="text-main-600 small text-decoration-none">
                         <i class="ph-bold ph-arrow-left me-1"></i>Back to Tickets
                     </a>
                     <h4 class="text-white fw-bold mb-0 mt-1"><?= e($viewTicket['subject']) ?></h4>
@@ -268,7 +268,7 @@ require_once __DIR__ . '/includes/app_header.php';
                     </div>
                 <?php else: ?>
                     <?php foreach ($tickets as $t): ?>
-                        <a href="<?= BASE_URL ?>/tickets.php?view=<?= (int)$t['id'] ?>" class="text-decoration-none">
+                        <a href="<?= url('tickets') ?>?view=<?= (int)$t['id'] ?>" class="text-decoration-none">
                             <div class="ticket-card rounded-3 p-3 mb-3 priority-<?= e($t['priority']) ?>">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div>

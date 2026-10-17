@@ -55,7 +55,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">7. Subscriptions, Credits &amp; Refunds</h3>
             <p>
-                Subscription plans (Starter, Growth, Agency Pro, Enterprise) are billed on a recurring monthly or annual basis. Credits purchased for AI video rendering, image generation, automated buying, or directory promotions are non-refundable once consumed. Subscriptions may be canceled at any time prior to the next billing cycle through the <a href="<?= BASE_URL ?>/billing.php" class="text-main-600 text-decoration-underline">Billing Center</a>.
+                Subscription plans (Starter, Growth, Agency Pro, Enterprise) are billed on a recurring monthly or annual basis. Credits purchased for AI video rendering, image generation, automated buying, or directory promotions are non-refundable once consumed. Subscriptions may be canceled at any time prior to the next billing cycle through the <a href="<?= url('billing') ?>" class="text-main-600 text-decoration-underline">Billing Center</a>.
             </p>
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">8. Marketplace, Escrow &amp; P2P Contracts</h3>
@@ -85,7 +85,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="tw-mt-8 pt-4 border-top border-neutral-800 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <span class="text-white-50 tw-text-xs">Questions or legal inquiries? Contact <a href="mailto:legal@adsbooster.net" class="text-main-600">legal@adsbooster.net</a></span>
-                <a href="<?= BASE_URL ?>/privacy.php" class="text-main-600 fw-semibold tw-text-sm">Read Privacy Policy &rarr;</a>
+                <a href="<?= url('privacy') ?>" class="text-main-600 fw-semibold tw-text-sm">Read Privacy Policy &rarr;</a>
             </div>
         </div>
     </div>

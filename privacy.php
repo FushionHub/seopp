@@ -45,7 +45,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">5. User Data Rights (GDPR &amp; CCPA)</h3>
             <p>
-                Under applicable privacy laws, you have the right to access, rectify, export, or delete your personal data. Registered users can download a complete JSON archive of all personal records or request immediate account purging at any time via the <a href="<?= BASE_URL ?>/privacy-center.php" class="text-main-600 text-decoration-underline">Privacy &amp; Data Center</a>.
+                Under applicable privacy laws, you have the right to access, rectify, export, or delete your personal data. Registered users can download a complete JSON archive of all personal records or request immediate account purging at any time via the <a href="<?= url('privacy-center') ?>" class="text-main-600 text-decoration-underline">Privacy &amp; Data Center</a>.
             </p>
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">6. Security Measures</h3>
@@ -55,7 +55,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="tw-mt-8 pt-4 border-top border-neutral-800 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <span class="text-white-50 tw-text-xs">Data Protection Officer: <a href="mailto:dpo@adsbooster.net" class="text-main-600">privacy@adsbooster.net</a></span>
-                <a href="<?= BASE_URL ?>/terms.php" class="text-main-600 fw-semibold tw-text-sm">&larr; Read Terms of Service</a>
+                <a href="<?= url('terms') ?>" class="text-main-600 fw-semibold tw-text-sm">&larr; Read Terms of Service</a>
             </div>
         </div>
     </div>

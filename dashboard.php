@@ -262,12 +262,6 @@ if (time() > $promptDismissed) {
             </div>
             <span style="font-size:13px;font-weight:600">E-Com Sync</span>
         </a>
-        <a href="<?= url('social-inbox') ?>" class="platform-card" style="flex-direction:column;text-align:center;padding:18px 12px;gap:10px">
-            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue-dim);display:flex;align-items:center;justify-content:center">
-                <i class="ph ph-chats-circle" style="font-size:22px;color:var(--blue)"></i>
-            </div>
-            <span style="font-size:13px;font-weight:600">Social Closer</span>
-        </a>
         <a href="<?= url('bounties') ?>" class="platform-card" style="flex-direction:column;text-align:center;padding:18px 12px;gap:10px">
             <div style="width:42px;height:42px;border-radius:10px;background:rgba(200,255,0,0.15);display:flex;align-items:center;justify-content:center">
                 <i class="ph ph-hand-coins" style="font-size:22px;color:var(--accent)"></i>

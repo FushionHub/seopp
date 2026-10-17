@@ -7,7 +7,7 @@
             <div class="d-flex align-items-start tw-gap-10 justify-content-between">
                 <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
                     <div class="">
-                    <a href="<?= BASE_URL ?>/index.php" class="d-flex align-items-center tw-gap-2">
+                    <a href="<?= url('index') ?>" class="d-flex align-items-center tw-gap-2">
                         <div class="tw-w-10 tw-h-10 bg-main-600 rounded-circle d-flex align-items-center justify-content-center">
                             <i class="ph-bold ph-arrow-up-right text-black tw-text-lg"></i>
                         </div>
@@ -53,12 +53,12 @@
             <!-- Legal links — required for Terms / Privacy / DMCA discoverability -->
             <div class="tw-pt-10" style="border-top:1px solid rgba(255,255,255,.08);">
                 <ul class="d-flex align-items-center justify-content-center flex-wrap tw-gap-4 tw-mb-4 tw-mb-0" style="list-style:none;padding:0;margin-bottom:14px;">
-                    <li><a href="<?= BASE_URL ?>/terms.php" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Terms of Service</a></li>
-                    <li><a href="<?= BASE_URL ?>/privacy.php" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Privacy Policy</a></li>
-                    <li><a href="<?= BASE_URL ?>/ai-disclaimer.php" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">AI &amp; Advertising Disclaimer</a></li>
-                    <li><a href="<?= BASE_URL ?>/dmca.php" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Copyright &amp; DMCA</a></li>
-                    <li><a href="<?= BASE_URL ?>/refund-policy.php" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Billing &amp; Refunds</a></li>
-                    <li><a href="<?= BASE_URL ?>/cookie-policy.php" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Cookie Policy</a></li>
+                    <li><a href="<?= url('terms') ?>" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Terms of Service</a></li>
+                    <li><a href="<?= url('privacy') ?>" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Privacy Policy</a></li>
+                    <li><a href="<?= url('ai-disclaimer') ?>" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">AI &amp; Advertising Disclaimer</a></li>
+                    <li><a href="<?= url('dmca') ?>" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Copyright &amp; DMCA</a></li>
+                    <li><a href="<?= url('refund-policy') ?>" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Billing &amp; Refunds</a></li>
+                    <li><a href="<?= url('cookie-policy') ?>" class="tw-text-sm text-white-50 hover-text-main-600 text-decoration-none">Cookie Policy</a></li>
                 </ul>
             </div>
             <div class="tw-pt-8 tw-pb-12 text-center">

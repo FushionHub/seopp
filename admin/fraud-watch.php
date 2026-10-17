@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/fraud-watch.php');
+    redirect(url('admin/fraud-watch'));
 }
 
 $filterStatus = $_GET['status'] ?? '';

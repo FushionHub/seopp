@@ -10,7 +10,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
             <div class="col-lg-8">
                 <div class="text-center">
                     <ul class="d-inline-flex align-items-center justify-content-center tw-gap-2 bg-white-08 rounded-pill tw-px-5 tw-py-2">
-                        <li><a href="<?= BASE_URL ?>/index.php" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
+                        <li><a href="<?= url('index') ?>" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
                         <li class="text-white tw-text-lg">/</li>
                         <li> <span class="text-white"> Our Projects </span> </li>
                     </ul>
@@ -31,7 +31,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                             <div class="col-md-6">
                                 <div class="bg-white tw-rounded-xl tw-p-6 image-double-animation h-100 common-shadow-5"
                                     data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
-                                    <a href="<?= BASE_URL ?>/project-details.php"
+                                    <a href="<?= url('project-details') ?>"
                                         class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                                         <img src="<?= ASSETS_URL ?>/images/thumbs/project-two-img1.png" alt="Image"
                                             class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -44,7 +44,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     </a>
                                     <div class="tw-pt-6">
                                         <h2 class="h6 tw-mb-4">
-                                            <a href="<?= BASE_URL ?>/project-details.php"
+                                            <a href="<?= url('project-details') ?>"
                                                 class="text-heading hover-text-main-600">Omnichannel ROAS Scaling</a>
                                         </h2>
                                         <p class="text-neutral-500 fw-normal tw-text-lg">
@@ -56,7 +56,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                             <div class="col-md-6">
                                 <div class="bg-white tw-rounded-xl tw-p-6 image-double-animation h-100 common-shadow-5"
                                     data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-                                    <a href="<?= BASE_URL ?>/project-details.php"
+                                    <a href="<?= url('project-details') ?>"
                                         class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                                         <img src="<?= ASSETS_URL ?>/images/thumbs/project-two-img2.png" alt="Image"
                                             class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -69,7 +69,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     </a>
                                     <div class="tw-pt-6">
                                         <h2 class="h6 tw-mb-4">
-                                            <a href="<?= BASE_URL ?>/ugc-generator.php" class="text-heading hover-text-main-600">
+                                            <a href="<?= url('ugc-generator') ?>" class="text-heading hover-text-main-600">
                                                 AI UGC Video Creative Engine
                                             </a>
                                         </h2>
@@ -82,7 +82,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                             <div class="col-md-6">
                                 <div class="bg-white tw-rounded-xl tw-p-6 image-double-animation h-100 common-shadow-5"
                                     data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
-                                    <a href="<?= BASE_URL ?>/marketplace.php"
+                                    <a href="<?= url('marketplace') ?>"
                                         class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                                         <img src="<?= ASSETS_URL ?>/images/thumbs/project-two-img3.png" alt="Image"
                                             class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -95,7 +95,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     </a>
                                     <div class="tw-pt-6">
                                         <h2 class="h6 tw-mb-4">
-                                            <a href="<?= BASE_URL ?>/marketplace.php"
+                                            <a href="<?= url('marketplace') ?>"
                                                 class="text-heading hover-text-main-600">Verified Business Directory</a>
                                         </h2>
                                         <p class="text-neutral-500 fw-normal tw-text-lg">
@@ -107,7 +107,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                             <div class="col-md-6">
                                 <div class="bg-white tw-rounded-xl tw-p-6 image-double-animation h-100 common-shadow-5"
                                     data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
-                                    <a href="<?= BASE_URL ?>/create-ad.php"
+                                    <a href="<?= url('create-ad') ?>"
                                         class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                                         <img src="<?= ASSETS_URL ?>/images/thumbs/project-two-img4.png" alt="Image"
                                             class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -120,7 +120,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     </a>
                                     <div class="tw-pt-6">
                                         <h2 class="h6 tw-mb-4">
-                                            <a href="<?= BASE_URL ?>/create-ad.php"
+                                            <a href="<?= url('create-ad') ?>"
                                                 class="text-heading hover-text-main-600">Performance Max Automation</a>
                                         </h2>
                                         <p class="text-neutral-500 fw-normal tw-text-lg">
@@ -132,7 +132,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                             <div class="col-md-6">
                                 <div class="bg-white tw-rounded-xl tw-p-6 image-double-animation h-100 common-shadow-5"
                                     data-aos="fade-up" data-aos-duration="800" data-aos-delay="500">
-                                    <a href="<?= BASE_URL ?>/project-details.php"
+                                    <a href="<?= url('project-details') ?>"
                                         class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                                         <img src="<?= ASSETS_URL ?>/images/thumbs/project-two-img1.png" alt="Image"
                                             class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -145,7 +145,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     </a>
                                     <div class="tw-pt-6">
                                         <h2 class="h6 tw-mb-4">
-                                            <a href="<?= BASE_URL ?>/dashboard.php" class="text-heading hover-text-main-600">Autonomous Campaign Doctor</a>
+                                            <a href="<?= url('dashboard') ?>" class="text-heading hover-text-main-600">Autonomous Campaign Doctor</a>
                                         </h2>
                                         <p class="text-neutral-500 fw-normal tw-text-lg">
                                             24/7 algorithmic monitoring detecting CPA spikes, shifting budgets dynamically, and pausing fatigued ad sets.
@@ -156,7 +156,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                             <div class="col-md-6">
                                 <div class="bg-white tw-rounded-xl tw-p-6 image-double-animation h-100 common-shadow-5"
                                     data-aos="fade-up" data-aos-duration="800" data-aos-delay="600">
-                                    <a href="<?= BASE_URL ?>/send-email.php"
+                                    <a href="<?= url('send-email') ?>"
                                         class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                                         <img src="<?= ASSETS_URL ?>/images/thumbs/project-two-img2.png" alt="Image"
                                             class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
@@ -169,7 +169,7 @@ $pageTitle = 'Projects - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     </a>
                                     <div class="tw-pt-6">
                                         <h2 class="h6 tw-mb-4">
-                                            <a href="<?= BASE_URL ?>/send-email.php" class="text-heading hover-text-main-600">HTML Email Outreach Studio</a>
+                                            <a href="<?= url('send-email') ?>" class="text-heading hover-text-main-600">HTML Email Outreach Studio</a>
                                         </h2>
                                         <p class="text-neutral-500 fw-normal tw-text-lg">
                                             Integrated PHPMailer transport and CKEditor 5 for direct B2B partnership outreach and automated subscriber engagement.

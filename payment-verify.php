@@ -78,8 +78,8 @@ try {
 
 if ($verified) {
     set_flash('success', $message);
-    redirect(BASE_URL . '/dashboard.php');
+    redirect(url('dashboard'));
 } else {
     set_flash('error', $message);
-    redirect(BASE_URL . '/checkout.php');
+    redirect(url('checkout'));
 }

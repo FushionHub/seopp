@@ -14,7 +14,7 @@ $members = db()->fetchAll("SELECT * FROM users WHERE role != 'admin' ORDER BY id
             <div class="col-lg-8">
                 <div class="text-center">
                     <ul class="d-inline-flex align-items-center justify-content-center tw-gap-2 bg-white-08 rounded-pill tw-px-5 tw-py-2">
-                        <li><a href="<?= BASE_URL ?>/index.php" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
+                        <li><a href="<?= url('index') ?>" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
                         <li class="text-white tw-text-lg">/</li>
                         <li> <span class="text-white"> Team </span> </li>
                     </ul>
@@ -57,7 +57,7 @@ $members = db()->fetchAll("SELECT * FROM users WHERE role != 'admin' ORDER BY id
                                 class="team-three-item image-double-animation bg-white tw-rounded-xl tw-p-205 d-flex flex-sm-row align-items-sm-center flex-column tw-gap-6 justify-content-between">
                                 <div class="tw-ps-705 tw-py-3 flex-grow-1">
                                     <h2 class="h5 tw-mb-2">
-                                        <a href="<?= BASE_URL ?>/team-details.php?id=<?= $member['id'] ?>"
+                                        <a href="<?= url('team-details') ?>?id=<?= $member['id'] ?>"
                                             class="text-heading fw-semibold hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                             <span class="element-double-animation__element"
                                                 data-content="<?= e($member['name']) ?>"><?= e($member['name']) ?></span>
@@ -91,7 +91,7 @@ $members = db()->fetchAll("SELECT * FROM users WHERE role != 'admin' ORDER BY id
                                     </ul>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <a href="<?= BASE_URL ?>/team-details.php?id=<?= $member['id'] ?>"
+                                    <a href="<?= url('team-details') ?>?id=<?= $member['id'] ?>"
                                         class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
                                         <img src="<?= ASSETS_URL ?>/images/thumbs/<?= e($member['avatar'] ?? 'team-three-img' . (($index % 8) + 1) . '.png') ?>" alt="Image"
                                             class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">

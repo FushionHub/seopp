@@ -56,11 +56,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
         ]);
 
         set_flash('success', "Opportunity '{$title}' posted successfully!");
-        redirect(BASE_URL . '/job-details.php?id=' . $jobId);
+        redirect(url('job-details', ['id' => $jobId]));
     }
 }
 
-$pageTitle = 'Post Job, Bounty or Creative Project — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Post Job, Bounty or Creative Project â€” ' . get_setting('site_name', 'Adsbooster.net');
 $_appPage = 'jobs';
 require_once __DIR__ . '/includes/app_header.php';
 ?>
@@ -74,7 +74,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="text-muted mb-0 font-size-14">Recruit top-tier media buyers, UGC video editors, copywriters, or growth experts.</p>
         </div>
         <div>
-            <a href="<?= BASE_URL ?>/jobs.php" class="btn btn-outline-light rounded-pill px-3 font-size-13">
+            <a href="<?= url('jobs') ?>" class="btn btn-outline-light rounded-pill px-3 font-size-13">
                 <i class="ph ph-arrow-left me-1"></i> Back to Marketplace
             </a>
         </div>
@@ -182,7 +182,7 @@ require_once __DIR__ . '/includes/app_header.php';
                 <button type="submit" class="btn btn-accent rounded-pill px-5 py-2 fw-bold text-dark font-size-15">
                     <i class="ph-bold ph-paper-plane-tilt me-1"></i> Publish Opportunity
                 </button>
-                <a href="<?= BASE_URL ?>/jobs.php" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14">
+                <a href="<?= url('jobs') ?>" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-14">
                     Cancel
                 </a>
             </div>

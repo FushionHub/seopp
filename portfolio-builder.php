@@ -290,593 +290,421 @@ $vcardWebUrl  = BASE_URL . '/vcard.php?u=' . urlencode($usernameSlug);
 $vcardFileUrl = BASE_URL . '/vcard-download.php?u=' . urlencode($usernameSlug);
 ?>
 
-<div class="container-fluid px-0">
+<div class="content-body">
+<div class="container-fluid py-4">
 
-    <!-- Top Action Bar -->
-    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <!-- Page head -->
+    <div class="fl-stagehead">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="badge rounded-pill px-3 py-1 font-size-11 fw-bold" style="background: rgba(200,255,0,0.12); color: var(--accent); border: 1px solid rgba(200,255,0,0.3);">
-                    <i class="ph-bold ph-shield-check me-1"></i> Multi-Format Showcase Studio
-                </span>
-                <span class="text-white-50 font-size-12">Public Portfolio &bull; Digital NFC vCard &bull; RFC 6350 .vcf</span>
+            <div class="pill-row mb-2">
+                <span class="pill on"><i class="ph ph-shield-check"></i> Multi-format showcase studio</span>
+                <span class="pill"><i class="ph ph-address-book"></i> Public portfolio &bull; NFC vCard &bull; RFC 6350 .vcf</span>
             </div>
-            <h1 class="page-title text-white fw-bold mb-1">
-                <i class="ph-bold ph-address-book text-accent me-2"></i> Digital vCard &amp; Portfolio Studio
-            </h1>
-            <p class="text-muted mb-0 font-size-14">
-                Design your luxury public showcase, configure your interactive NFC digital business card, and sync your resume in one place.
-            </p>
+            <h1 class="h3 fw-bold mb-1">Digital vCard &amp; Portfolio Studio</h1>
+            <p class="text-secondary mb-0" style="max-width:78ch">Design your public showcase, configure the interactive NFC business card, and publish your case studies — every change goes live instantly.</p>
         </div>
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-            <a href="<?= e($vcardWebUrl) ?>" target="_blank" class="btn btn-outline-light rounded-pill px-3 py-2 font-size-13 d-flex align-items-center gap-1">
-                <i class="ph-bold ph-wifi-high text-accent"></i> Virtual NFC Card
-            </a>
-            <a href="<?= e($vcardFileUrl) ?>" class="btn btn-outline-light rounded-pill px-3 py-2 font-size-13 d-flex align-items-center gap-1">
-                <i class="ph-bold ph-download-simple"></i> Download .vcf
-            </a>
-            <a href="<?= e($shareUrl) ?>" target="_blank" class="btn btn-accent rounded-pill px-4 py-2 font-size-13 text-dark fw-bold d-flex align-items-center gap-1">
-                <i class="ph-bold ph-arrow-square-out"></i> Live Portfolio
-            </a>
+        <div class="pill-row">
+            <a href="<?= e($vcardWebUrl) ?>" target="_blank" rel="noopener" class="fl-act"><i class="ph ph-wifi-high"></i> Virtual NFC card</a>
+            <a href="<?= e($vcardFileUrl) ?>" class="fl-act"><i class="ph ph-download-simple"></i> Download .vcf</a>
+            <a href="<?= e($shareUrl) ?>" target="_blank" rel="noopener" class="fl-act pri"><i class="ph ph-arrow-square-out"></i> Live portfolio</a>
         </div>
     </div>
 
-    <!-- Feedback Alerts -->
     <?php if (!empty($success)): ?>
-        <div class="alert alert-success bg-success bg-opacity-10 border border-success border-opacity-25 text-success rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div class="d-flex align-items-center gap-2">
-                <i class="ph-bold ph-check-circle font-size-20"></i>
-                <span><?= e($success) ?></span>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <a href="<?= e($shareUrl) ?>" target="_blank" class="btn btn-sm btn-success rounded-pill px-3 py-1 font-size-12 fw-bold text-dark">
-                    View Portfolio <i class="ph ph-arrow-square-out ms-1"></i>
-                </a>
-                <a href="<?= e($vcardWebUrl) ?>" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 font-size-12">
-                    Open Digital vCard <i class="ph ph-address-book ms-1"></i>
-                </a>
+        <div class="fl-alert ok">
+            <i class="ph ph-check-circle"></i>
+            <div style="flex:1"><?= e($success) ?></div>
+            <div class="pill-row" style="flex:0 0 auto">
+                <a href="<?= e($shareUrl) ?>" target="_blank" rel="noopener" class="fl-act" style="padding:5px 12px;font-size:11.5px">View portfolio <i class="ph ph-arrow-square-out"></i></a>
+                <a href="<?= e($vcardWebUrl) ?>" target="_blank" rel="noopener" class="fl-act" style="padding:5px 12px;font-size:11.5px">Open digital vCard</a>
             </div>
         </div>
     <?php endif; ?>
 
     <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger bg-danger bg-opacity-10 border border-danger border-opacity-25 text-danger rounded-4 p-3 mb-4">
-            <ul class="mb-0 ps-3">
-                <?php foreach ($errors as $err): ?>
-                    <li><?= e($err) ?></li>
-                <?php endforeach; ?>
-            </ul>
+        <div class="fl-alert bad">
+            <i class="ph ph-warning-circle"></i>
+            <div>
+                <div style="font-weight:700;margin-bottom:4px">We couldn't publish that</div>
+                <ul style="margin:0;padding-left:16px">
+                    <?php foreach ($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?>
+                </ul>
+            </div>
         </div>
     <?php endif; ?>
 
-    <!-- Dedicated URL & Sharing Bar -->
-    <div class="card-dark rounded-4 p-4 mb-4 border d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-        <div class="d-flex align-items-center gap-3">
-            <div style="width:48px;height:48px;border-radius:14px;background:rgba(200,255,0,0.12);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;">
-                <i class="ph-bold ph-link font-size-24"></i>
+    <!-- Share bar -->
+    <div class="fl-panel" style="max-height:none;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:14px;min-width:0">
+            <div style="width:46px;height:46px;border-radius:14px;background:var(--accent-dim,rgba(200,255,0,.12));color:var(--accent,#c8ff00);display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+                <i class="ph-bold ph-link" style="font-size:22px"></i>
             </div>
-            <div>
-                <span class="font-size-12 d-block text-white-50">Your Dedicated Public Showcase &amp; vCard Link</span>
-                <span class="fw-bold font-size-15 font-monospace" style="color:var(--accent);"><?= e($shareUrl) ?></span>
+            <div style="min-width:0">
+                <div style="font-size:11.5px;color:var(--fg3,#64748b);font-weight:700;letter-spacing:.06em;text-transform:uppercase">Your dedicated public showcase</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:700;color:var(--accent,#c8ff00);word-break:break-all"><?= e($shareUrl) ?></div>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <button type="button" onclick="navigator.clipboard.writeText('<?= e($shareUrl) ?>'); alert('Portfolio link copied to clipboard!');" class="btn btn-outline-light rounded-pill px-3 py-2 font-size-13">
-                <i class="ph ph-copy me-1"></i> Copy Portfolio URL
-            </button>
-            <button type="button" onclick="navigator.clipboard.writeText('<?= e($vcardWebUrl) ?>'); alert('Digital NFC vCard link copied to clipboard!');" class="btn btn-outline-light rounded-pill px-3 py-2 font-size-13">
-                <i class="ph ph-share-network me-1"></i> Copy NFC vCard URL
-            </button>
+        <div class="pill-row">
+            <button type="button" class="fl-act" data-copy="<?= e($shareUrl) ?>" data-label="Portfolio link copied"><i class="ph ph-copy"></i> Copy portfolio URL</button>
+            <button type="button" class="fl-act" data-copy="<?= e($vcardWebUrl) ?>" data-label="NFC vCard link copied"><i class="ph ph-share-network"></i> Copy NFC vCard URL</button>
         </div>
     </div>
 
-    <!-- Main Workspace: Form & Studio -->
-    <div class="row g-4">
+    <div class="fl-shell" style="grid-template-columns:minmax(280px,340px) minmax(0,1fr);margin-top:16px">
 
-        <!-- Left Column: AI Resume Quick Parser & Tools -->
-        <div class="col-lg-4">
-            <!-- AI Resume Auto-Populator Card -->
-            <div class="card-dark rounded-4 p-4 mb-4 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge rounded-pill px-3 py-1 font-size-11 fw-bold" style="background: rgba(200,255,0,0.15); color: var(--accent); border: 1px solid rgba(200,255,0,0.3);">
-                        <i class="ph-bold ph-magic-wand me-1"></i> Groq AI Powered
-                    </span>
-                    <a href="<?= BASE_URL ?>/resume-analyser.php" class="text-white-50 font-size-12 text-decoration-none hover:text-white">
-                        Full ATS Tool &rarr;
-                    </a>
+        <!-- ── Left: AI import + live card preview ──────────── -->
+        <div style="display:grid;gap:16px;align-content:start">
+            <div class="fl-panel" style="max-height:none">
+                <div class="fl-stagehead" style="margin-bottom:12px">
+                    <span class="pill on" style="font-size:11px"><i class="ph ph-magic-wand"></i> Groq AI powered</span>
+                    <a href="<?= url('resume-analyser') ?>" style="font-size:11.5px;color:var(--fg2,#94a3b8);text-decoration:none">Full ATS tool &rarr;</a>
                 </div>
-
-                <h3 class="h5 text-white fw-bold mb-2">Instant Resume Import</h3>
-                <p class="font-size-13 text-white-50 mb-3" style="line-height: 1.5;">
-                    Upload your resume (.PDF, .DOCX, .TXT) or paste text. Our AI auto-populates your name, headline, skills, and portfolio case studies.
-                </p>
+                <div style="font-size:15px;font-weight:800;color:var(--fg,#fff);margin-bottom:6px">Instant resume import</div>
+                <p class="fl-help" style="margin:0 0 14px">Upload a resume or paste text — the AI auto-populates your name, headline, skills and case studies below.</p>
 
                 <form method="POST" enctype="multipart/form-data">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="parse_resume">
-
-                    <div class="mb-3">
-                        <label class="form-label font-size-12 text-white fw-semibold">Upload Resume File</label>
-                        <input type="file" name="resume_file" accept=".pdf,.docx,.txt" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:8px;">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label font-size-12 text-white fw-semibold">Or Paste Resume Text</label>
-                        <textarea name="resume_text" rows="4" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" placeholder="Paste resume, LinkedIn summary, or experience..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-accent rounded-pill w-100 py-2 fw-bold text-dark font-size-13 d-flex align-items-center justify-content-center gap-1">
-                        <i class="ph-bold ph-sparkle"></i> Auto-Generate Portfolio &amp; vCard
-                    </button>
+                    <label class="cv-label" for="pbFile">Resume file</label>
+                    <input type="file" name="resume_file" id="pbFile" accept=".pdf,.docx,.txt" class="fl-in" style="padding:9px 12px;margin-bottom:12px">
+                    <label class="cv-label" for="pbText">Or paste the text</label>
+                    <textarea name="resume_text" id="pbText" rows="4" class="fl-in" style="min-height:96px;margin-bottom:12px" placeholder="Paste a resume, LinkedIn summary, or experience…"></textarea>
+                    <button type="submit" class="fl-go" style="margin-top:0"><i class="ph ph-sparkle"></i> Auto-generate portfolio &amp; vCard</button>
                 </form>
             </div>
 
-            <!-- Mini Live Digital NFC Card Preview -->
-            <div class="card-dark rounded-4 p-4 border text-center" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="text-white-50 font-size-12 fw-semibold">Interactive Card Preview</span>
-                    <a href="<?= e($vcardWebUrl) ?>" target="_blank" class="font-size-12 text-accent text-decoration-none">
-                        Open Fullscreen <i class="ph ph-arrow-square-out ms-1"></i>
-                    </a>
+            <div class="fl-panel" style="max-height:none">
+                <div class="fl-stagehead" style="margin-bottom:12px">
+                    <div class="t" style="font-size:13px">Interactive card preview</div>
+                    <a href="<?= e($vcardWebUrl) ?>" target="_blank" rel="noopener" style="font-size:11.5px;color:var(--accent,#c8ff00);text-decoration:none">Open fullscreen <i class="ph ph-arrow-square-out"></i></a>
                 </div>
 
-                <!-- Card Graphic Preview -->
-                <div id="miniNfcCardPreview" class="rounded-4 p-3 mb-3 text-start position-relative overflow-hidden" style="background: linear-gradient(135deg, #131d2e 0%, #080c14 100%); border: 1.5px solid rgba(200,255,0,0.35); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: all 0.3s ease;">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div style="width:32px;height:24px;border-radius:4px;background:linear-gradient(135deg, #ffd700, #b8860b);border:1px solid rgba(255,255,255,0.4);"></div>
-                        <i id="miniNfcWave" class="ph-bold ph-wifi-high text-accent font-size-18" style="transition: color 0.3s ease;"></i>
+                <div id="miniNfcCardPreview" style="border-radius:16px;padding:16px;background:linear-gradient(135deg,#131d2e 0%,#080c14 100%);border:1.5px solid rgba(200,255,0,.35);box-shadow:0 14px 34px rgba(0,0,0,.5);transition:all .3s ease">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                        <div style="width:34px;height:25px;border-radius:5px;background:linear-gradient(135deg,#ffd700,#b8860b);border:1px solid rgba(255,255,255,.4)"></div>
+                        <i id="miniNfcWave" class="ph-bold ph-wifi-high" style="color:var(--accent,#c8ff00);font-size:18px;transition:color .3s ease"></i>
                     </div>
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <div id="miniNfcAvatarRing" class="rounded-circle overflow-hidden flex-shrink-0" style="width:40px;height:40px;border:1.5px solid var(--accent);background:rgba(200,255,0,0.1);display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--accent);transition: all 0.3s ease;">
+                    <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
+                        <div id="miniNfcAvatarRing" style="width:42px;height:42px;border-radius:50%;border:1.5px solid var(--accent,#c8ff00);background:rgba(200,255,0,.1);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent,#c8ff00);transition:all .3s ease;flex:0 0 auto">
                             <?= strtoupper(substr($portfolio['display_name'] ?? $user['full_name'], 0, 2)) ?>
                         </div>
-                        <div>
-                            <div class="text-white fw-bold font-size-13 text-truncate" style="max-width: 170px;">
-                                <?= e($portfolio['display_name'] ?? $user['full_name']) ?>
-                            </div>
-                            <div id="miniNfcRole" class="font-size-11" style="color:var(--accent);transition: color 0.3s ease;"><?= e($portfolio['job_title'] ?? 'Growth Marketer') ?></div>
+                        <div style="min-width:0">
+                            <div style="color:#fff;font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px"><?= e($portfolio['display_name'] ?? $user['full_name']) ?></div>
+                            <div id="miniNfcRole" style="font-size:11.5px;color:var(--accent,#c8ff00);transition:color .3s ease"><?= e($portfolio['job_title'] ?? 'Growth Marketer') ?></div>
                         </div>
                     </div>
-                    <div class="font-size-11 text-white-50 pt-2 border-top border-secondary border-opacity-20 d-flex justify-content-between">
-                        <span><i class="ph ph-map-pin me-1"></i> <?= e($portfolio['location'] ?? 'Remote') ?></span>
-                        <span id="miniNfcBadge" class="text-white-75 fw-semibold" style="transition: color 0.3s ease;">NFC Active</span>
+                    <div style="display:flex;justify-content:space-between;gap:8px;padding-top:11px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:var(--fg3,#64748b)">
+                        <span><i class="ph ph-map-pin"></i> <?= e($portfolio['location'] ?? 'Remote') ?></span>
+                        <span id="miniNfcBadge" style="color:var(--fg2,#94a3b8);font-weight:700;transition:color .3s ease">NFC active</span>
                     </div>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <a href="<?= e($vcardWebUrl) ?>" target="_blank" class="btn btn-outline-light rounded-pill w-100 py-2 font-size-12">
-                        <i class="ph-bold ph-qr-code me-1"></i> Test Flip &amp; QR
-                    </a>
-                </div>
+                <a href="<?= e($vcardWebUrl) ?>" target="_blank" rel="noopener" class="fl-act" style="width:100%;justify-content:center;margin-top:12px"><i class="ph ph-qr-code"></i> Test flip &amp; QR</a>
             </div>
         </div>
 
-        <!-- Right Column: Comprehensive Portfolio & vCard Editor -->
-        <div class="col-lg-8">
-            <div class="card-dark rounded-4 p-4 p-md-5 border" style="background: #0d1524 !important; border-color: rgba(255,255,255,0.08) !important;">
-                
-                <h3 class="h4 text-white fw-bold mb-1">Portfolio &amp; Digital vCard Settings</h3>
-                <p class="text-white-50 font-size-13 mb-4">
-                    Customize your design theme, identity, case studies, services, and contact links. All changes apply live to your public portfolio and digital vCard.
-                </p>
-
-                <form method="POST">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="save_portfolio">
-
-                    <!-- 1. Luxury Design Themes Selector -->
-                    <div class="mb-4 pb-3 border-bottom border-secondary border-opacity-15">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <label class="form-label fw-bold text-white mb-0 font-size-14">
-                                <i class="ph-bold ph-palette text-accent me-1"></i> Choose Luxury Design Theme
-                            </label>
-                            <span class="font-size-11 text-white-50">Click any card to preview &amp; select</span>
-                        </div>
-
-                        <style>
-                            .theme-select-card {
-                                background: #080c14;
-                                border: 2px solid rgba(255, 255, 255, 0.1);
-                                border-radius: 14px;
-                                padding: 18px 12px;
-                                text-align: center;
-                                cursor: pointer;
-                                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-                                user-select: none;
-                                position: relative;
-                                height: 100%;
-                            }
-                            .theme-select-card:hover {
-                                transform: translateY(-3px);
-                                border-color: rgba(255, 255, 255, 0.35);
-                            }
-                            .theme-select-card.active {
-                                background: rgba(255, 255, 255, 0.05) !important;
-                            }
-                            .theme-select-card[data-theme="dark_luxury"].active {
-                                border-color: #c8ff00 !important;
-                                box-shadow: 0 0 22px rgba(200, 255, 0, 0.35) !important;
-                            }
-                            .theme-select-card[data-theme="creative_neon"].active {
-                                border-color: #a855f7 !important;
-                                box-shadow: 0 0 22px rgba(168, 85, 247, 0.4) !important;
-                            }
-                            .theme-select-card[data-theme="executive_minimal"].active {
-                                border-color: #38bdf8 !important;
-                                box-shadow: 0 0 22px rgba(56, 189, 248, 0.35) !important;
-                            }
-                            .theme-select-card[data-theme="minimalist_aurora"].active {
-                                border-color: #10b981 !important;
-                                box-shadow: 0 0 22px rgba(16, 185, 129, 0.35) !important;
-                            }
-                        </style>
-
-                        <div class="row g-3">
-                            <!-- Theme 1: Dark Luxury -->
-                            <div class="col-6 col-md-3">
-                                <div class="theme-select-card <?= $curTemplate === 'dark_luxury' ? 'active' : '' ?>"
-                                     data-theme="dark_luxury"
-                                     onclick="selectTheme('dark_luxury')">
-                                    <input type="radio" name="template_style" id="theme_dark_luxury" value="dark_luxury" <?= $curTemplate === 'dark_luxury' ? 'checked' : '' ?> style="position:absolute;opacity:0;pointer-events:none;">
-                                    <div class="rounded-circle mx-auto mb-2" style="width:28px;height:28px;background:#c8ff00;box-shadow:0 0 12px rgba(200,255,0,0.6);"></div>
-                                    <span class="text-white fw-bold font-size-13 d-block">Dark Luxury</span>
-                                    <span class="text-white-50 font-size-10">Obsidian &amp; Lime</span>
-                                </div>
-                            </div>
-
-                            <!-- Theme 2: Cyber Neon -->
-                            <div class="col-6 col-md-3">
-                                <div class="theme-select-card <?= $curTemplate === 'creative_neon' ? 'active' : '' ?>"
-                                     data-theme="creative_neon"
-                                     onclick="selectTheme('creative_neon')">
-                                    <input type="radio" name="template_style" id="theme_creative_neon" value="creative_neon" <?= $curTemplate === 'creative_neon' ? 'checked' : '' ?> style="position:absolute;opacity:0;pointer-events:none;">
-                                    <div class="rounded-circle mx-auto mb-2" style="width:28px;height:28px;background:linear-gradient(135deg, #a855f7, #06b6d4);box-shadow:0 0 12px rgba(168,85,247,0.6);"></div>
-                                    <span class="text-white fw-bold font-size-13 d-block">Cyber Neon</span>
-                                    <span class="text-white-50 font-size-10">Purple &amp; Cyan</span>
-                                </div>
-                            </div>
-
-                            <!-- Theme 3: Executive Titanium -->
-                            <div class="col-6 col-md-3">
-                                <div class="theme-select-card <?= $curTemplate === 'executive_minimal' ? 'active' : '' ?>"
-                                     data-theme="executive_minimal"
-                                     onclick="selectTheme('executive_minimal')">
-                                    <input type="radio" name="template_style" id="theme_executive_minimal" value="executive_minimal" <?= $curTemplate === 'executive_minimal' ? 'checked' : '' ?> style="position:absolute;opacity:0;pointer-events:none;">
-                                    <div class="rounded-circle mx-auto mb-2" style="width:28px;height:28px;background:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,0.6);"></div>
-                                    <span class="text-white fw-bold font-size-13 d-block">Titanium</span>
-                                    <span class="text-white-50 font-size-10">Slate &amp; Sky</span>
-                                </div>
-                            </div>
-
-                            <!-- Theme 4: Minimalist Aurora -->
-                            <div class="col-6 col-md-3">
-                                <div class="theme-select-card <?= $curTemplate === 'minimalist_aurora' ? 'active' : '' ?>"
-                                     data-theme="minimalist_aurora"
-                                     onclick="selectTheme('minimalist_aurora')">
-                                    <input type="radio" name="template_style" id="theme_minimalist_aurora" value="minimalist_aurora" <?= $curTemplate === 'minimalist_aurora' ? 'checked' : '' ?> style="position:absolute;opacity:0;pointer-events:none;">
-                                    <div class="rounded-circle mx-auto mb-2" style="width:28px;height:28px;background:#10b981;box-shadow:0 0 12px rgba(16,185,129,0.6);"></div>
-                                    <span class="text-white fw-bold font-size-13 d-block">Aurora Glass</span>
-                                    <span class="text-white-50 font-size-10">Emerald &amp; Charcoal</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. Personal & Professional Identity -->
-                    <div class="mb-4 pb-3 border-bottom border-secondary border-opacity-15">
-                        <h4 class="h6 text-white fw-bold mb-3">
-                            <i class="ph-bold ph-user text-accent me-1"></i> Personal Identity &amp; Headline
-                        </h4>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label font-size-13 text-white fw-semibold">Display Full Name <span class="text-danger">*</span></label>
-                                <input type="text" name="display_name" required class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($portfolio['display_name'] ?? $user['full_name']) ?>">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label font-size-13 text-white fw-semibold">Professional Role / Job Title</label>
-                                <input type="text" name="job_title" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($portfolio['job_title'] ?? 'Performance Media Buyer & Growth Director') ?>">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label font-size-13 text-white fw-semibold">High-Impact Positioning Headline (1 sentence)</label>
-                                <input type="text" name="headline" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($portfolio['headline'] ?? 'Scaling omnichannel ad campaigns across Meta, TikTok, and Google Ads with creative testing.') ?>">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label font-size-13 text-white fw-semibold">Company / Agency Name</label>
-                                <input type="text" name="company" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($portfolio['company'] ?? $user['company'] ?? '') ?>">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label font-size-13 text-white fw-semibold">Location / Base Timezone</label>
-                                <input type="text" name="location" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($portfolio['location'] ?? 'Worldwide / Remote') ?>">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label font-size-13 text-white fw-semibold">Avatar Image URL (or path)</label>
-                                <input type="text" name="avatar_url" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" placeholder="https://example.com/avatar.jpg" value="<?= htmlspecialchars($portfolio['avatar_url'] ?? $user['avatar'] ?? '') ?>">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label font-size-13 text-white fw-semibold">Professional Bio &amp; Executive Summary</label>
-                                <textarea name="bio" rows="4" class="form-control font-size-13" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:12px;line-height:1.6;"><?= htmlspecialchars($portfolio['bio'] ?? '') ?></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3. Core Skills & Competencies -->
-                    <div class="mb-4 pb-3 border-bottom border-secondary border-opacity-15">
-                        <h4 class="h6 text-white fw-bold mb-2">
-                            <i class="ph-bold ph-cpu text-accent me-1"></i> Core Skills &amp; Marketing Platforms
-                        </h4>
-                        <p class="font-size-12 text-white-50 mb-2">Separate skills with commas. Click suggested tags below to quick-add:</p>
-                        <input type="text" name="skills" id="skillsInputField" class="form-control mb-2" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars(implode(', ', $curSkills)) ?>">
-                        
-                        <!-- Quick Skill Chips -->
-                        <div class="d-flex flex-wrap gap-1">
-                            <?php foreach (['Meta Ads', 'TikTok Ads', 'Google Ads', 'Shopify Plus', 'UGC Creative', 'Copywriting', 'ROAS Scaling', 'Conversion Rate Optimization (CRO)', 'Klaviyo', 'Triple Whale'] as $suggested): ?>
-                                <button type="button" onclick="addSkillTag('<?= addslashes($suggested) ?>')" class="btn btn-sm btn-outline-secondary rounded-pill font-size-11 px-2 py-1 text-white-75">
-                                    + <?= $suggested ?>
-                                </button>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <!-- 4. Featured Projects & Case Studies Repeater -->
-                    <div class="mb-4 pb-3 border-bottom border-secondary border-opacity-15">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div>
-                                <h4 class="h6 text-white fw-bold mb-0">
-                                    <i class="ph-bold ph-trophy text-accent me-1"></i> Proven Case Studies &amp; Projects
-                                </h4>
-                                <span class="font-size-12 text-white-50">Showcase past revenue growth, ROAS metrics, or campaign milestones.</span>
-                            </div>
-                            <button type="button" onclick="addProjectRow()" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1 font-size-12">
-                                <i class="ph ph-plus me-1"></i> Add Case Study
-                            </button>
-                        </div>
-
-                        <div id="projectsRepeaterContainer">
-                            <?php foreach ($curProjects as $idx => $proj): ?>
-                                <div class="p-3 mb-3 rounded-3 project-row position-relative" style="background:#080c14;border:1px solid rgba(255,255,255,0.1);">
-                                    <button type="button" onclick="this.closest('.project-row').remove()" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle p-1" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;" title="Remove Project">
-                                        <i class="ph ph-x"></i>
-                                    </button>
-                                    <div class="row g-2">
-                                        <div class="col-md-7">
-                                            <label class="form-label font-size-11 text-white-50 mb-1">Project / Campaign Title</label>
-                                            <input type="text" name="project_title[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" value="<?= htmlspecialchars($proj['title'] ?? '') ?>" placeholder="e.g. DTC Apparel Scale">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <label class="form-label font-size-11 text-white-50 mb-1">Highlight Metric Badge</label>
-                                            <input type="text" name="project_metric[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" value="<?= htmlspecialchars($proj['metric'] ?? '') ?>" placeholder="e.g. 4.8x ROAS / +$120k GMV">
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label font-size-11 text-white-50 mb-1">Description / Results</label>
-                                            <input type="text" name="project_description[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" value="<?= htmlspecialchars($proj['description'] ?? '') ?>" placeholder="Brief 1-sentence accomplishment summary">
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <!-- 5. Services & Packages Repeater -->
-                    <div class="mb-4 pb-3 border-bottom border-secondary border-opacity-15">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div>
-                                <h4 class="h6 text-white fw-bold mb-0">
-                                    <i class="ph-bold ph-package text-accent me-1"></i> Service Packages &amp; Rates
-                                </h4>
-                                <span class="font-size-12 text-white-50">List your monthly retainer packages or fixed price sprint offerings.</span>
-                            </div>
-                            <button type="button" onclick="addServiceRow()" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1 font-size-12">
-                                <i class="ph ph-plus me-1"></i> Add Service
-                            </button>
-                        </div>
-
-                        <div id="servicesRepeaterContainer">
-                            <?php foreach ($curServices as $idx => $srv): ?>
-                                <div class="p-3 mb-3 rounded-3 service-row position-relative" style="background:#080c14;border:1px solid rgba(255,255,255,0.1);">
-                                    <button type="button" onclick="this.closest('.service-row').remove()" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle p-1" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;" title="Remove Service">
-                                        <i class="ph ph-x"></i>
-                                    </button>
-                                    <div class="row g-2">
-                                        <div class="col-md-7">
-                                            <label class="form-label font-size-11 text-white-50 mb-1">Service Offering Name</label>
-                                            <input type="text" name="service_title[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" value="<?= htmlspecialchars($srv['title'] ?? '') ?>" placeholder="e.g. Omnichannel Growth Retainer">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <label class="form-label font-size-11 text-white-50 mb-1">Pricing / Rate</label>
-                                            <input type="text" name="service_price[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" value="<?= htmlspecialchars($srv['price'] ?? '') ?>" placeholder="e.g. $2,500/month or $500/sprint">
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label font-size-11 text-white-50 mb-1">Deliverables / Scope</label>
-                                            <input type="text" name="service_description[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" value="<?= htmlspecialchars($srv['description'] ?? '') ?>" placeholder="e.g. Weekly creative briefs, media management, attribution">
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <!-- 6. Contact Details & Social Networks -->
-                    <div class="mb-4">
-                        <h4 class="h6 text-white fw-bold mb-3">
-                            <i class="ph-bold ph-phone-call text-accent me-1"></i> Contact Details &amp; Social Links
-                        </h4>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label font-size-13 text-white fw-semibold">Public Email</label>
-                                <input type="email" name="email" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($portfolio['email'] ?? $user['email']) ?>">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label font-size-13 text-white fw-semibold">Direct Phone</label>
-                                <input type="text" name="phone" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($portfolio['phone'] ?? $user['phone'] ?? '') ?>">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label font-size-13 text-white fw-semibold">WhatsApp Number</label>
-                                <input type="text" name="whatsapp" class="form-control" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;padding:10px;" value="<?= htmlspecialchars($vcardRecord['whatsapp'] ?? $portfolio['phone'] ?? $user['phone'] ?? '') ?>">
-                            </div>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label font-size-12 text-white-75">LinkedIn Profile URL</label>
-                                <input type="url" name="social_linkedin" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="https://linkedin.com/in/..." value="<?= htmlspecialchars($curSocials['linkedin'] ?? $vcardRecord['linkedin'] ?? '') ?>">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label font-size-12 text-white-75">Twitter / X Profile URL</label>
-                                <input type="url" name="social_twitter" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="https://x.com/..." value="<?= htmlspecialchars($curSocials['twitter'] ?? $vcardRecord['twitter'] ?? '') ?>">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label font-size-12 text-white-75">Instagram Profile URL</label>
-                                <input type="url" name="social_instagram" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="https://instagram.com/..." value="<?= htmlspecialchars($curSocials['instagram'] ?? $vcardRecord['instagram'] ?? '') ?>">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label font-size-12 text-white-75">GitHub Profile URL</label>
-                                <input type="url" name="social_github" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="https://github.com/..." value="<?= htmlspecialchars($curSocials['github'] ?? $vcardRecord['github'] ?? '') ?>">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label font-size-12 text-white-75">Website / Blog URL</label>
-                                <input type="url" name="website" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="https://example.com" value="<?= htmlspecialchars($portfolio['website'] ?? $vcardRecord['website'] ?? '') ?>">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label font-size-12 text-white-75">YouTube / Channel URL</label>
-                                <input type="url" name="social_youtube" class="form-control font-size-12" style="background:#080c14 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="https://youtube.com/..." value="<?= htmlspecialchars($curSocials['youtube'] ?? '') ?>">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-3 border-top border-secondary border-opacity-15 d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <button type="submit" class="btn btn-accent rounded-pill px-5 py-3 fw-bold text-dark font-size-15 d-flex align-items-center gap-2">
-                            <i class="ph-bold ph-floppy-disk font-size-18"></i> Save &amp; Publish Everything
-                        </button>
-                        <a href="<?= e($shareUrl) ?>" target="_blank" class="btn btn-outline-light rounded-pill px-4 py-3 font-size-14">
-                            <i class="ph ph-eye me-1"></i> Preview Live Showcase
-                        </a>
-                    </div>
-
-                </form>
-
+        <!-- ── Right: editor form ───────────────────────────── -->
+        <div class="fl-panel" style="max-height:none">
+            <div class="fl-stagehead">
+                <div class="t"><i class="ph ph-sliders-horizontal" style="color:var(--accent,#c8ff00)"></i> Portfolio &amp; digital vCard settings</div>
+                <div class="m">applies live</div>
             </div>
+            <p class="fl-help" style="margin:0 0 18px">Pick a theme, set your identity, add case studies and services, then publish. Everything below maps straight to your public portfolio and vCard.</p>
+
+            <form method="POST">
+                <?= csrf_field() ?>
+                <input type="hidden" name="action" value="save_portfolio">
+
+                <!-- 1. Theme -->
+                <div class="fl-lbl"><span class="step">1</span> Design theme</div>
+                <div class="th-cards" id="themeCards">
+                    <?php
+                    $themes = [
+                        ['dark_luxury',      'Dark Luxury',    'Obsidian &amp; lime',  'background:#c8ff00;box-shadow:0 0 12px rgba(200,255,0,.55)', 'background:linear-gradient(135deg,#0d1524,#080c14)'],
+                        ['creative_neon',    'Cyber Neon',     'Purple &amp; cyan',    'background:linear-gradient(135deg,#a855f7,#06b6d4);box-shadow:0 0 12px rgba(168,85,247,.55)', 'background:linear-gradient(135deg,#1f113a,#0d061c)'],
+                        ['executive_minimal','Titanium',       'Slate &amp; sky',      'background:#38bdf8;box-shadow:0 0 12px rgba(56,189,248,.55)', 'background:linear-gradient(135deg,#131c2d,#0c121e)'],
+                        ['minimalist_aurora','Aurora Glass',   'Emerald &amp; charcoal','background:#10b981;box-shadow:0 0 12px rgba(16,185,129,.55)', 'background:linear-gradient(135deg,#0e2720,#071612)'],
+                    ];
+                    foreach ($themes as $th): ?>
+                    <button type="button" class="th-card theme-select-card <?= $curTemplate === $th[0] ? 'on active' : '' ?>"
+                            data-theme="<?= e($th[0]) ?>" onclick="selectTheme('<?= e($th[0]) ?>')">
+                        <input type="radio" name="template_style" id="theme_<?= e($th[0]) ?>" value="<?= e($th[0]) ?>" <?= $curTemplate === $th[0] ? 'checked' : '' ?> style="position:absolute;opacity:0;pointer-events:none" tabindex="-1">
+                        <span class="ck"><i class="ph ph-check"></i></span>
+                        <div class="prev" style="<?= $th[3] ?>">
+                            <span class="dot" style="<?= $th[2] ?>"></span>
+                            <span class="ln" style="width:56%;background:rgba(255,255,255,.55)"></span>
+                            <span class="ln" style="width:36%;background:rgba(255,255,255,.3)"></span>
+                        </div>
+                        <div class="nm"><?= $th[1] ?><div style="font-size:10.5px;font-weight:600;color:var(--fg3,#64748b);margin-top:2px"><?= $th[2] ?></div></div>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- 2. Identity -->
+                <div class="fl-lbl"><span class="step">2</span> Personal identity &amp; headline</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div>
+                        <label class="cv-label" for="pb_name">Display full name *</label>
+                        <input type="text" name="display_name" id="pb_name" required class="fl-in" value="<?= htmlspecialchars($portfolio['display_name'] ?? $user['full_name']) ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_role">Professional role / job title</label>
+                        <input type="text" name="job_title" id="pb_role" class="fl-in" value="<?= htmlspecialchars($portfolio['job_title'] ?? 'Performance Media Buyer & Growth Director') ?>">
+                    </div>
+                    <div style="grid-column:1/-1">
+                        <label class="cv-label" for="pb_headline">High-impact positioning headline</label>
+                        <input type="text" name="headline" id="pb_headline" class="fl-in" value="<?= htmlspecialchars($portfolio['headline'] ?? 'Scaling omnichannel ad campaigns across Meta, TikTok, and Google Ads with creative testing.') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_company">Company / agency</label>
+                        <input type="text" name="company" id="pb_company" class="fl-in" value="<?= htmlspecialchars($portfolio['company'] ?? $user['company'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_location">Location / base timezone</label>
+                        <input type="text" name="location" id="pb_location" class="fl-in" value="<?= htmlspecialchars($portfolio['location'] ?? 'Worldwide / Remote') ?>">
+                    </div>
+                    <div style="grid-column:1/-1">
+                        <label class="cv-label" for="pb_avatar">Avatar image URL</label>
+                        <input type="text" name="avatar_url" id="pb_avatar" class="fl-in" placeholder="https://example.com/avatar.jpg" value="<?= htmlspecialchars($portfolio['avatar_url'] ?? $user['avatar'] ?? '') ?>">
+                    </div>
+                    <div style="grid-column:1/-1">
+                        <label class="cv-label" for="pb_bio">Professional bio &amp; executive summary</label>
+                        <textarea name="bio" id="pb_bio" rows="4" class="fl-in" style="min-height:110px"><?= htmlspecialchars($portfolio['bio'] ?? '') ?></textarea>
+                    </div>
+                </div>
+
+                <!-- 3. Skills -->
+                <div class="fl-lbl"><span class="step">3</span> Core skills &amp; platforms</div>
+                <input type="text" name="skills" id="skillsInputField" class="fl-in" value="<?= htmlspecialchars(implode(', ', $curSkills)) ?>">
+                <div class="fl-help" style="margin:8px 0 10px">Separate skills with commas — or quick-add from the chips.</div>
+                <div class="fl-chips">
+                    <?php foreach (['Meta Ads', 'TikTok Ads', 'Google Ads', 'Shopify Plus', 'UGC Creative', 'Copywriting', 'ROAS Scaling', 'Conversion Rate Optimization (CRO)', 'Klaviyo', 'Triple Whale'] as $suggested): ?>
+                        <button type="button" class="fl-chip" onclick="addSkillTag('<?= addslashes($suggested) ?>')">+ <?= $suggested ?></button>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- 4. Projects -->
+                <div class="fl-lbl"><span class="step">4</span> Case studies &amp; projects</div>
+                <div id="projectsRepeaterContainer" style="display:grid;gap:10px;margin-bottom:6px">
+                    <?php foreach ($curProjects as $idx => $proj): ?>
+                        <div class="project-row" style="position:relative;padding:14px;border-radius:13px;background:var(--bg2,#0f172a);border:1px solid var(--border,rgba(255,255,255,.08))">
+                            <button type="button" onclick="this.closest('.project-row').remove()" class="fl-act danger" style="position:absolute;top:10px;right:10px;padding:4px 9px;font-size:11px" title="Remove project"><i class="ph ph-x"></i></button>
+                            <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:9px;padding-right:76px">
+                                <div>
+                                    <label class="cv-label">Project / campaign title</label>
+                                    <input type="text" name="project_title[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" value="<?= htmlspecialchars($proj['title'] ?? '') ?>" placeholder="e.g. DTC apparel scale">
+                                </div>
+                                <div>
+                                    <label class="cv-label">Highlight metric</label>
+                                    <input type="text" name="project_metric[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" value="<?= htmlspecialchars($proj['metric'] ?? '') ?>" placeholder="e.g. 4.8x ROAS">
+                                </div>
+                                <div style="grid-column:1/-1">
+                                    <label class="cv-label">Description / results</label>
+                                    <input type="text" name="project_description[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" value="<?= htmlspecialchars($proj['description'] ?? '') ?>" placeholder="One-sentence accomplishment summary">
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <button type="button" onclick="addProjectRow()" class="fl-act"><i class="ph ph-plus"></i> Add case study</button>
+
+                <!-- 5. Services -->
+                <div class="fl-lbl"><span class="step">5</span> Service packages &amp; rates</div>
+                <div id="servicesRepeaterContainer" style="display:grid;gap:10px;margin-bottom:6px">
+                    <?php foreach ($curServices as $idx => $srv): ?>
+                        <div class="service-row" style="position:relative;padding:14px;border-radius:13px;background:var(--bg2,#0f172a);border:1px solid var(--border,rgba(255,255,255,.08))">
+                            <button type="button" onclick="this.closest('.service-row').remove()" class="fl-act danger" style="position:absolute;top:10px;right:10px;padding:4px 9px;font-size:11px" title="Remove service"><i class="ph ph-x"></i></button>
+                            <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:9px;padding-right:76px">
+                                <div>
+                                    <label class="cv-label">Service name</label>
+                                    <input type="text" name="service_title[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" value="<?= htmlspecialchars($srv['title'] ?? '') ?>" placeholder="e.g. Omnichannel growth retainer">
+                                </div>
+                                <div>
+                                    <label class="cv-label">Pricing / rate</label>
+                                    <input type="text" name="service_price[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" value="<?= htmlspecialchars($srv['price'] ?? '') ?>" placeholder="e.g. $2,500/month">
+                                </div>
+                                <div style="grid-column:1/-1">
+                                    <label class="cv-label">Deliverables / scope</label>
+                                    <input type="text" name="service_description[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" value="<?= htmlspecialchars($srv['description'] ?? '') ?>" placeholder="Weekly creative briefs, media management, attribution">
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <button type="button" onclick="addServiceRow()" class="fl-act"><i class="ph ph-plus"></i> Add service</button>
+
+                <!-- 6. Contact -->
+                <div class="fl-lbl"><span class="step">6</span> Contact details &amp; social links</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                    <div>
+                        <label class="cv-label" for="pb_email">Public email</label>
+                        <input type="email" name="email" id="pb_email" class="fl-in" value="<?= htmlspecialchars($portfolio['email'] ?? $user['email']) ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_phone">Direct phone</label>
+                        <input type="text" name="phone" id="pb_phone" class="fl-in" value="<?= htmlspecialchars($portfolio['phone'] ?? $user['phone'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_wa">WhatsApp number</label>
+                        <input type="text" name="whatsapp" id="pb_wa" class="fl-in" value="<?= htmlspecialchars($vcardRecord['whatsapp'] ?? $portfolio['phone'] ?? $user['phone'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_li">LinkedIn</label>
+                        <input type="url" name="social_linkedin" id="pb_li" class="fl-in" placeholder="https://linkedin.com/in/..." value="<?= htmlspecialchars($curSocials['linkedin'] ?? $vcardRecord['linkedin'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_tw">Twitter / X</label>
+                        <input type="url" name="social_twitter" id="pb_tw" class="fl-in" placeholder="https://x.com/..." value="<?= htmlspecialchars($curSocials['twitter'] ?? $vcardRecord['twitter'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_ig">Instagram</label>
+                        <input type="url" name="social_instagram" id="pb_ig" class="fl-in" placeholder="https://instagram.com/..." value="<?= htmlspecialchars($curSocials['instagram'] ?? $vcardRecord['instagram'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_gh">GitHub</label>
+                        <input type="url" name="social_github" id="pb_gh" class="fl-in" placeholder="https://github.com/..." value="<?= htmlspecialchars($curSocials['github'] ?? $vcardRecord['github'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_site">Website / blog</label>
+                        <input type="url" name="website" id="pb_site" class="fl-in" placeholder="https://example.com" value="<?= htmlspecialchars($portfolio['website'] ?? $vcardRecord['website'] ?? '') ?>">
+                    </div>
+                    <div>
+                        <label class="cv-label" for="pb_yt">YouTube</label>
+                        <input type="url" name="social_youtube" id="pb_yt" class="fl-in" placeholder="https://youtube.com/..." value="<?= htmlspecialchars($curSocials['youtube'] ?? '') ?>">
+                    </div>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:22px;padding-top:20px;border-top:1px solid var(--border,rgba(255,255,255,.08))">
+                    <button type="submit" class="fl-go" style="width:auto;margin:0;padding:14px 26px">
+                        <i class="ph ph-floppy-disk"></i> Save &amp; publish everything
+                    </button>
+                    <a href="<?= e($shareUrl) ?>" target="_blank" rel="noopener" class="fl-act"><i class="ph ph-eye"></i> Preview live showcase</a>
+                </div>
+
+            </form>
         </div>
 
     </div>
-
+</div>
 </div>
 
 <script>
 function addSkillTag(tag) {
-    const field = document.getElementById('skillsInputField');
-    let current = field.value.split(',').map(s => s.trim()).filter(Boolean);
-    if (!current.includes(tag)) {
+    var field = document.getElementById('skillsInputField');
+    var current = field.value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    if (current.indexOf(tag) === -1) {
         current.push(tag);
         field.value = current.join(', ');
     }
 }
 
 function addProjectRow() {
-    const container = document.getElementById('projectsRepeaterContainer');
-    const html = `
-    <div class="p-3 mb-3 rounded-3 project-row position-relative" style="background:#080c14;border:1px solid rgba(255,255,255,0.1);">
-        <button type="button" onclick="this.closest('.project-row').remove()" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle p-1" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;" title="Remove Project">
-            <i class="ph ph-x"></i>
-        </button>
-        <div class="row g-2">
-            <div class="col-md-7">
-                <label class="form-label font-size-11 text-white-50 mb-1">Project / Campaign Title</label>
-                <input type="text" name="project_title[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="e.g. Black Friday Campaign Scaling">
-            </div>
-            <div class="col-md-5">
-                <label class="form-label font-size-11 text-white-50 mb-1">Highlight Metric Badge</label>
-                <input type="text" name="project_metric[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="e.g. 5.2x ROAS / $240k Sales">
-            </div>
-            <div class="col-12">
-                <label class="form-label font-size-11 text-white-50 mb-1">Description / Results</label>
-                <input type="text" name="project_description[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="Brief result summary">
-            </div>
-        </div>
-    </div>`;
+    var container = document.getElementById('projectsRepeaterContainer');
+    var html = '' +
+    '<div class="project-row" style="position:relative;padding:14px;border-radius:13px;background:var(--bg2,#0f172a);border:1px solid var(--border,rgba(255,255,255,.08))">' +
+        '<button type="button" onclick="this.closest(\'.project-row\').remove()" class="fl-act danger" style="position:absolute;top:10px;right:10px;padding:4px 9px;font-size:11px" title="Remove project"><i class="ph ph-x"></i></button>' +
+        '<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:9px;padding-right:76px">' +
+            '<div><label class="cv-label">Project / campaign title</label>' +
+            '<input type="text" name="project_title[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" placeholder="e.g. Black Friday campaign scaling"></div>' +
+            '<div><label class="cv-label">Highlight metric</label>' +
+            '<input type="text" name="project_metric[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" placeholder="e.g. 5.2x ROAS"></div>' +
+            '<div style="grid-column:1/-1"><label class="cv-label">Description / results</label>' +
+            '<input type="text" name="project_description[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" placeholder="Brief result summary"></div>' +
+        '</div>' +
+    '</div>';
     container.insertAdjacentHTML('beforeend', html);
 }
 
 function addServiceRow() {
-    const container = document.getElementById('servicesRepeaterContainer');
-    const html = `
-    <div class="p-3 mb-3 rounded-3 service-row position-relative" style="background:#080c14;border:1px solid rgba(255,255,255,0.1);">
-        <button type="button" onclick="this.closest('.service-row').remove()" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle p-1" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;" title="Remove Service">
-            <i class="ph ph-x"></i>
-        </button>
-        <div class="row g-2">
-            <div class="col-md-7">
-                <label class="form-label font-size-11 text-white-50 mb-1">Service Offering Name</label>
-                <input type="text" name="service_title[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="e.g. TikTok Paid Media Sprint">
-            </div>
-            <div class="col-md-5">
-                <label class="form-label font-size-11 text-white-50 mb-1">Pricing / Rate</label>
-                <input type="text" name="service_price[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="e.g. $1,800/month">
-            </div>
-            <div class="col-12">
-                <label class="form-label font-size-11 text-white-50 mb-1">Deliverables / Scope</label>
-                <input type="text" name="service_description[]" class="form-control form-control-sm" style="background:#0d1524 !important;border:1px solid rgba(255,255,255,0.15) !important;color:#fff !important;" placeholder="Deliverable details">
-            </div>
-        </div>
-    </div>`;
+    var container = document.getElementById('servicesRepeaterContainer');
+    var html = '' +
+    '<div class="service-row" style="position:relative;padding:14px;border-radius:13px;background:var(--bg2,#0f172a);border:1px solid var(--border,rgba(255,255,255,.08))">' +
+        '<button type="button" onclick="this.closest(\'.service-row\').remove()" class="fl-act danger" style="position:absolute;top:10px;right:10px;padding:4px 9px;font-size:11px" title="Remove service"><i class="ph ph-x"></i></button>' +
+        '<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:9px;padding-right:76px">' +
+            '<div><label class="cv-label">Service name</label>' +
+            '<input type="text" name="service_title[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" placeholder="e.g. TikTok paid media sprint"></div>' +
+            '<div><label class="cv-label">Pricing / rate</label>' +
+            '<input type="text" name="service_price[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" placeholder="e.g. $1,800/month"></div>' +
+            '<div style="grid-column:1/-1"><label class="cv-label">Deliverables / scope</label>' +
+            '<input type="text" name="service_description[]" class="fl-in" style="padding:8px 11px;font-size:12.5px" placeholder="Deliverable details"></div>' +
+        '</div>' +
+    '</div>';
     container.insertAdjacentHTML('beforeend', html);
 }
 
 function selectTheme(themeName) {
-    // 1. Check corresponding radio input
-    const radio = document.querySelector(`input[name="template_style"][value="${themeName}"]`);
-    if (radio) {
-        radio.checked = true;
-    }
+    var radio = document.querySelector('input[name="template_style"][value="' + themeName + '"]');
+    if (radio) radio.checked = true;
 
-    // 2. Toggle active styles on all cards
-    document.querySelectorAll('.theme-select-card').forEach(c => {
-        c.classList.remove('active');
+    document.querySelectorAll('.theme-select-card').forEach(function (c) {
+        c.classList.remove('on', 'active');
     });
-    const activeCard = document.querySelector(`.theme-select-card[data-theme="${themeName}"]`);
-    if (activeCard) {
-        activeCard.classList.add('active');
-    }
+    var activeCard = document.querySelector('.theme-select-card[data-theme="' + themeName + '"]');
+    if (activeCard) activeCard.classList.add('on', 'active');
 
-    // 3. Dynamically update the mini card preview on the left panel
-    const miniCard = document.getElementById('miniNfcCardPreview');
-    const miniChip = document.getElementById('miniNfcWave');
-    const miniBorder = document.getElementById('miniNfcAvatarRing');
-    const miniRole = document.getElementById('miniNfcRole');
-    const miniBadge = document.getElementById('miniNfcBadge');
+    var miniCard = document.getElementById('miniNfcCardPreview');
+    var miniChip = document.getElementById('miniNfcWave');
+    var miniBorder = document.getElementById('miniNfcAvatarRing');
+    var miniRole = document.getElementById('miniNfcRole');
+    var miniBadge = document.getElementById('miniNfcBadge');
 
-    if (miniCard) {
-        if (themeName === 'creative_neon') {
-            miniCard.style.background = 'linear-gradient(135deg, #1f113a 0%, #0d061c 100%)';
-            miniCard.style.borderColor = 'rgba(168, 85, 247, 0.45)';
-            if (miniChip) miniChip.style.color = '#a855f7';
-            if (miniBorder) miniBorder.style.borderColor = '#a855f7';
-            if (miniRole) miniRole.style.color = '#a855f7';
-            if (miniBadge) { miniBadge.style.color = '#a855f7'; miniBadge.innerText = 'Cyber Neon'; }
-        } else if (themeName === 'executive_minimal') {
-            miniCard.style.background = 'linear-gradient(135deg, #131c2d 0%, #0c121e 100%)';
-            miniCard.style.borderColor = 'rgba(56, 189, 248, 0.45)';
-            if (miniChip) miniChip.style.color = '#38bdf8';
-            if (miniBorder) miniBorder.style.borderColor = '#38bdf8';
-            if (miniRole) miniRole.style.color = '#38bdf8';
-            if (miniBadge) { miniBadge.style.color = '#38bdf8'; miniBadge.innerText = 'Executive Titanium'; }
-        } else if (themeName === 'minimalist_aurora') {
-            miniCard.style.background = 'linear-gradient(135deg, #0e2720 0%, #071612 100%)';
-            miniCard.style.borderColor = 'rgba(16, 185, 129, 0.45)';
-            if (miniChip) miniChip.style.color = '#10b981';
-            if (miniBorder) miniBorder.style.borderColor = '#10b981';
-            if (miniRole) miniRole.style.color = '#10b981';
-            if (miniBadge) { miniBadge.style.color = '#10b981'; miniBadge.innerText = 'Aurora Glass'; }
-        } else {
-            miniCard.style.background = 'linear-gradient(135deg, #131d2e 0%, #080c14 100%)';
-            miniCard.style.borderColor = 'rgba(200, 255, 0, 0.35)';
-            if (miniChip) miniChip.style.color = '#c8ff00';
-            if (miniBorder) miniBorder.style.borderColor = '#c8ff00';
-            if (miniRole) miniRole.style.color = '#c8ff00';
-            if (miniBadge) { miniBadge.style.color = '#c8ff00'; miniBadge.innerText = 'Dark Luxury'; }
-        }
+    if (!miniCard) return;
+    if (themeName === 'creative_neon') {
+        miniCard.style.background = 'linear-gradient(135deg, #1f113a 0%, #0d061c 100%)';
+        miniCard.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+        if (miniChip) miniChip.style.color = '#a855f7';
+        if (miniBorder) miniBorder.style.borderColor = '#a855f7';
+        if (miniRole) miniRole.style.color = '#a855f7';
+        if (miniBadge) { miniBadge.style.color = '#a855f7'; miniBadge.innerText = 'Cyber Neon'; }
+    } else if (themeName === 'executive_minimal') {
+        miniCard.style.background = 'linear-gradient(135deg, #131c2d 0%, #0c121e 100%)';
+        miniCard.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+        if (miniChip) miniChip.style.color = '#38bdf8';
+        if (miniBorder) miniBorder.style.borderColor = '#38bdf8';
+        if (miniRole) miniRole.style.color = '#38bdf8';
+        if (miniBadge) { miniBadge.style.color = '#38bdf8'; miniBadge.innerText = 'Executive Titanium'; }
+    } else if (themeName === 'minimalist_aurora') {
+        miniCard.style.background = 'linear-gradient(135deg, #0e2720 0%, #071612 100%)';
+        miniCard.style.borderColor = 'rgba(16, 185, 129, 0.45)';
+        if (miniChip) miniChip.style.color = '#10b981';
+        if (miniBorder) miniBorder.style.borderColor = '#10b981';
+        if (miniRole) miniRole.style.color = '#10b981';
+        if (miniBadge) { miniBadge.style.color = '#10b981'; miniBadge.innerText = 'Aurora Glass'; }
+    } else {
+        miniCard.style.background = 'linear-gradient(135deg, #131d2e 0%, #080c14 100%)';
+        miniCard.style.borderColor = 'rgba(200, 255, 0, 0.35)';
+        if (miniChip) miniChip.style.color = '#c8ff00';
+        if (miniBorder) miniBorder.style.borderColor = '#c8ff00';
+        if (miniRole) miniRole.style.color = '#c8ff00';
+        if (miniBadge) { miniBadge.style.color = '#c8ff00'; miniBadge.innerText = 'Dark Luxury'; }
     }
 }
 window.updateThemePreview = selectTheme;
+
+(function () {
+    var toastEl;
+    function toast(msg) {
+        if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'copy-toast'; document.body.appendChild(toastEl); }
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastEl._t);
+        toastEl._t = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+    }
+    document.addEventListener('click', function (ev) {
+        var b = ev.target.closest('[data-copy]');
+        if (!b) return;
+        var t = b.getAttribute('data-copy') || '';
+        var done = function () { toast(b.getAttribute('data-label') || 'Copied'); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(t).then(done, function () { toast('Could not copy', true); });
+        } else {
+            var ta = document.createElement('textarea');
+            ta.value = t; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { toast('Could not copy', true); }
+            ta.remove();
+        }
+    });
+})();
 </script>
 
 <?php require_once __DIR__ . '/includes/app_footer.php'; ?>

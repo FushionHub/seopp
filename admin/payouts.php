@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/payouts.php');
+    redirect(url('admin/payouts'));
 }
 
 $statusFilter = $_GET['status'] ?? 'all';

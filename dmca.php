@@ -71,8 +71,8 @@ require_once __DIR__ . '/includes/header.php';
             <div class="tw-mt-8 pt-4 border-top border-neutral-800 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <span class="text-white-50 tw-text-xs">Designated agent: <a href="mailto:<?= e(get_setting('dmca_email', 'dmca@adsbooster.net')) ?>" class="text-main-600"><?= e(get_setting('dmca_email', 'dmca@adsbooster.net')) ?></a></span>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="<?= BASE_URL ?>/terms.php" class="text-main-600 fw-semibold tw-text-sm">Terms of Service &rarr;</a>
-                    <a href="<?= BASE_URL ?>/privacy.php" class="text-main-600 fw-semibold tw-text-sm">Privacy Policy &rarr;</a>
+                    <a href="<?= url('terms') ?>" class="text-main-600 fw-semibold tw-text-sm">Terms of Service &rarr;</a>
+                    <a href="<?= url('privacy') ?>" class="text-main-600 fw-semibold tw-text-sm">Privacy Policy &rarr;</a>
                 </div>
             </div>
         </div>

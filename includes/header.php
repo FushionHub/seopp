@@ -55,7 +55,15 @@ function _navSubActive(string $page): string {
   <meta name="ai-content-declaration" content="verified-platform">
 
   <!-- Canonical URL -->
-  <?php $currentCanonical = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/'); ?>
+  <?php
+  $reqScheme = 'http';
+  if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+      || (($_SERVER['SERVER_PORT'] ?? '') === '443')
+      || (strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https')
+      || preg_match('/^adsbooster\.net(:\d+)?$/i', (string)($_SERVER['HTTP_HOST'] ?? ''))) {
+      $reqScheme = 'https';
+  }
+  $currentCanonical = $reqScheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/'); ?>
   <link rel="canonical" href="<?= htmlspecialchars($currentCanonical) ?>">
 
   <!-- OpenGraph Metadata for Social & AI Engines (ChatGPT, Perplexity, Facebook) -->
@@ -270,7 +278,7 @@ function _navSubActive(string $page): string {
           <i class="ph-bold ph-x"></i>
         </button>
       </div>
-      <form action="<?= BASE_URL ?>/search.php" method="GET" class="search-popup__form position-relative tw-pt-6">
+      <form action="<?= url('search') ?>" method="GET" class="search-popup__form position-relative tw-pt-6">
         <input type="search" name="q" class="search-popup__input" placeholder="<?= e(get_content('search', 'form', 'placeholder', 'Search Here...')) ?>">
         <button type="submit"
           class="tw-text-3xl tw-leading-none text-heading hover-text-main-600 position-absolute tw-end-0 top-50 translate-middle-y">
@@ -289,7 +297,7 @@ function _navSubActive(string $page): string {
     </button>
 
     <div class="mobile-menu__inner">
-        <a href="<?= BASE_URL ?>/index.php" class="mobile-menu__logo d-flex align-items-center">
+        <a href="<?= url('index') ?>" class="mobile-menu__logo d-flex align-items-center">
             <img src="<?= BASE_URL ?>/assets/images/logo/logo-green.png" alt="<?= e($siteName) ?>" class="site-header-logo" style="height: 36px; width: auto; object-fit: contain;">
         </a>
         <div class="mobile-menu__menu">
@@ -297,7 +305,7 @@ function _navSubActive(string $page): string {
 <ul class="nav-menu d-lg-flex align-items-center nav-menu--mobile d-block tw-mt-8">
   <!-- Home -->
   <li class="nav-menu__item<?= $activeHome ?>">
-    <a href="<?= BASE_URL ?>/index.php" class="nav-menu__link tw-pe-5 text-heading tw-py-9 fw-medium w-100">Home</a>
+    <a href="<?= url('index') ?>" class="nav-menu__link tw-pe-5 text-heading tw-py-9 fw-medium w-100">Home</a>
   </li>
 
   <!-- Features -->
@@ -306,25 +314,25 @@ function _navSubActive(string $page): string {
     <ul
       class="nav-submenu scroll-sm position-absolute start-0 top-100 tw-w-max bg-white tw-rounded-md overflow-hidden tw-p-2 tw-z-99">
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/create-ad.php"
+        <a href="<?= url('create-ad') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Create Ad Campaign
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/post-creator.php"
+        <a href="<?= url('post-creator') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Post Creator
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/marketplace.php"
+        <a href="<?= url('marketplace') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Marketplace
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/analytics.php"
+        <a href="<?= url('analytics') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Analytics
         </a>
@@ -338,25 +346,25 @@ function _navSubActive(string $page): string {
     <ul
       class="nav-submenu scroll-sm position-absolute start-0 top-100 tw-w-max bg-white tw-rounded-md overflow-hidden tw-p-2 tw-z-99">
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/about.php"
+        <a href="<?= url('about') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('about.php') ?>">
           About Us
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/pricing-plan.php"
+        <a href="<?= url('pricing-plan') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('pricing-plan.php') ?>">
           Pricing
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/faq.php"
+        <a href="<?= url('faq') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('faq.php') ?>">
           FAQ
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/team.php"
+        <a href="<?= url('team') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('team.php') ?>">
           Team
         </a>
@@ -366,12 +374,12 @@ function _navSubActive(string $page): string {
 
   <!-- Contact -->
   <li class="nav-menu__item<?= $activeContact ?>">
-    <a href="<?= BASE_URL ?>/contact.php" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Contact</a>
+    <a href="<?= url('contact') ?>" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Contact</a>
   </li>
 
   <?php if (is_logged_in()): ?>
   <li class="nav-menu__item">
-    <a href="<?= BASE_URL ?>/dashboard.php" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Dashboard</a>
+    <a href="<?= url('dashboard') ?>" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Dashboard</a>
   </li>
   <?php endif; ?>
 </ul>
@@ -387,7 +395,7 @@ function _navSubActive(string $page): string {
         <nav class="d-flex align-items-center justify-content-between position-relative">
             <!-- Logo Start -->
             <div class="logo">
-                <a href="<?= BASE_URL ?>/index.php" class="link d-flex align-items-center">
+                <a href="<?= url('index') ?>" class="link d-flex align-items-center">
                     <img src="<?= BASE_URL ?>/assets/images/logo/logo-green.png" alt="<?= e($siteName) ?>" class="site-header-logo" style="height: 40px; width: auto; object-fit: contain;">
                 </a>
             </div>
@@ -399,7 +407,7 @@ function _navSubActive(string $page): string {
 <ul class="nav-menu d-lg-flex align-items-center tw-gap-6">
   <!-- Home -->
   <li class="nav-menu__item<?= $activeHome ?>">
-    <a href="<?= BASE_URL ?>/index.php" class="nav-menu__link tw-pe-5 text-heading tw-py-9 fw-medium w-100">Home</a>
+    <a href="<?= url('index') ?>" class="nav-menu__link tw-pe-5 text-heading tw-py-9 fw-medium w-100">Home</a>
   </li>
 
   <!-- Features -->
@@ -408,25 +416,25 @@ function _navSubActive(string $page): string {
     <ul
       class="nav-submenu scroll-sm position-absolute start-0 top-100 tw-w-max bg-white tw-rounded-md overflow-hidden tw-p-2 tw-z-99">
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/create-ad.php"
+        <a href="<?= url('create-ad') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Create Ad Campaign
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/post-creator.php"
+        <a href="<?= url('post-creator') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Post Creator
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/marketplace.php"
+        <a href="<?= url('marketplace') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Marketplace
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/analytics.php"
+        <a href="<?= url('analytics') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded">
           Analytics
         </a>
@@ -440,25 +448,25 @@ function _navSubActive(string $page): string {
     <ul
       class="nav-submenu scroll-sm position-absolute start-0 top-100 tw-w-max bg-white tw-rounded-md overflow-hidden tw-p-2 tw-z-99">
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/about.php"
+        <a href="<?= url('about') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('about.php') ?>">
           About Us
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/pricing-plan.php"
+        <a href="<?= url('pricing-plan') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('pricing-plan.php') ?>">
           Pricing
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/faq.php"
+        <a href="<?= url('faq') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('faq.php') ?>">
           FAQ
         </a>
       </li>
       <li class="nav-submenu__item d-block tw-rounded tw-duration-200 position-relative">
-        <a href="<?= BASE_URL ?>/team.php"
+        <a href="<?= url('team') ?>"
           class="nav-submenu__link hover-bg-neutral-200 text-heading fw-medium w-100 d-block tw-py-2 tw-px-305 tw-rounded<?= _navSubActive('team.php') ?>">
           Team
         </a>
@@ -468,12 +476,12 @@ function _navSubActive(string $page): string {
 
   <!-- Contact -->
   <li class="nav-menu__item<?= $activeContact ?>">
-    <a href="<?= BASE_URL ?>/contact.php" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Contact</a>
+    <a href="<?= url('contact') ?>" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Contact</a>
   </li>
 
   <?php if (is_logged_in()): ?>
   <li class="nav-menu__item">
-    <a href="<?= BASE_URL ?>/dashboard.php" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Dashboard</a>
+    <a href="<?= url('dashboard') ?>" class="nav-menu__link text-heading tw-py-9 fw-medium w-100">Dashboard</a>
   </li>
   <?php endif; ?>
 </ul>
@@ -504,8 +512,8 @@ function _navSubActive(string $page): string {
                             <i class="ph-bold ph-caret-down tw-text-sm"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end bg-white tw-rounded-md tw-p-2 tw-z-99 border border-neutral-200 shadow-lg">
-                            <li><a class="dropdown-item hover-bg-neutral-200 text-heading fw-medium d-block tw-py-2 tw-px-305 tw-rounded" href="<?= BASE_URL ?>/dashboard.php?workspace=personal">Personal Workspace</a></li>
-                            <li><a class="dropdown-item hover-bg-neutral-200 text-heading fw-medium d-block tw-py-2 tw-px-305 tw-rounded" href="<?= BASE_URL ?>/dashboard.php?workspace=agency">Agency Workspace</a></li>
+                            <li><a class="dropdown-item hover-bg-neutral-200 text-heading fw-medium d-block tw-py-2 tw-px-305 tw-rounded" href="<?= url('dashboard') ?>?workspace=personal">Personal Workspace</a></li>
+                            <li><a class="dropdown-item hover-bg-neutral-200 text-heading fw-medium d-block tw-py-2 tw-px-305 tw-rounded" href="<?= url('dashboard') ?>?workspace=agency">Agency Workspace</a></li>
                         </ul>
                     </div>
                     <?php endif; ?>
@@ -533,7 +541,7 @@ function _navSubActive(string $page): string {
                                 <p class="text-neutral-500 tw-text-sm">No unread notifications</p>
                             </div>
                             <div class="tw-mt-3 text-center">
-                                <a href="<?= BASE_URL ?>/dashboard.php?page=notifications" class="text-main-600 fw-semibold tw-text-sm">View All</a>
+                                <a href="<?= url('dashboard') ?>?page=notifications" class="text-main-600 fw-semibold tw-text-sm">View All</a>
                             </div>
                         </div>
                     </div>
@@ -544,13 +552,13 @@ function _navSubActive(string $page): string {
             <!-- Auth buttons: Login + Register (logged out) or Dashboard (logged in) -->
             <?php if (!is_logged_in()): ?>
             <div class="d-lg-flex d-none align-items-center tw-gap-4 tw-ms-4">
-                <a href="<?= BASE_URL ?>/login.php"
+                <a href="<?= url('login') ?>"
                     class="btn btn-outline-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 active--translate-y-2 rounded-pill text-heading"
                     data-block="button">
                     <span class="button__flair"></span>
                     <span class="button__label">Login</span>
                 </a>
-                <a href="<?= BASE_URL ?>/register.php"
+                <a href="<?= url('register') ?>"
                     class="btn btn-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 active--translate-y-2 rounded-pill text-heading"
                     data-block="button">
                     <span class="button__flair"></span>
@@ -559,7 +567,7 @@ function _navSubActive(string $page): string {
             </div>
             <?php else: ?>
             <div class="d-lg-flex d-none align-items-center tw-gap-4 tw-ms-4">
-                <a href="<?= BASE_URL ?>/dashboard.php"
+                <a href="<?= url('dashboard') ?>"
                     class="btn btn-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 active--translate-y-2 rounded-pill text-heading"
                     data-block="button">
                     <span class="button__flair"></span>

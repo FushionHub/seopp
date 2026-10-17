@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 require_once __DIR__ . '/config/site_setting_and_config.php';
-$pageTitle = 'Notifications — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Notifications â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/app_header.php';
 
 $userId = current_user_id();
@@ -8,7 +8,7 @@ $userId = current_user_id();
 if (isset($_GET['action']) && $_GET['action'] === 'mark_all') {
     db()->update('notifications', ['is_read' => 1, 'read_at' => date('Y-m-d H:i:s')], 'user_id = ? AND is_read = 0', [$userId]);
     set_flash('success', 'All notifications marked as read.');
-    redirect(BASE_URL . '/notifications.php');
+    redirect(url('notifications'));
 }
 
 $filter = $_GET['filter'] ?? 'all';
@@ -76,7 +76,7 @@ try {
                 </div>
             </div>
             <?php if (!empty($n['link'])): ?>
-            <a href="<?= e($n['link']) ?>" style="font-size:12px;font-weight:500;color:var(--accent);display:inline-block;margin-top:6px" onclick="event.stopPropagation()">View details →</a>
+            <a href="<?= e($n['link']) ?>" style="font-size:12px;font-weight:500;color:var(--accent);display:inline-block;margin-top:6px" onclick="event.stopPropagation()">View details â†’</a>
             <?php endif; ?>
         </div>
     </div>

@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/policy-rules.php');
+    redirect(url('admin/policy-rules'));
 }
 
 $rules = db()->fetchAll("SELECT * FROM policy_rules ORDER BY platform, severity DESC");

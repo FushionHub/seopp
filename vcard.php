@@ -306,12 +306,12 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- Top Toolbar -->
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
-      <a href="<?= BASE_URL ?>/portfolio.php?u=<?= urlencode($username) ?>" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-13 d-flex align-items-center gap-2">
+      <a href="<?= url('portfolio') ?>?u=<?= urlencode($username) ?>" class="btn btn-outline-light rounded-pill px-4 py-2 font-size-13 d-flex align-items-center gap-2">
         <i class="ph ph-arrow-left"></i> View Public Portfolio
       </a>
       <div class="d-flex align-items-center gap-2">
         <?php if ($isOwner): ?>
-          <a href="<?= BASE_URL ?>/portfolio-builder.php" class="btn btn-sm btn-main-600 rounded-pill px-3 py-2 font-size-13 text-dark fw-bold">
+          <a href="<?= url('portfolio-builder') ?>" class="btn btn-sm btn-main-600 rounded-pill px-3 py-2 font-size-13 text-dark fw-bold">
             <i class="ph ph-sliders-horizontal me-1"></i> Edit Card
           </a>
         <?php endif; ?>

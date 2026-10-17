@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_message'])) {
             set_flash('success', 'Message sent.');
         }
     }
-    redirect(BASE_URL . '/admin/p2p-chat.php?user=' . ($_POST['receiver_id'] ?? ''));
+    redirect(url('admin/p2p-chat') . '?user=' . ($_POST['receiver_id'] ?? ''));
 }
 
 $chatUsers = db()->fetchAll(

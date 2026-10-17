@@ -251,7 +251,7 @@ $campaigns = db()->fetchAll(
 
                         <!-- CTA -->
                         <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
-                            <a href="<?= BASE_URL ?>/create-ad.php?segment_id=<?= $seg['id'] ?>" class="btn-accent" style="width:100%;text-align:center;display:block;padding:9px 16px;font-size:13px;">
+                            <a href="<?= url('create-ad') ?>?segment_id=<?= $seg['id'] ?>" class="btn-accent" style="width:100%;text-align:center;display:block;padding:9px 16px;font-size:13px;">
                                 <i class="ph ph-rocket-launch"></i> Launch Ad With This Audience
                             </a>
                         </div>

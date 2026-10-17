@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 require_once __DIR__ . '/config/site_setting_and_config.php';
 
-$pageTitle = 'Edit Profile — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Edit Profile â€” ' . get_setting('site_name', 'Adsbooster.net');
 
 // If viewing another user's public profile or vcard link, delegate to public portfolio
 if (!empty($_GET['u']) || !empty($_GET['id'])) {
@@ -13,7 +13,7 @@ $userId = current_user_id();
 $user = current_user();
 if (!$user) {
     set_flash('error', 'Please log in to access this page.');
-    redirect(BASE_URL . '/login.php');
+    redirect(url('login'));
 }
 
 // Detect optional profile columns (migration-safe: users table may not have phone/business_name/country yet)
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'profi
                     error_log('Profile notification failed: ' . $e->getMessage());
                 }
                 set_flash('success', 'Profile updated successfully.');
-                redirect(BASE_URL . '/profile.php');
+                redirect(url('profile'));
             } catch (Throwable $e) {
                 error_log('Profile update failed: ' . $e->getMessage());
                 $errors[] = 'Failed to update profile. Please try again.';
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'passw
                     error_log('Profile notification failed: ' . $e->getMessage());
                 }
                 set_flash('success', 'Password changed successfully.');
-                redirect(BASE_URL . '/profile.php');
+                redirect(url('profile'));
             } catch (Throwable $e) {
                 error_log('Password change failed: ' . $e->getMessage());
                 $errors[] = 'Failed to change password. Please try again.';
@@ -146,7 +146,7 @@ require_once __DIR__ . '/includes/app_header.php';
     </div>
     <div class="stat-card">
         <div class="stat-icon" style="background:rgba(168,85,247,.15);color:var(--purple,#a855f7)"><i class="ph ph-share-network"></i></div>
-        <div class="stat-value" style="font-size:18px;font-family:monospace"><?= e($user['referral_code'] ?? '—') ?></div>
+        <div class="stat-value" style="font-size:18px;font-family:monospace"><?= e($user['referral_code'] ?? 'â€”') ?></div>
         <div class="stat-label">Referral Code</div>
     </div>
 </div>
@@ -155,7 +155,7 @@ require_once __DIR__ . '/includes/app_header.php';
     <div class="card-dark">
         <h5 style="margin-bottom:4px"><i class="ph ph-note-pencil" style="margin-right:8px"></i>Profile Details</h5>
         <p style="font-size:13px;color:var(--fg2);margin-bottom:20px">Keep your contact information up to date.</p>
-        <form method="POST" action="<?= BASE_URL ?>/profile.php">
+        <form method="POST" action="<?= url('profile') ?>">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="profile">
             <div style="margin-bottom:16px">
@@ -181,7 +181,7 @@ require_once __DIR__ . '/includes/app_header.php';
             </div>
             <div style="display:flex;gap:12px">
                 <button type="submit" class="btn-accent"><i class="ph ph-check"></i>Save Changes</button>
-                <a href="<?= BASE_URL ?>/dashboard.php" class="btn-outline-dark">Cancel</a>
+                <a href="<?= url('dashboard') ?>" class="btn-outline-dark">Cancel</a>
             </div>
         </form>
     </div>
@@ -189,12 +189,12 @@ require_once __DIR__ . '/includes/app_header.php';
     <div class="card-dark">
         <h5 style="margin-bottom:4px"><i class="ph ph-lock" style="margin-right:8px"></i>Change Password</h5>
         <p style="font-size:13px;color:var(--fg2);margin-bottom:20px">Use a strong password with at least 8 characters.</p>
-        <form method="POST" action="<?= BASE_URL ?>/profile.php">
+        <form method="POST" action="<?= url('profile') ?>">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="password">
             <div style="margin-bottom:16px">
                 <label for="current_password" class="form-label">Current Password</label>
-                <input type="password" id="current_password" name="current_password" class="form-control" required autocomplete="current-password" placeholder="••••••••">
+                <input type="password" id="current_password" name="current_password" class="form-control" required autocomplete="current-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
             </div>
             <div style="margin-bottom:16px">
                 <label for="new_password" class="form-label">New Password</label>

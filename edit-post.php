@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 require_once __DIR__ . '/config/site_setting_and_config.php';
 
-$pageTitle = 'Edit Post — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Edit Post â€” ' . get_setting('site_name', 'Adsbooster.net');
 
 $userId = current_user_id();
 $postId = (int)($_GET['id'] ?? 0);
 if ($postId <= 0) {
     set_flash('error', 'Post not found.');
-    redirect(BASE_URL . '/post-creator.php');
+    redirect(url('post-creator'));
 }
 
 $post = db()->fetch("SELECT * FROM scheduled_posts WHERE id = ? AND user_id = ?", [$postId, $userId]);
 if (!$post) {
     set_flash('error', 'Post not found.');
-    redirect(BASE_URL . '/post-creator.php');
+    redirect(url('post-creator'));
 }
 
 // Map DB media_type enum -> spec values used in the UI
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 set_flash('success', 'Post updated successfully.');
-                redirect(BASE_URL . '/post-creator.php');
+                redirect(url('post-creator'));
             } catch (Throwable $e) {
                 error_log('Edit post failed: ' . $e->getMessage());
                 $errors[] = 'Failed to update post. Please try again.';
@@ -160,7 +160,7 @@ $statusBadge = ($post['status'] ?? '') === 'scheduled' ? 'badge-active' : 'badge
 <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:start">
     <div class="card-dark">
         <h5 style="margin-bottom:20px"><i class="ph ph-note-pencil" style="margin-right:8px"></i>Post Details</h5>
-        <form method="POST" action="<?= BASE_URL ?>/edit-post.php?id=<?= (int)$postId ?>">
+        <form method="POST" action="<?= url('edit-post') . '?id=' . (int)$postId ?>">
             <?= csrf_field() ?>
             <div style="margin-bottom:16px">
                 <label for="caption" class="form-label">Caption</label>
@@ -203,7 +203,7 @@ $statusBadge = ($post['status'] ?? '') === 'scheduled' ? 'badge-active' : 'badge
             </div>
             <div style="display:flex;gap:12px">
                 <button type="submit" class="btn-accent"><i class="ph ph-check"></i>Save Changes</button>
-                <a href="<?= BASE_URL ?>/post-creator.php" class="btn-outline-dark">Cancel</a>
+                <a href="<?= url('post-creator') ?>" class="btn-outline-dark">Cancel</a>
             </div>
         </form>
     </div>
@@ -229,7 +229,7 @@ $statusBadge = ($post['status'] ?? '') === 'scheduled' ? 'badge-active' : 'badge
         <?php endif; ?>
         <hr class="divider">
         <div style="font-size:13px;color:var(--fg2);display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;justify-content:space-between"><span>Platform</span><span class="badge-status badge-info"><?= e($post['platform'] ?? '—') ?></span></div>
+            <div style="display:flex;justify-content:space-between"><span>Platform</span><span class="badge-status badge-info"><?= e($post['platform'] ?? 'â€”') ?></span></div>
             <div style="display:flex;justify-content:space-between"><span>Media type</span><span class="badge-status badge-inactive"><?= e($currentMediaSpec) ?></span></div>
         </div>
     </div>

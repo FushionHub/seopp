@@ -55,7 +55,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">4. How to cancel</h3>
             <p>
-                You can cancel at any time from the <a href="<?= BASE_URL ?>/billing.php" class="text-main-600 text-decoration-underline">Billing Center</a>. Cancelling stops the next renewal; it does not refund the current period. Unused credits stay on your account until the end of the paid period, then expire. Export anything you need before then.
+                You can cancel at any time from the <a href="<?= url('billing') ?>" class="text-main-600 text-decoration-underline">Billing Center</a>. Cancelling stops the next renewal; it does not refund the current period. Unused credits stay on your account until the end of the paid period, then expire. Export anything you need before then.
             </p>
 
             <h3 class="h5 text-white fw-bold tw-mt-6 tw-mb-3">5. How to request a refund</h3>
@@ -75,7 +75,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="tw-mt-8 pt-4 border-top border-neutral-800 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <span class="text-white-50 tw-text-xs">Billing questions? <a href="mailto:<?= e(get_setting('support_email', 'support@adsbooster.net')) ?>" class="text-main-600"><?= e(get_setting('support_email', 'support@adsbooster.net')) ?></a></span>
-                <a href="<?= BASE_URL ?>/terms.php" class="text-main-600 fw-semibold tw-text-sm">Terms of Service &rarr;</a>
+                <a href="<?= url('terms') ?>" class="text-main-600 fw-semibold tw-text-sm">Terms of Service &rarr;</a>
             </div>
         </div>
     </div>

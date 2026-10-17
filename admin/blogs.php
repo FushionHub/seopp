@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/blogs.php');
+    redirect(url('admin/blogs'));
 }
 
 // Fetch posts with author info
@@ -78,10 +78,10 @@ require_once __DIR__ . '/sidebar.php';
         <p class="text-muted mb-0 font-size-13">Moderate community thought leadership, articles, and marketing guides.</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="<?= BASE_URL ?>/blog.php" target="_blank" class="btn-admin btn-admin-outline">
+        <a href="<?= url('blog') ?>" target="_blank" class="btn-admin btn-admin-outline">
             <i class="ph-bold ph-arrow-square-out"></i> Public Blog
         </a>
-        <a href="<?= BASE_URL ?>/blog-create.php" class="btn-admin btn-admin-green">
+        <a href="<?= url('blog-create') ?>" class="btn-admin btn-admin-green">
             <i class="ph-bold ph-plus"></i> Write Article
         </a>
     </div>
@@ -175,10 +175,10 @@ require_once __DIR__ . '/sidebar.php';
                             </td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-1">
-                                    <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= htmlspecialchars($p['slug']) ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Article Live">
+                                    <a href="<?= url('blog-details', ['slug' => $p['slug']]) ?>" target="_blank" class="btn-admin btn-admin-blue" title="View Article Live">
                                         <i class="ph-bold ph-eye"></i>
                                     </a>
-                                    <a href="<?= BASE_URL ?>/blog-edit.php?id=<?= $p['id'] ?>" class="btn-admin btn-admin-outline" title="Edit Article">
+                                    <a href="<?= url('blog-edit') ?>?id=<?= (int)$p['id'] ?>" class="btn-admin btn-admin-outline" title="Edit Article">
                                         <i class="ph-bold ph-pencil-simple"></i>
                                     </a>
 

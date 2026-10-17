@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    redirect(BASE_URL . '/admin/pricing.php');
+    redirect(url('admin/pricing'));
 }
 
 $plans = db()->fetchAll("SELECT * FROM pricing_plans ORDER BY price ASC");

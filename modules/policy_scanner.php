@@ -202,11 +202,11 @@ class PolicyScanner
             CURLOPT_TIMEOUT => 10,
             CURLOPT_NOBODY => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_SSL_VERIFYPEER => true,
-                        ...ca_curl_opts(),
-        ]);
-
-        curl_exec($ch);
+                CURLOPT_SSL_VERIFYPEER => true,
+            ]);
+            ca_curl_setopt($ch);
+    
+            curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
         curl_close($ch);

@@ -83,7 +83,7 @@ require_once __DIR__ . '/includes/app_header.php';
                 <i class="ph-bold ph-shopping-cart text-white-50" style="font-size:3rem;"></i>
                 <h4 class="text-white mt-3">No item selected</h4>
                 <p class="text-white-50">Please select a plan or credit package from the pricing page.</p>
-                <a href="<?= BASE_URL ?>/pricing-plan.php" class="btn btn-main rounded-pill fw-semibold">View Plans</a>
+                <a href="<?= url('pricing-plan') ?>" class="btn btn-main rounded-pill fw-semibold">View Plans</a>
             </div>
         <?php else: ?>
             <!-- Order Summary -->

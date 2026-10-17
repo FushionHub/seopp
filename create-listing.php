@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 db()->query("COMMIT");
 
                 set_flash('success', 'Your listing has been published successfully!');
-                redirect(BASE_URL . '/listing-details.php?id=' . $listingId);
+                redirect(url('listing-details', ['id' => $listingId]));
 
             } catch (\Throwable $e) {
                 db()->query("ROLLBACK");
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Publish Listing or Place — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Publish Listing or Place â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/app_header.php';
 ?>
 
@@ -139,7 +139,7 @@ require_once __DIR__ . '/includes/app_header.php';
             <p class="page-subtitle">List your business, hotels, hospitals, churches, products, or services for high-intent visitors.</p>
         </div>
         <div>
-            <a href="<?= BASE_URL ?>/marketplace.php" class="btn-outline-dark btn-sm">
+            <a href="<?= url('marketplace') ?>" class="btn-outline-dark btn-sm">
                 <i class="ph ph-arrow-left"></i> Back to Marketplace
             </a>
         </div>
@@ -167,7 +167,7 @@ require_once __DIR__ . '/includes/app_header.php';
                     <?php if ($isPlanSubscribed): ?>
                         <span class="text-success fw-bold"><i class="ph ph-check-circle me-1"></i>Included in your <?= htmlspecialchars($userPlan['name']) ?> subscription! Fee: $0.00</span>
                     <?php else: ?>
-                        Standard fee: <b>$<?= number_format($standardListingFee, 2) ?></b> (or <a href="<?= BASE_URL ?>/pricing-plan.php" style="color:var(--accent);text-decoration:underline;">upgrade to a plan</a> to list for free). Balance: $<?= number_format($adCredits, 2) ?>.
+                        Standard fee: <b>$<?= number_format($standardListingFee, 2) ?></b> (or <a href="<?= url('pricing-plan') ?>" style="color:var(--accent);text-decoration:underline;">upgrade to a plan</a> to list for free). Balance: $<?= number_format($adCredits, 2) ?>.
                     <?php endif; ?>
                 </p>
             </div>

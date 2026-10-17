@@ -20,20 +20,66 @@ class Database
 
     private function __construct()
     {
+        // Deployment-specific credentials: config/db.local.php returns an array
+        // like ['host'=>..,'port'=>..,'dbname'=>..,'username'=>..,'password'=>..]
+        // Environment variables (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS)
+        // are honoured too. Defaults above are the local Laragon setup.
+        $localFile = __DIR__ . '/db.local.php';
+        if (is_readable($localFile)) {
+            $local = (static function () use ($localFile): array {
+                $v = (static function () use ($localFile) { return require $localFile; })();
+                return is_array($v) ? $v : [];
+            })();
+            foreach (['host', 'port', 'dbname', 'username', 'password'] as $k) {
+                if (isset($local[$k]) && is_string($local[$k]) && $local[$k] !== '') {
+                    $this->{$k} = $local[$k];
+                }
+            }
+        }
+        $envMap = ['host' => 'DB_HOST', 'port' => 'DB_PORT', 'dbname' => 'DB_NAME', 'username' => 'DB_USER', 'password' => 'DB_PASS'];
+        foreach ($envMap as $prop => $env) {
+            $val = getenv($env);
+            if (is_string($val) && $val !== '') {
+                $this->{$prop} = $val;
+            }
+        }
+
         $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->dbname};charset={$this->charset}";
 
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::ATTR_TIMEOUT            => 8,
         ];
 
         try {
             $this->connection = new PDO($dsn, $this->username, $this->password, $options);
         } catch (PDOException $e) {
             error_log("Database connection failed: " . $e->getMessage());
-            die("Database connection failed. Please check configuration.");
+            throw new \PDOException(
+                'Database connection failed (db=' . $this->dbname . ', user=' . $this->username
+                . '): ' . $e->getMessage(),
+                (int)$e->getCode(),
+                $e
+            );
         }
+    }
+
+    /**
+     * Read-only view of the active credentials — used by the schema installer
+     * to open a dedicated multi-statement connection to the same database.
+     */
+    public function credentials(): array
+    {
+        return [
+            'host'     => $this->host,
+            'port'     => $this->port,
+            'dbname'   => $this->dbname,
+            'charset'  => $this->charset,
+            'username' => $this->username,
+            'password' => $this->password,
+        ];
     }
 
     public static function getInstance(): self

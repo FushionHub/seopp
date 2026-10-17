@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config/site_setting_and_config.php';
 
-// ── 1. Must be an authenticated admin ──
+// â”€â”€ 1. Must be an authenticated admin â”€â”€
 if (!is_logged_in() || current_user_role() !== 'admin') {
     set_flash('error', 'Unauthorized access. Admin login required.');
-    redirect(BASE_URL . '/admin-login.php');
+    redirect(url('admin-login'));
 }
 
-// ── 2. Account must still be active ──
+// â”€â”€ 2. Account must still be active â”€â”€
 $adminRow = db()->fetchOne(
     "SELECT id, status, two_factor_enabled, totp_enabled FROM users WHERE id = ? AND role = 'admin'",
     [current_user_id()]
@@ -27,10 +27,10 @@ if (!$adminRow || $adminRow['status'] !== 'active') {
     $_SESSION = [];
     session_destroy();
     set_flash('error', 'Admin account has been suspended.');
-    redirect(BASE_URL . '/admin-login.php');
+    redirect(url('admin-login'));
 }
 
-// ── 3. Enforce two-factor for every admin ──
+// â”€â”€ 3. Enforce two-factor for every admin â”€â”€
 // Columns differ across releases (`two_factor_enabled` is the canonical one,
 // `totp_enabled` predates it) so both are accepted.
 $adminHas2FA = !empty($adminRow['two_factor_enabled']) || !empty($adminRow['totp_enabled']);
@@ -40,7 +40,7 @@ if ($adminHas2FA && empty($_SESSION['admin_2fa_verified'])) {
     if (empty($_SESSION['admin_post_2fa_url'])) {
         $_SESSION['admin_post_2fa_url'] = $_SERVER['REQUEST_URI'] ?? '/admin/index.php';
     }
-    redirect(BASE_URL . '/admin/totp-verify.php');
+    redirect(url('admin/totp-verify'));
 }
 
 // Admins without 2FA are forced to enrol rather than run unprotected.

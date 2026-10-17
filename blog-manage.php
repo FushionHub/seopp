@@ -20,7 +20,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
         } else {
             set_flash('error', 'Unable to delete article or unauthorized.');
         }
-        redirect(BASE_URL . '/blog-manage.php');
+        redirect(url('blog-manage'));
     }
 }
 
@@ -66,14 +66,14 @@ require_once __DIR__ . '/includes/app_header.php';
         </div>
         <div class="d-flex gap-2">
             <?php if ($isAdmin): ?>
-                <a href="<?= BASE_URL ?>/admin/blogs.php" class="btn btn-outline-warning rounded-pill px-3 font-size-13">
+                <a href="<?= BASE_URL ?>/admin/blogs" class="btn btn-outline-warning rounded-pill px-3 font-size-13">
                     <i class="ph ph-shield-check me-1"></i> Admin Moderation
                 </a>
             <?php endif; ?>
-            <a href="<?= BASE_URL ?>/blog.php" target="_blank" class="btn btn-outline-light rounded-pill px-3 font-size-13">
+            <a href="<?= url('blog') ?>" target="_blank" class="btn btn-outline-light rounded-pill px-3 font-size-13">
                 <i class="ph ph-arrow-square-out me-1"></i> Public Blog
             </a>
-            <a href="<?= BASE_URL ?>/blog-create.php" class="btn btn-accent rounded-pill px-4 fw-bold text-dark font-size-14 d-flex align-items-center gap-1">
+            <a href="<?= url('blog-create') ?>" class="btn btn-accent rounded-pill px-4 fw-bold text-dark font-size-14 d-flex align-items-center gap-1">
                 <i class="ph-bold ph-plus"></i> Write Article
             </a>
         </div>
@@ -153,7 +153,7 @@ require_once __DIR__ . '/includes/app_header.php';
                                 <div class="text-muted mb-3"><i class="ph ph-article-ny-times fs-1 text-muted"></i></div>
                                 <h5 class="text-white fw-bold mb-1">No articles found</h5>
                                 <p class="text-muted font-size-13 mb-3">Share your marketing tips, agency strategies, or brand updates today.</p>
-                                <a href="<?= BASE_URL ?>/blog-create.php" class="btn btn-accent rounded-pill px-4 fw-bold text-dark font-size-13">
+                                <a href="<?= url('blog-create') ?>" class="btn btn-accent rounded-pill px-4 fw-bold text-dark font-size-13">
                                     <i class="ph-bold ph-plus me-1"></i> Write First Article
                                 </a>
                             </td>
@@ -170,7 +170,7 @@ require_once __DIR__ . '/includes/app_header.php';
                                     <div class="d-flex align-items-center gap-3">
                                         <img src="<?= e($imgSrc) ?>" alt="Cover" class="rounded-3" style="width:54px; height:40px; object-fit:cover; flex-shrink:0;">
                                         <div style="min-width:0;">
-                                            <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($p['slug']) ?>" target="_blank" class="text-white fw-semibold font-size-14 text-truncate d-block" title="<?= e($p['title']) ?>">
+                                            <a href="<?= url('blog-details') ?>?slug=<?= e($p['slug']) ?>" target="_blank" class="text-white fw-semibold font-size-14 text-truncate d-block" title="<?= e($p['title']) ?>">
                                                 <?= e($p['title']) ?>
                                             </a>
                                             <span class="text-muted font-size-12">/blog-details.php?slug=<?= e($p['slug']) ?></span>
@@ -207,10 +207,10 @@ require_once __DIR__ . '/includes/app_header.php';
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="d-inline-flex gap-1">
-                                        <a href="<?= BASE_URL ?>/blog-details.php?slug=<?= e($p['slug']) ?>" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-2" title="View Article Live">
+                                        <a href="<?= url('blog-details') ?>?slug=<?= e($p['slug']) ?>" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-2" title="View Article Live">
                                             <i class="ph ph-eye"></i>
                                         </a>
-                                        <a href="<?= BASE_URL ?>/blog-edit.php?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-primary rounded-pill px-2" title="Edit Article">
+                                        <a href="<?= url('blog-edit') ?>?id=<?= $p['id'] ?>" class="btn btn-sm btn-outline-primary rounded-pill px-2" title="Edit Article">
                                             <i class="ph ph-pencil-simple"></i>
                                         </a>
                                         <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this article?');">

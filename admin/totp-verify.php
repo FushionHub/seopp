@@ -7,20 +7,20 @@ require_once __DIR__ . '/../modules/email_service.php';
 
 $pendingAdminId = (int)($_SESSION['admin_pending_totp'] ?? 0);
 if ($pendingAdminId <= 0) {
-    redirect(BASE_URL . '/admin-login.php');
+    redirect(url('admin-login'));
 }
 
 $admin = db()->fetchOne("SELECT * FROM users WHERE id = ? AND role = 'admin'", [$pendingAdminId]);
 if (!$admin) {
     unset($_SESSION['admin_pending_totp']);
-    redirect(BASE_URL . '/admin-login.php');
+    redirect(url('admin-login'));
 }
 
 $errors = [];
 $success = '';
 
-// ── Rate limit: a 6-digit code is only 10^6 possibilities and lives for
-//    10 minutes. Lock out after 5 failed attempts per admin per 15 minutes. ──
+// â”€â”€ Rate limit: a 6-digit code is only 10^6 possibilities and lives for
+//    10 minutes. Lock out after 5 failed attempts per admin per 15 minutes. â”€â”€
 $rlKey = 'admin_2fa_' . $pendingAdminId;
 $rlOk  = check_rate_limit($rlKey, 5, 900);
 
@@ -107,7 +107,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
             $backupCodes = json_decode((string)$admin['two_factor_backup'], true) ?: [];
             if (is_array($backupCodes)) {
                 foreach ($backupCodes as &$b) {
-                    // `$b` may be a bare string in the oldest format — never
+                    // `$b` may be a bare string in the oldest format â€” never
                     // index into it without checking, and skip used records.
                     if (!is_array($b) || !empty($b['used'])) {
                         continue;
@@ -152,7 +152,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && csrf_verify()) {
     }
 }
 
-$pageTitle = 'Admin 2FA Security Challenge — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = 'Admin 2FA Security Challenge â€” ' . get_setting('site_name', 'Adsbooster.net');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -252,7 +252,7 @@ $pageTitle = 'Admin 2FA Security Challenge — ' . get_setting('site_name', 'Ads
         </form>
 
         <div class="text-center">
-            <a href="<?= BASE_URL ?>/admin-login.php" class="text-secondary small text-decoration-none hover-text-light">
+            <a href="<?= url('admin-login') ?>" class="text-secondary small text-decoration-none hover-text-light">
                 &larr; Back to Admin Login
             </a>
         </div>

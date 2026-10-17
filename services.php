@@ -10,7 +10,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
             <div class="col-lg-8">
                 <div class="text-center">
                     <ul class="d-inline-flex align-items-center justify-content-center tw-gap-2 bg-white-08 rounded-pill tw-px-5 tw-py-2">
-                        <li><a href="<?= BASE_URL ?>/index.php" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
+                        <li><a href="<?= url('index') ?>" class="text-white hover--translate-y-1 hover-underline"> <i class="las la-home"></i> Home</a> </li>
                         <li class="text-white tw-text-lg">/</li>
                         <li> <span class="text-white"> Our Services </span> </li>
                     </ul>
@@ -45,7 +45,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     Launch and orchestrate high-yield ad campaigns across Meta, TikTok, Google Ads, and Snapchat simultaneously from one unified budget.
                                 </p>
                                 <div class="tw-mt-9">
-                                    <a href="<?= BASE_URL ?>/create-ad.php"
+                                    <a href="<?= url('create-ad') ?>"
                                         class="text-main-600 group-hover-text-main-two-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-two-600 group-hover-border-main-two-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                         <span class="element-double-animation__element" data-content="Launch Ad">Launch Ad</span>
                                         <span class="group-hover-item-rotate-45-deg tw-duration-300">
@@ -75,7 +75,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     Engineer viral 3-second hooks, scene-by-scene camera directions, and high-retention TikTok scripts generated via Groq AI in real time.
                                 </p>
                                 <div class="tw-mt-9">
-                                    <a href="<?= BASE_URL ?>/ugc-generator.php"
+                                    <a href="<?= url('ugc-generator') ?>"
                                         class="text-main-600 group-hover-text-main-two-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-two-600 group-hover-border-main-two-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                         <span class="element-double-animation__element" data-content="Create UGC">Create UGC</span>
                                         <span class="group-hover-item-rotate-45-deg tw-duration-300">
@@ -105,7 +105,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     Showcase clinics, hotels, eateries, and enterprises to verified local buyers with direct WhatsApp, Phone, and Google Maps routing.
                                 </p>
                                 <div class="tw-mt-9">
-                                    <a href="<?= BASE_URL ?>/marketplace.php"
+                                    <a href="<?= url('marketplace') ?>"
                                         class="text-main-600 group-hover-text-main-two-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-two-600 group-hover-border-main-two-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                         <span class="element-double-animation__element" data-content="Explore Directory">Explore Directory</span>
                                         <span class="group-hover-item-rotate-45-deg tw-duration-300">
@@ -135,7 +135,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     Algorithmic ROAS guardrails protecting your ad spend 24/7 by diagnosing fatigue, auto-rebalancing budgets, and pausing high CPA ads.
                                 </p>
                                 <div class="tw-mt-9">
-                                    <a href="<?= BASE_URL ?>/dashboard.php"
+                                    <a href="<?= url('dashboard') ?>"
                                         class="text-main-600 group-hover-text-main-two-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-two-600 group-hover-border-main-two-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                         <span class="element-double-animation__element" data-content="View Doctor">View Doctor</span>
                                         <span class="group-hover-item-rotate-45-deg tw-duration-300">
@@ -165,7 +165,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     Compose and send branded luxury HTML emails with CKEditor 5 Free and PHPMailer SMTP transport directly to prospective partners.
                                 </p>
                                 <div class="tw-mt-9">
-                                    <a href="<?= BASE_URL ?>/send-email.php"
+                                    <a href="<?= url('send-email') ?>"
                                         class="text-main-600 group-hover-text-main-two-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-two-600 group-hover-border-main-two-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                         <span class="element-double-animation__element" data-content="Open Outreach">Open Outreach</span>
                                         <span class="group-hover-item-rotate-45-deg tw-duration-300">
@@ -195,7 +195,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
                                     Full conversion attribution across Meta Pixel, TikTok Pixel, Google Enhanced Conversions, and Snapchat Conversions API in real time.
                                 </p>
                                 <div class="tw-mt-9">
-                                    <a href="<?= BASE_URL ?>/analytics.php"
+                                    <a href="<?= url('analytics') ?>"
                                         class="text-main-600 group-hover-text-main-two-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-two-600 group-hover-border-main-two-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
                                         <span class="element-double-animation__element" data-content="View Analytics">View Analytics</span>
                                         <span class="group-hover-item-rotate-45-deg tw-duration-300">
@@ -239,7 +239,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
           </div>
           <div class="tw-mt-11 d-flex align-items-center tw-gap-8 flex-wrap" data-aos="fade-up" data-aos-duration="800"
             data-aos-delay="100">
-            <a href="<?= BASE_URL ?>/about.php"
+            <a href="<?= url('about') ?>"
               class="btn btn-main hover-style-one button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-705 group active--translate-y-2 tw-p-1 tw-pe-8 rounded-pill group-item"
               data-block="button">
               <span class="button__flair"></span>
@@ -476,7 +476,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
             Blog & News</span>
         </h2>
       </div>
-      <a href="<?= BASE_URL ?>/blog.php"
+      <a href="<?= url('blog') ?>"
         class="btn btn-main-two hover-style-two group group-item button--stroke active-scale-094 tw-duration-100 d-inline-flex align-items-center justify-content-center tw-gap-205 group active--translate-y-2 pointer-events-auto rounded-pill"
         data-block="button">
         <span class="button__flair"></span>
@@ -502,10 +502,10 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
               <span class="tw-text-base fw-medium text-neutral-500">Business</span>
             </div>
             <h2 class="h5 tw-my-6">
-              <a href="<?= BASE_URL ?>/blog-details.php" class="text-heading hover-text-main-600 line-clamp-3">What to emphasize when
+              <a href="<?= url('blog-details') ?>" class="text-heading hover-text-main-600 line-clamp-3">What to emphasize when
                 you are designing promotional</a>
             </h2>
-            <a href="<?= BASE_URL ?>/blog-details.php"
+            <a href="<?= url('blog-details') ?>"
               class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
               <span class="element-double-animation__element" data-content="Read Details">Read Details</span>
 
@@ -514,7 +514,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
               </span>
             </a>
           </div>
-          <a href="<?= BASE_URL ?>/blog-details.php" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
+          <a href="<?= url('blog-details') ?>" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img1.png" alt="Image"
               class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img1.png" alt="Image"
@@ -534,10 +534,10 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
               <span class="tw-text-base fw-medium text-neutral-500">Business</span>
             </div>
             <h2 class="h5 tw-my-6">
-              <a href="<?= BASE_URL ?>/blog-details.php" class="text-heading hover-text-main-600 line-clamp-3">Google Ads vs Facebook
+              <a href="<?= url('blog-details') ?>" class="text-heading hover-text-main-600 line-clamp-3">Google Ads vs Facebook
                 Ads: Which is Better?</a>
             </h2>
-            <a href="<?= BASE_URL ?>/blog-details.php"
+            <a href="<?= url('blog-details') ?>"
               class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
               <span class="element-double-animation__element" data-content="Read Details">Read Details</span>
 
@@ -546,7 +546,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
               </span>
             </a>
           </div>
-          <a href="<?= BASE_URL ?>/blog-details.php" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
+          <a href="<?= url('blog-details') ?>" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img2.png" alt="Image"
               class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img2.png" alt="Image"
@@ -566,10 +566,10 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
               <span class="tw-text-base fw-medium text-neutral-500">Business</span>
             </div>
             <h2 class="h5 tw-my-6">
-              <a href="<?= BASE_URL ?>/blog-details.php" class="text-heading hover-text-main-600 line-clamp-3">Automation Workflows
+              <a href="<?= url('blog-details') ?>" class="text-heading hover-text-main-600 line-clamp-3">Automation Workflows
                 That Save Time & Sell More</a>
             </h2>
-            <a href="<?= BASE_URL ?>/blog-details.php"
+            <a href="<?= url('blog-details') ?>"
               class="text-main-600 fw-semibold border-bottom border-main-600 hover-border-main-600 hover-text-main-600 d-inline-flex align-items-center tw-gap-205 group-item element-double-animation">
               <span class="element-double-animation__element" data-content="Read Details">Read Details</span>
 
@@ -578,7 +578,7 @@ $pageTitle = 'Services - Adsbooster.net'; require __DIR__ . '/includes/header.ph
               </span>
             </a>
           </div>
-          <a href="<?= BASE_URL ?>/blog-details.php" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
+          <a href="<?= url('blog-details') ?>" class="tw-rounded-xl overflow-hidden d-block position-relative view-cursor-show">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img3.png" alt="Image"
               class="image-double-animation__element tw-rounded-xl w-100 object-fit-cover">
             <img src="<?= ASSETS_URL ?>/images/thumbs/blog-img3.png" alt="Image"

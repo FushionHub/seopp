@@ -121,7 +121,7 @@ require_once __DIR__ . '/includes/app_header.php';
 
         <!-- Filters -->
         <div class="card-dark" style="margin-bottom:32px">
-            <form method="GET" action="<?= BASE_URL ?>/analytics.php" style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:16px">
+            <form method="GET" action="<?= url('analytics') ?>" style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:16px">
                 <div>
                     <label class="form-label">From</label>
                     <input type="date" name="from" value="<?= e($dateFrom) ?>"

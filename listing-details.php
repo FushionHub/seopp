@@ -4,7 +4,7 @@ require_once __DIR__ . '/config/site_setting_and_config.php';
 
 $listingId = (int)($_GET['id'] ?? 0);
 if ($listingId <= 0) {
-    redirect(BASE_URL . '/marketplace.php');
+    redirect(url('marketplace'));
 }
 
 $listing = db()->fetchOne(
@@ -17,7 +17,7 @@ $listing = db()->fetchOne(
 
 if (!$listing) {
     set_flash('error', 'Listing not found.');
-    redirect(BASE_URL . '/marketplace.php');
+    redirect(url('marketplace'));
 }
 
 // Increment views count
@@ -30,13 +30,13 @@ $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
 $whatsapp = !empty($listing['whatsapp']) ? $listing['whatsapp'] : $phone;
 $cleanWhatsapp = preg_replace('/[^0-9]/', '', $whatsapp);
 
-$pageTitle = e($listing['title']) . ' — ' . get_setting('site_name', 'Adsbooster.net');
+$pageTitle = e($listing['title']) . ' â€” ' . get_setting('site_name', 'Adsbooster.net');
 require_once __DIR__ . '/includes/app_header.php';
 ?>
 
 <div class="w-100">
     <div style="margin-bottom:24px;">
-        <a href="<?= BASE_URL ?>/marketplace.php" class="btn-outline-dark btn-sm">
+        <a href="<?= url('marketplace') ?>" class="btn-outline-dark btn-sm">
             <i class="ph ph-arrow-left"></i> Back to Marketplace
         </a>
     </div>
@@ -105,7 +105,7 @@ require_once __DIR__ . '/includes/app_header.php';
 
                     <!-- Embedded Google Maps -->
                     <?php
-                    // Only ever embed a whitelisted Google Maps URL — the raw
+                    // Only ever embed a whitelisted Google Maps URL â€” the raw
                     // column is user-controlled and would otherwise allow an
                         // arbitrary third-party iframe (clickjacking / phishing).
                         $mapSrc = '';
@@ -161,7 +161,7 @@ require_once __DIR__ . '/includes/app_header.php';
 
                     <!-- P2P In-App Chat -->
                     <?php if ((int)$listing['user_id'] !== current_user_id()): ?>
-                        <a href="<?= BASE_URL ?>/p2p-chat.php?user=<?= (int)$listing['user_id'] ?>" class="btn-outline-dark" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;font-weight:600;">
+                        <a href="<?= url('p2p-chat') ?>?user=<?= (int)$listing['user_id'] ?>" class="btn-outline-dark" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;font-weight:600;">
                             <i class="ph ph-chats-circle" style="font-size:18px;color:var(--accent);"></i> Send In-App P2P Message
                         </a>
                     <?php endif; ?>
