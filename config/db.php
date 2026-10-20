@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +15,7 @@ class Database
     private string $host = '127.0.0.1';
     private string $port = '3306';
     private string $dbname = 'adsbooster';
-    private string $charset = 'utf8mb4';
+    private string $charset = 'latin1';
     private string $username = 'root';
     private string $password = '';
 
@@ -27,7 +28,9 @@ class Database
         $localFile = __DIR__ . '/db.local.php';
         if (is_readable($localFile)) {
             $local = (static function () use ($localFile): array {
-                $v = (static function () use ($localFile) { return require $localFile; })();
+                $v = (static function () use ($localFile) {
+                    return require $localFile;
+                })();
                 return is_array($v) ? $v : [];
             })();
             foreach (['host', 'port', 'dbname', 'username', 'password'] as $k) {
@@ -59,7 +62,7 @@ class Database
             error_log("Database connection failed: " . $e->getMessage());
             throw new \PDOException(
                 'Database connection failed (db=' . $this->dbname . ', user=' . $this->username
-                . '): ' . $e->getMessage(),
+                    . '): ' . $e->getMessage(),
                 (int)$e->getCode(),
                 $e
             );

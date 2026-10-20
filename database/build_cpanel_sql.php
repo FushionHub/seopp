@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 $base = 'c:/laragon/www/seopp';
@@ -26,7 +27,7 @@ $header = <<<SQL
 --
 -- Safe for fresh install or updates:
 -- Uses `CREATE TABLE IF NOT EXISTS` and `INSERT IGNORE INTO`.
--- Zero undefined collations: No utf8mb4_0900_ai_ci errors on cPanel!
+-- Zero undefined collations: No latin1_0900_ai_ci errors on cPanel!
 -- =====================================================================
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -49,8 +50,8 @@ foreach ($tables as $t) {
     // Remove AUTO_INCREMENT=\d+ from table options so clean starts start at 1 or use insert values
     $create = preg_replace('/\s+AUTO_INCREMENT=\d+/i', '', $create);
 
-    // Replace all utf8mb4 / utf8mb4_0900_ai_ci / utf8mb4_unicode_ci column collations with latin1_swedish_ci
-    $create = preg_replace('/COLLATE\s*=?\s*utf8mb4_[a-zA-Z0-9_]+/i', 'COLLATE latin1_swedish_ci', $create);
+    // Replace all latin1 / latin1_0900_ai_ci / latin1_swedish_ci column collations with latin1_swedish_ci
+    $create = preg_replace('/COLLATE\s*=?\s*latin1_[a-zA-Z0-9_]+/i', 'COLLATE latin1_swedish_ci', $create);
     $create = preg_replace('/COLLATE\s*=?\s*utf8_[a-zA-Z0-9_]+/i', 'COLLATE latin1_swedish_ci', $create);
 
     // Replace table charset and collation

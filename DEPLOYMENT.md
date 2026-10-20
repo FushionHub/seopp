@@ -66,14 +66,14 @@ Adsbooster.net is engineered as a high-performance, low-latency, modular PHP pla
 ## 2. Prerequisites & Requirements
 
 ### Server Requirements
-| Component | Minimum Specification | Recommended Specification |
-| :--- | :--- | :--- |
-| **Operating System** | Ubuntu 22.04 LTS / Debian 12 / Windows Server | Ubuntu 24.04 LTS |
-| **CPU** | 2 vCPU Cores | 4+ vCPU Cores |
-| **RAM** | 2 GB | 4 GB - 8 GB |
-| **Storage** | 20 GB SSD | 50 GB NVMe |
-| **PHP** | PHP 8.1.0 or higher | PHP 8.3 / 8.4 |
-| **Database** | MySQL 5.7+ or MariaDB 10.3+ | MySQL 8.0.36+ or MariaDB 11.x |
+| Component            | Minimum Specification                         | Recommended Specification     |
+| :------------------- | :-------------------------------------------- | :---------------------------- |
+| **Operating System** | Ubuntu 22.04 LTS / Debian 12 / Windows Server | Ubuntu 24.04 LTS              |
+| **CPU**              | 2 vCPU Cores                                  | 4+ vCPU Cores                 |
+| **RAM**              | 2 GB                                          | 4 GB - 8 GB                   |
+| **Storage**          | 20 GB SSD                                     | 50 GB NVMe                    |
+| **PHP**              | PHP 8.1.0 or higher                           | PHP 8.3 / 8.4                 |
+| **Database**         | MySQL 5.7+ or MariaDB 10.3+                   | MySQL 8.0.36+ or MariaDB 11.x |
 
 ### Required PHP Extensions
 Ensure the following extensions are compiled and enabled in `php.ini`:
@@ -127,11 +127,11 @@ sudo chmod -R 775 /var/www/seopp/assets/uploads
 mysql -u root -p
 ```
 
-2. Create the production database with UTF8mb4 character set:
+2. Create the production database with latin1 character set:
 ```sql
 CREATE DATABASE `adsbooster` 
-  CHARACTER SET utf8mb4 
-  COLLATE utf8mb4_unicode_ci;
+  CHARACTER SET latin1 
+  COLLATE latin1_swedish_ci;
 ```
 
 3. Import the master SQL schema and seed data from `database/adsbooster_complete.sql`:
@@ -407,26 +407,26 @@ Adsbooster is an **email-first** platform. All major interactions (signups, pass
 
 After deployment, test the following endpoints to verify all components:
 
-| Endpoint | Purpose | Expected Status |
-| :--- | :--- | :--- |
-| `/index.php` | Homepage with dynamic Verified Directory & Reviews showcase | HTTP 200 |
-| `/marketplace.php` | Business & Product Directory with WhatsApp/Phone filters | HTTP 200 |
-| `/ugc-generator.php` | AI UGC Image Creative Studio with Canva-style canvas editor | HTTP 200 |
-| `/ugc-video-studio.php` | AI Video Studio — Veo/Nano Banana 2, edit, regenerate, download, run ads | HTTP 200 (login) |
-| `/post-creator.php` | AI caption + Nano Banana 2 illustration → live multi-network publish | HTTP 200 (login) |
-| `/developer-docs.php` | Encyclopedic A–Z Developer Documentation & code generators | HTTP 200 |
-| `/api-settings.php` | Master API Key console, Rate limit monitor & Webhook Tester | HTTP 200 |
-| `/status.php` | Live service uptime & network latency telemetry | HTTP 200 |
-| `/security-2fa.php` | Google Authenticator RFC 6238 & Email OTP 2FA setup | HTTP 200 |
-| `/admin-login.php` | Administrative login with TOTP 2FA verification challenge | HTTP 200 |
-| `/admin/index.php` | Admin dashboard — 25 modules, user management, maintenance mode | HTTP 200 (admin) |
-| `/portfolio.php?u=demo` | Dedicated public portfolio view (accessible without login) | HTTP 200 |
-| `/vcard-download.php?id=3` | RFC 6350 compliant digital vCard download (.vcf) | HTTP 200 (vcard) |
-| `/reviews.php` | Community review submission portal (Pro vs Free 5-day rule) | HTTP 200 |
-| `/send-email.php` | Outbound HTML Email Studio with CKEditor 5 | HTTP 200 |
-| `/p2p-chat.php` | P2P Chat with AI Growth Consultant bot & deal proposals | HTTP 200 |
-| `/blog-manage.php` | CKEditor 5 Blog Article Creator & Manager | HTTP 200 |
-| `/404.php` | Custom 404 Error handler with live search | HTTP 404 |
+| Endpoint                   | Purpose                                                                  | Expected Status  |
+| :------------------------- | :----------------------------------------------------------------------- | :--------------- |
+| `/index.php`               | Homepage with dynamic Verified Directory & Reviews showcase              | HTTP 200         |
+| `/marketplace.php`         | Business & Product Directory with WhatsApp/Phone filters                 | HTTP 200         |
+| `/ugc-generator.php`       | AI UGC Image Creative Studio with Canva-style canvas editor              | HTTP 200         |
+| `/ugc-video-studio.php`    | AI Video Studio — Veo/Nano Banana 2, edit, regenerate, download, run ads | HTTP 200 (login) |
+| `/post-creator.php`        | AI caption + Nano Banana 2 illustration → live multi-network publish     | HTTP 200 (login) |
+| `/developer-docs.php`      | Encyclopedic A–Z Developer Documentation & code generators               | HTTP 200         |
+| `/api-settings.php`        | Master API Key console, Rate limit monitor & Webhook Tester              | HTTP 200         |
+| `/status.php`              | Live service uptime & network latency telemetry                          | HTTP 200         |
+| `/security-2fa.php`        | Google Authenticator RFC 6238 & Email OTP 2FA setup                      | HTTP 200         |
+| `/admin-login.php`         | Administrative login with TOTP 2FA verification challenge                | HTTP 200         |
+| `/admin/index.php`         | Admin dashboard — 25 modules, user management, maintenance mode          | HTTP 200 (admin) |
+| `/portfolio.php?u=demo`    | Dedicated public portfolio view (accessible without login)               | HTTP 200         |
+| `/vcard-download.php?id=3` | RFC 6350 compliant digital vCard download (.vcf)                         | HTTP 200 (vcard) |
+| `/reviews.php`             | Community review submission portal (Pro vs Free 5-day rule)              | HTTP 200         |
+| `/send-email.php`          | Outbound HTML Email Studio with CKEditor 5                               | HTTP 200         |
+| `/p2p-chat.php`            | P2P Chat with AI Growth Consultant bot & deal proposals                  | HTTP 200         |
+| `/blog-manage.php`         | CKEditor 5 Blog Article Creator & Manager                                | HTTP 200         |
+| `/404.php`                 | Custom 404 Error handler with live search                                | HTTP 404         |
 
 ### Feature Smoke Test (after first login)
 

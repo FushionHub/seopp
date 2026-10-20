@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -41,7 +42,7 @@ class AIVideoEngine
             ['id' => 'elena_fitness',  'name' => 'Elena Cruz',     'tag' => 'Fitness & Wellness Influencer',   'avatar_img' => 'assets/images/thumbs/team-img2.png',       'gender' => 'female', 'voice_id' => 'en_female_energetic', 'vibe' => 'Passionate, dynamic, motivating, lifestyle-focused'],
             ['id' => 'david_tech',     'name' => 'David Chen',     'tag' => 'Gadgets & Unboxing Specialist',   'avatar_img' => 'assets/images/thumbs/team-img3.png',       'gender' => 'male',   'voice_id' => 'en_male_analytical',  'vibe' => 'Analytical, enthusiastic, product teardown expert'],
             ['id' => 'sophia_luxury',  'name' => 'Sophia Laurent', 'tag' => 'Luxury Fashion & Beauty Host',    'avatar_img' => 'assets/images/thumbs/team-img4.png',       'gender' => 'female', 'voice_id' => 'en_female_luxury',    'vibe' => 'Elegant, polished, aesthetic, high-end commercial'],
-            ['id' => 'chloe_lifestyle','name' => 'Chloe Bennett',  'tag' => 'Mom & Home Lifestyle Creator',    'avatar_img' => 'assets/images/thumbs/team-three-img2.png', 'gender' => 'female', 'voice_id' => 'en_female_warm',      'vibe' => 'Relatable, warm, problem-solving, everyday user'],
+            ['id' => 'chloe_lifestyle', 'name' => 'Chloe Bennett',  'tag' => 'Mom & Home Lifestyle Creator',    'avatar_img' => 'assets/images/thumbs/team-three-img2.png', 'gender' => 'female', 'voice_id' => 'en_female_warm',      'vibe' => 'Relatable, warm, problem-solving, everyday user'],
         ];
     }
 
@@ -53,7 +54,7 @@ class AIVideoEngine
             ['id' => 'en_female_energetic', 'name' => 'Elena (High-Energy Fitness)',      'gender' => 'female', 'tone' => 'Motivational, crisp, vibrant high-conversion',    'pitch' => 1.05, 'rate' => 1.12, 'lang' => 'en-US'],
             ['id' => 'en_male_analytical',  'name' => 'David (Clear Tech Reviewer)',      'gender' => 'male',   'tone' => 'Analytical, engaging, authentic unboxing pace',   'pitch' => 0.95, 'rate' => 1.00, 'lang' => 'en-US'],
             ['id' => 'en_female_luxury',    'name' => 'Sophia (Luxury Studio Elegance)',  'gender' => 'female', 'tone' => 'Smooth, polished, European fashion accent',       'pitch' => 1.00, 'rate' => 0.90, 'lang' => 'en-GB'],
-            ['id' => 'en_female_warm',      'name' => 'Chloe (Warm & Relatable Storyteller)','gender' => 'female','tone' => 'Friendly, trustworthy, home lifestyle storytelling','pitch' => 1.10,'rate' => 0.98, 'lang' => 'en-US'],
+            ['id' => 'en_female_warm',      'name' => 'Chloe (Warm & Relatable Storyteller)', 'gender' => 'female', 'tone' => 'Friendly, trustworthy, home lifestyle storytelling', 'pitch' => 1.10, 'rate' => 0.98, 'lang' => 'en-US'],
         ];
     }
 
@@ -63,7 +64,7 @@ class AIVideoEngine
             ['id' => 'tech_3d_render',     'name' => 'High-Tech 3D Cyber Teaser',   'desc' => 'Futuristic lighting, neon grid reflections, holographic particles.',  'sample_thumb' => 'assets/images/thumbs/project-details-img1.png', 'prompt_suffix' => 'futuristic 3D product render, neon rim lighting, volumetric haze, holographic particles, dark obsidian studio, ultra detailed, cinematic ad'],
             ['id' => 'luxury_minimalist',  'name' => 'Luxury Studio Minimalist',    'desc' => 'Slow cinematic pans, architectural shadows, matte obsidian and gold.', 'sample_thumb' => 'assets/images/thumbs/project-details-img2.png', 'prompt_suffix' => 'luxury minimalist studio photography, matte black and gold palette, soft architectural shadows, editorial fashion ad, elegant negative space'],
             ['id' => 'cinematic_macro',    'name' => 'Slow-Motion Macro Teardown',  'desc' => '120fps ultra-closeups of raw materials, craftsmanship and detail.',    'sample_thumb' => 'assets/images/thumbs/service-details-img1.png', 'prompt_suffix' => 'extreme macro closeup, shallow depth of field, raw material texture, craftsmanship detail, cinematic bokeh, high speed photography'],
-            ['id' => 'lifestyle_storyboard','name' => 'Modern Lifestyle In-Action', 'desc' => 'Natural sunlight, lens flare, handheld transitions, human emotion.',   'sample_thumb' => 'assets/images/thumbs/blog-details-img2.png',    'prompt_suffix' => 'modern lifestyle photography, natural sunlight, subtle lens flare, candid authentic moment, warm color grade, handheld documentary feel'],
+            ['id' => 'lifestyle_storyboard', 'name' => 'Modern Lifestyle In-Action', 'desc' => 'Natural sunlight, lens flare, handheld transitions, human emotion.',   'sample_thumb' => 'assets/images/thumbs/blog-details-img2.png',    'prompt_suffix' => 'modern lifestyle photography, natural sunlight, subtle lens flare, candid authentic moment, warm color grade, handheld documentary feel'],
         ];
     }
 
@@ -71,7 +72,7 @@ class AIVideoEngine
     {
         return [
             ['id' => 'tiktok_glow',    'name' => 'TikTok Neon Glow',       'bg' => '#000000', 'color' => '#c8ff00', 'stroke' => '#00ffff'],
-            ['id' => 'beast_yellow',   'name' => 'Mr. Beast Punchy Yellow','bg' => '#111111', 'color' => '#ffe600', 'stroke' => '#000000'],
+            ['id' => 'beast_yellow',   'name' => 'Mr. Beast Punchy Yellow', 'bg' => '#111111', 'color' => '#ffe600', 'stroke' => '#000000'],
             ['id' => 'minimal_white',  'name' => 'Minimal Clean White',    'bg' => 'rgba(0,0,0,0.6)', 'color' => '#ffffff', 'stroke' => 'none'],
             ['id' => 'cyber_cyan',     'name' => 'Cyber Gradient Cyan',    'bg' => '#080c14', 'color' => '#00f2fe', 'stroke' => '#4facfe'],
         ];
@@ -82,7 +83,7 @@ class AIVideoEngine
         return [
             ['id' => 'viral_lofi_beat',    'name' => 'Viral Lo-Fi Chill Hop',   'bpm' => 92,  'genre' => 'Lo-Fi / Chill',    'wave' => 'sine'],
             ['id' => 'upbeat_electronic',  'name' => 'High-Energy Drop Beat',   'bpm' => 124, 'genre' => 'Electronic',       'wave' => 'square'],
-            ['id' => 'cinematic_hook',     'name' => 'Cinematic Suspense Build','bpm' => 100, 'genre' => 'Cinematic',        'wave' => 'sawtooth'],
+            ['id' => 'cinematic_hook',     'name' => 'Cinematic Suspense Build', 'bpm' => 100, 'genre' => 'Cinematic',        'wave' => 'sawtooth'],
             ['id' => 'corporate_ambient',  'name' => 'Modern Minimal Acoustic', 'bpm' => 110, 'genre' => 'Acoustic / Tech',  'wave' => 'triangle'],
         ];
     }
@@ -127,42 +128,42 @@ class AIVideoEngine
                 'label'     => 'Storyboard Studio (built-in, free)',
                 'kind'      => 'storyboard',
                 'async'     => false,
-                'configured'=> true,
+                'configured' => true,
                 'note'      => 'Renders photoreal scene stills and composites a real video in your browser.',
             ],
             'veo' => [
                 'label'     => 'Google Veo',
                 'kind'      => 'gemini',
                 'async'     => true,
-                'configured'=> self::hasKey('GEMINI_API_KEY', 'gemini_api_key'),
+                'configured' => self::hasKey('GEMINI_API_KEY', 'gemini_api_key'),
                 'endpoint'  => 'https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-preview:predictLongRunning',
             ],
             'replicate' => [
                 'label'     => 'Replicate (Kling / Wan / Minimax)',
                 'kind'      => 'replicate',
                 'async'     => true,
-                'configured'=> self::hasKey('REPLICATE_API_TOKEN', 'replicate_api_token'),
+                'configured' => self::hasKey('REPLICATE_API_TOKEN', 'replicate_api_token'),
                 'endpoint'  => 'https://api.replicate.com/v1/predictions',
             ],
             'fal' => [
                 'label'     => 'fal.ai (Kling 2.5 / Veo)',
                 'kind'      => 'fal',
                 'async'     => true,
-                'configured'=> self::hasKey('FAL_KEY', 'fal_key'),
+                'configured' => self::hasKey('FAL_KEY', 'fal_key'),
                 'endpoint'  => 'https://queue.fal.run/fal-ai/kling-video/v2.5-turbo/pro/text-to-video',
             ],
             'runway' => [
                 'label'     => 'Runway Gen-3 Alpha Turbo',
                 'kind'      => 'runway',
                 'async'     => true,
-                'configured'=> self::hasKey('RUNWAY_API_KEY', 'runway_api_key'),
+                'configured' => self::hasKey('RUNWAY_API_KEY', 'runway_api_key'),
                 'endpoint'  => 'https://api.dev.runwayml.com/v1/text_to_video',
             ],
             'luma' => [
                 'label'     => 'Luma Dream Machine',
                 'kind'      => 'luma',
                 'async'     => true,
-                'configured'=> self::hasKey('LUMA_API_KEY', 'luma_api_key'),
+                'configured' => self::hasKey('LUMA_API_KEY', 'luma_api_key'),
                 'endpoint'  => 'https://api.lumalabs.ai/dream-machine/v1/generations',
             ],
         ];
@@ -203,7 +204,8 @@ class AIVideoEngine
                 if ($pref !== '' && isset($providers[$pref]) && !empty($providers[$pref]['configured'])) {
                     return $pref;
                 }
-            } catch (\Throwable $e) { /* DB unavailable */ }
+            } catch (\Throwable $e) { /* DB unavailable */
+            }
         }
 
         // Default to the full Google pipeline whenever the key is present.
@@ -242,13 +244,16 @@ class AIVideoEngine
                     $body = trim((string)$json['body']);
                     $cta  = trim((string)($json['cta'] ?? 'Tap the link below to try it risk-free today.'));
                     return [
-                        'hook' => $hook, 'body' => $body, 'cta' => $cta,
+                        'hook' => $hook,
+                        'body' => $body,
+                        'cta' => $cta,
                         'full_script' => "{$hook} {$body} {$cta}",
                         'estimated_seconds' => $targetDuration,
                         'source' => 'groq',
                     ];
                 }
-            } catch (\Throwable $e) { /* fall through to templates */ }
+            } catch (\Throwable $e) { /* fall through to templates */
+            }
         }
 
         $hookOptions = [
@@ -278,7 +283,9 @@ class AIVideoEngine
         $cta  = $ctaOptions[array_rand($ctaOptions)];
 
         return [
-            'hook' => $hook, 'body' => $body, 'cta' => $cta,
+            'hook' => $hook,
+            'body' => $body,
+            'cta' => $cta,
             'full_script' => "{$hook} {$body} {$cta}",
             'estimated_seconds' => $targetDuration,
             'source' => 'template',
@@ -290,7 +297,10 @@ class AIVideoEngine
         $targetDuration = max(10, min(120, $targetDuration));
         $style = null;
         foreach (self::getCommercialStyles() as $s) {
-            if ($s['id'] === $styleId) { $style = $s; break; }
+            if ($s['id'] === $styleId) {
+                $style = $s;
+                break;
+            }
         }
         $suffix = $style['prompt_suffix'] ?? 'cinematic commercial product photography, dramatic studio lighting';
 
@@ -325,7 +335,8 @@ class AIVideoEngine
                         'source' => 'groq',
                     ];
                 }
-            } catch (\Throwable $e) { /* fall through */ }
+            } catch (\Throwable $e) { /* fall through */
+            }
         }
 
         $per = (int)floor($targetDuration / $sceneCount);
@@ -388,7 +399,10 @@ class AIVideoEngine
 
         $styleSuffix = 'lifestyle documentary photography, natural light, authentic candid feel';
         foreach (self::getCommercialStyles() as $s) {
-            if ($s['id'] === $styleId) { $styleSuffix = $s['prompt_suffix']; break; }
+            if ($s['id'] === $styleId) {
+                $styleSuffix = $s['prompt_suffix'];
+                break;
+            }
         }
 
         // Split script into 3 acts weighted by screen time (25% / 55% / 20%).
@@ -532,7 +546,7 @@ class AIVideoEngine
         $brollKeyword   = trim($params['broll_keyword'] ?? '');
         $audioTrack     = $params['audio_track'] ?? 'viral_lofi_beat';
         $aspectRatio    = $params['aspect_ratio'] ?? ($videoType === 'commercial_cinematic' ? '16:9' : '9:16');
-        $durationSeconds= max(10, min(120, (int)($params['duration_seconds'] ?? 30)));
+        $durationSeconds = max(10, min(120, (int)($params['duration_seconds'] ?? 30)));
         $styleId        = $params['style_id'] ?? 'lifestyle_storyboard';
 
         if (!isset(self::getAspectRatios()[$aspectRatio])) {
@@ -552,7 +566,7 @@ class AIVideoEngine
             'script_body'     => $scriptBody,
             'cta_text'        => $ctaText,
             'broll_keyword'   => $brollKeyword,
-            'duration_seconds'=> $durationSeconds,
+            'duration_seconds' => $durationSeconds,
             'aspect_ratio'    => $aspectRatio,
             'avatar_id'       => $avatarId,
             'style_id'        => $styleId,
@@ -571,7 +585,7 @@ class AIVideoEngine
             'video_type'   => $videoType,
             'avatar_name'  => $plan['avatar'],
             'provider'     => $providerId,
-            'provider_label'=> $provider['label'],
+            'provider_label' => $provider['label'],
             'style_id'     => $styleId,
             'scenes'       => $plan['scenes'],
             'resolution'   => $plan['resolution']['w'] . 'x' . $plan['resolution']['h'],
@@ -588,7 +602,7 @@ class AIVideoEngine
         $submission = self::submitToProvider($providerId, $provider, [
             'prompt'      => $plan['full_script'],
             'scenes'      => $plan['scenes'],
-            'aspect_ratio'=> $aspectRatio,
+            'aspect_ratio' => $aspectRatio,
             'duration'    => $durationSeconds,
             'resolution'  => $plan['resolution'],
         ]);
@@ -613,7 +627,7 @@ class AIVideoEngine
             'video_url'       => '',
             'thumbnail_url'   => $thumb,
             'aspect_ratio'    => $aspectRatio,
-            'duration_seconds'=> $durationSeconds,
+            'duration_seconds' => $durationSeconds,
             'status'          => 'generating',
             'credits_used'    => $creditsUsed,
             'metadata'        => array_merge($metadata, [
@@ -635,7 +649,7 @@ class AIVideoEngine
             'hook_text'       => $hookText,
             'script_body'     => $scriptBody,
             'cta_text'        => $ctaText,
-            'duration_seconds'=> $durationSeconds,
+            'duration_seconds' => $durationSeconds,
             'caption_style'   => $captionStyle,
             'audio_track'     => $audioTrack,
             'aspect_ratio'    => $aspectRatio,
@@ -769,7 +783,7 @@ class AIVideoEngine
             'video_url'       => '',
             'thumbnail_url'   => $thumb,
             'aspect_ratio'    => $aspectRatio,
-            'duration_seconds'=> $durationSeconds,
+            'duration_seconds' => $durationSeconds,
             'status'          => 'rendering_client',
             'credits_used'    => $creditsUsed,
             'metadata'        => $metadata,
@@ -786,7 +800,7 @@ class AIVideoEngine
             'hook_text'       => $hookText,
             'script_body'     => $scriptBody,
             'cta_text'        => $ctaText,
-            'duration_seconds'=> $durationSeconds,
+            'duration_seconds' => $durationSeconds,
             'caption_style'   => $captionStyle,
             'audio_track'     => $audioTrack,
             'aspect_ratio'    => $aspectRatio,
@@ -869,7 +883,7 @@ class AIVideoEngine
             'video_type'    => $videoType,
             'avatar_name'   => $plan['avatar'],
             'provider'      => $providerId,
-            'provider_label'=> $provider['label'],
+            'provider_label' => $provider['label'],
             'style_id'      => $styleId,
             'scenes'        => $plan['scenes'],
             'resolution'    => $plan['resolution']['w'] . 'x' . $plan['resolution']['h'],
@@ -923,7 +937,7 @@ class AIVideoEngine
                 'hook_text'       => $hookText,
                 'script_body'     => $scriptBody,
                 'cta_text'        => $ctaText,
-                'duration_seconds'=> $durationSeconds,
+                'duration_seconds' => $durationSeconds,
                 'caption_style'   => $captionStyle,
                 'audio_track'     => $audioTrack,
                 'aspect_ratio'    => $aspectRatio,
@@ -985,7 +999,7 @@ class AIVideoEngine
             'hook_text'       => $hookText,
             'script_body'     => $scriptBody,
             'cta_text'        => $ctaText,
-            'duration_seconds'=> $durationSeconds,
+            'duration_seconds' => $durationSeconds,
             'caption_style'   => $captionStyle,
             'audio_track'     => $audioTrack,
             'aspect_ratio'    => $aspectRatio,
@@ -1064,7 +1078,7 @@ class AIVideoEngine
             db()->update('ai_video_creatives', [
                 'status'       => 'completed',
                 'video_url'    => $saved,
-                'thumbnail_url'=> $row['thumbnail_url'] ?: $saved,
+                'thumbnail_url' => $row['thumbnail_url'] ?: $saved,
                 'completed_at' => date('Y-m-d H:i:s'),
             ], 'id = ?', [$creativeId]);
             self::debitCredits((int)$row['user_id'], (int)$row['credits_used'], (int)$row['id']);
@@ -1198,7 +1212,7 @@ class AIVideoEngine
                     'parameters' => [
                         'aspectRatio'    => str_replace(':', 'x', $aspect),
                         'sampleCount'    => 1,
-                        'durationSeconds'=> min(8, max(4, (int)ceil($dur / 4))),
+                        'durationSeconds' => min(8, max(4, (int)ceil($dur / 4))),
                     ],
                 ]);
                 // Walk the Veo model list newest-first; stop at the first
@@ -1569,7 +1583,7 @@ class AIVideoEngine
             PRIMARY KEY (`id`),
             KEY `idx_user` (`user_id`,`created_at`),
             KEY `idx_status` (`status`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci");
 
         // Older installs shipped a narrower `status` enum — widen it in place so
         // the new `rendering_client` state is accepted.

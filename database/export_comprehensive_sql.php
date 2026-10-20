@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 $base = 'c:/laragon/www/seopp';
@@ -15,7 +16,7 @@ $sqlHeader = <<<SQL
 -- =====================================================================
 -- ADSBOOSTER.NET — COMPREHENSIVE MASTER DATABASE SCHEMA & INITIAL DATA
 -- Version: 3.0 (cPanel Shared Hosting & Production Optimized)
--- Engine: InnoDB | Character Set: utf8mb4 | Collation: utf8mb4_unicode_ci
+-- Engine: InnoDB | Character Set: latin1 | Collation: latin1_swedish_ci
 -- Generated Date: 2026-10-18
 -- Compatible with: MySQL 5.7+, MySQL 8.0+, MariaDB 10.3+
 --
@@ -23,7 +24,7 @@ $sqlHeader = <<<SQL
 -- Uses `CREATE TABLE IF NOT EXISTS` and `INSERT IGNORE INTO`.
 -- =====================================================================
 
-SET NAMES utf8mb4;
+SET NAMES latin1;
 SET FOREIGN_KEY_CHECKS = 0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -64,9 +65,9 @@ foreach ($tables as $table) {
     // Remove AUTO_INCREMENT=\d+ from table options so clean imports start at 1 or follow data
     $createSql = preg_replace('/\s+AUTO_INCREMENT=\d+/i', '', $createSql);
 
-    // Ensure InnoDB and utf8mb4_unicode_ci
+    // Ensure InnoDB and latin1_swedish_ci
     if (!str_contains($createSql, 'COLLATE=')) {
-        $createSql = preg_replace('/DEFAULT CHARSET=\w+/i', 'DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', $createSql);
+        $createSql = preg_replace('/DEFAULT CHARSET=\w+/i', 'DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci', $createSql);
     }
 
     $sqlTables .= "-- -----------------------------------------------------\n";

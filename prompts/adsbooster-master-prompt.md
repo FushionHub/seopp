@@ -21,7 +21,7 @@ Use this as a single source-of-truth brief. Feed it to an AI coding assistant or
 ## 2. Hard Technical Constraints
 
 - **Language/runtime:** Vanilla PHP only. **No PHP framework** (no Laravel, Symfony, CodeIgniter, Slim, etc.). PDO for all DB access, prepared statements everywhere, `declare(strict_types=1)` at the top of every file.
-- **Database:** MySQL (utf8mb4), InnoDB engine, full relational schema with foreign keys.
+- **Database:** MySQL (latin1), InnoDB engine, full relational schema with foreign keys.
 - **Frontend base:** Reuse the original **Agency HTML template** assets untouched in look/feel:
   - HTML5 + Bootstrap 5
   - SASS-compiled `main.css` (keep the compiled CSS; do not require a SASS build step at runtime)
@@ -114,7 +114,7 @@ seopp/
 
 ## 5. Database Schema — Required Tables
 
-Implement (or extend) all of the following. Use `InnoDB`, `utf8mb4_unicode_ci`, and FK constraints with sensible `ON DELETE` behavior.
+Implement (or extend) all of the following. Use `InnoDB`, `latin1_swedish_ci`, and FK constraints with sensible `ON DELETE` behavior.
 
 **Core / platform**
 - `site_settings` (key/value + group, admin-editable)

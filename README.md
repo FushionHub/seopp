@@ -144,7 +144,7 @@
 ## 🛠️ Technology Stack
 
 - **Backend**: Pure PHP 8.1 - 8.4 (Zero framework overhead, extreme performance)
-- **Database**: MySQL 8.0+ / MariaDB 10.3+ (InnoDB, UTF8mb4, indexed relations)
+- **Database**: MySQL 8.0+ / MariaDB 10.3+ (InnoDB, latin1, indexed relations)
 - **Frontend**: Vanilla CSS Design System (Dark Luxury Palette `#080c14`, `#0d1524`, `#c8ff00`), Phosphor Icons
 - **Rich Text Editor**: CKEditor 5 Classic via official CDN
 - **Mail Engine**: PHPMailer 6.x with custom dark luxury HTML templates

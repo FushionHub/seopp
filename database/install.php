@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -90,9 +91,9 @@ if ($expectedTables === []) {
 
 $cred = db()->credentials();
 $dsn = 'mysql:host=' . $cred['host']
-     . ';port='   . $cred['port']
-     . ';dbname=' . $cred['dbname']
-     . ';charset=utf8mb4';
+    . ';port='   . $cred['port']
+    . ';dbname=' . $cred['dbname']
+    . ';charset=latin1';
 
 $ok = false;
 try {

@@ -1,7 +1,7 @@
 # ADVANCED PROMPT — Adsbooster.net Competitive Differentiators
 ### (Addendum to `adsbooster-master-prompt.md` — read that file first, this extends it, nothing here overrides it)
 
-Everything below must obey the same hard constraints already set: vanilla PHP (no framework), PDO + prepared statements, MySQL/InnoDB/utf8mb4, one feature per file under `modules/` or its own top-level/admin page, dark-theme/green-accent UI reusing the existing template components, email-first behavior, dynamic `BASE_URL`, and the existing credit/wallet/plan system (`ad_credits`, `ai_credits`, `pricing_plans`, `transactions`). Every new feature must plug into the existing `users`, `ad_campaigns`, `scheduled_posts`, `marketplace_items`, `team_invitations`, and `site_settings` tables rather than duplicating them.
+Everything below must obey the same hard constraints already set: vanilla PHP (no framework), PDO + prepared statements, MySQL/InnoDB/latin1, one feature per file under `modules/` or its own top-level/admin page, dark-theme/green-accent UI reusing the existing template components, email-first behavior, dynamic `BASE_URL`, and the existing credit/wallet/plan system (`ad_credits`, `ai_credits`, `pricing_plans`, `transactions`). Every new feature must plug into the existing `users`, `ad_campaigns`, `scheduled_posts`, `marketplace_items`, `team_invitations`, and `site_settings` tables rather than duplicating them.
 
 Treat this as a second QA pass: these are the features that make Adsbooster.net feel like a category leader instead of a template clone — competitive against Vista Social, AdEspresso, Hootsuite, and VowAds combined — while staying inside the exact same vanilla-PHP/MySQL architecture.
 
@@ -188,7 +188,7 @@ Strengthens the existing Dating & Connection Search (master prompt §6.8) with t
 
 ## Integration Notes (keep this consistent with the master prompt)
 
-- Every new table above follows the same `InnoDB`/`utf8mb4_unicode_ci`/FK-constrained pattern already established.
+- Every new table above follows the same `InnoDB`/`latin1_swedish_ci`/FK-constrained pattern already established.
 - Every new page/module gets its **own file**, same as the master prompt's "one feature per file" rule — nothing here should be bolted onto an existing file as an afterthought.
 - Every credit-spending feature (boosted listings, auto-refill, referral rewards) must run through the **existing** `PaymentProcessor`/wallet columns on `users` — do not create a second parallel currency system.
 - Every user-facing new page must be wrapped with the same `includes/header.php` / `includes/footer.php` so the dark-green theme, cursor, preloader, and cookie consent stay unified across old and new pages.
