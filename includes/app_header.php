@@ -1579,11 +1579,18 @@ body.nav-open { overflow: hidden; touch-action: none; }
         <!-- Quick Balance / Topup Pill -->
         <a href="<?= url('billing') ?>" class="topbar-pill-wallet" title="Ad & AI Credits - Click to Manage">
           <i class="ph ph-monetization-on" style="color:var(--accent)"></i>
-          <span class="wallet-credits">$<?= number_format($_adCredits, 2) ?></span>
+          <span class="wallet-credits"><?= e(price_fmt($_adCredits)) ?></span>
           <span class="wallet-divider"></span>
           <i class="ph ph-sparkle" style="color:var(--blue)"></i>
           <span class="wallet-ai"><?= number_format($_aiCredits) ?></span>
         </a>
+
+        <!-- Currency Switcher (USD / NGN) -->
+        <div class="topbar-btn" style="padding:0;overflow:hidden;border-radius:999px;display:flex;" title="Switch currency">
+          <?php foreach (currency_supported() as $__code => $__sym): ?>
+            <a href="<?= currency_toggle_url($__code) ?>" style="padding:8px 12px;font-size:12.5px;font-weight:800;text-decoration:none;<?= currency_current() === $__code ? 'background:var(--accent);color:#0a0f1a;' : 'color:var(--fg2);' ?>"><?= $__sym ?> <?= $__code ?></a>
+          <?php endforeach; ?>
+        </div>
 
         <!-- Theme Mode Toggle -->
         <button class="topbar-btn" id="appThemeToggleBtn" onclick="toggleAppTheme()" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">

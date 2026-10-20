@@ -78,6 +78,57 @@ $needsAttention = db()->fetchAll(
     [$userId, $dateFrom, $dateTo]
 );
 
+// ── Ad Audit: score every campaign and rank best-first ──
+$auditRows = db()->fetchAll(
+    "SELECT c.id, c.campaign_name, c.campaign_type, c.status, c.headline, c.creative_media_url,
+            COALESCE(SUM(m.impressions),0) as impressions,
+            COALESCE(SUM(m.clicks),0) as clicks,
+            COALESCE(SUM(m.spend),0) as spend,
+            COALESCE(SUM(m.conversions),0) as conversions
+     FROM campaign_metrics_daily m
+     JOIN ad_campaigns c ON c.id = m.campaign_id
+     WHERE c.user_id = ? AND m.date BETWEEN ? AND ?
+     GROUP BY c.id
+     ORDER BY clicks DESC, spend DESC
+     LIMIT 25",
+    [$userId, $dateFrom, $dateTo]
+);
+
+// Score each campaign 0-100 (CTR quality 55%, conversion efficiency 30%, volume 15%).
+$audit = [];
+foreach ($auditRows as $r) {
+    $ctr  = $r['impressions'] > 0 ? ($r['clicks'] / $r['impressions']) * 100 : 0.0;
+    $cpc  = $r['clicks'] > 0 ? $r['spend'] / $r['clicks'] : 0.0;
+    $cpa  = $r['conversions'] > 0 ? $r['spend'] / $r['conversions'] : 0.0;
+    $roas = $r['spend'] > 0 ? $r['conversions'] / $r['spend'] : 0.0;
+
+    $ctrScore  = min(1.0, $ctr / 2.0);              // 2%+ CTR is excellent
+    $convScore = $roas >= 0.15 ? 1.0 : ($roas / 0.15); // 0.15 conv/$ is solid
+    $volScore  = min(1.0, $r['impressions'] / 5000);   // 5k+ impressions = signal
+    $score     = (int)round(($ctrScore * 55 + $convScore * 30 + $volScore * 15) * 100);
+
+    if ($r['impressions'] < 200) {
+        $verdict = ['label' => 'Not enough data', 'class' => 'badge-pending', 'icon' => 'ph-hourglass', 'advice' => 'Let it gather 1,000+ impressions before judging.'];
+    } elseif ($ctr >= 1.5 && $r['conversions'] > 0) {
+        $verdict = ['label' => 'Winner — scale it', 'class' => 'badge-active', 'icon' => 'ph-trophy', 'advice' => 'Raise the budget 20% and clone this creative for other networks.'];
+    } elseif ($ctr >= 0.8) {
+        $verdict = ['label' => 'Healthy', 'class' => 'badge-active', 'icon' => 'ph-check-circle', 'advice' => 'Keep running. Test a new hook against it with A/B Test.'];
+    } elseif ($r['conversions'] === 0 && $r['spend'] >= 5) {
+        $verdict = ['label' => 'Kill or refresh', 'class' => 'badge-danger', 'icon' => 'ph-flame', 'advice' => 'Spending with zero conversions — pause it and regenerate the creative.'];
+    } elseif ($ctr < 0.5) {
+        $verdict = ['label' => 'Weak hook', 'class' => 'badge-pending', 'icon' => 'ph-magnifying-glass', 'advice' => 'People scroll past it — write a sharper hook with the AI copywriter.'];
+    } else {
+        $verdict = ['label' => 'Needs a tweak', 'class' => 'badge-pending', 'icon' => 'ph-wrench', 'advice' => 'Try tighter targeting or a brighter thumbnail.'];
+    }
+
+    $audit[] = array_merge($r, [
+        'ctr' => round($ctr, 2), 'cpc' => round($cpc, 2), 'cpa' => round($cpa, 2), 'roas' => round($roas, 4),
+        'score' => $score, 'verdict' => $verdict,
+    ]);
+}
+usort($audit, fn($a, $b) => $b['score'] <=> $a['score']);
+$auditWinners = array_slice(array_filter($audit, fn($a) => $a['verdict']['label'] === 'Winner — scale it'), 0, 3);
+
 $maxImpressions = !empty($dailyData) ? max(1, ...array_column($dailyData, 'impressions')) : 1;
 $maxClicks      = !empty($dailyData) ? max(1, ...array_column($dailyData, 'clicks')) : 1;
 
@@ -158,7 +209,7 @@ require_once __DIR__ . '/includes/app_header.php';
             $summaryCards = [
                 ['icon' => 'ph-eye',             'label' => 'Total Impressions',  'value' => number_format((int)$summary['total_impressions']),  'color' => 'blue'],
                 ['icon' => 'ph-cursor-click',    'label' => 'Total Clicks',       'value' => number_format((int)$summary['total_clicks']),       'color' => 'purple'],
-                ['icon' => 'ph-currency-dollar', 'label' => 'Total Spend',        'value' => '$' . number_format((float)$summary['total_spend'], 2), 'color' => 'green'],
+                ['icon' => 'ph-currency-dollar', 'label' => 'Total Spend',        'value' => price_fmt((float)$summary['total_spend']), 'color' => 'green'],
                 ['icon' => 'ph-chart-line-up',   'label' => 'Conversions',        'value' => number_format((int)$summary['total_conversions']),  'color' => 'blue'],
             ];
             $colorMap = ['blue' => 'var(--blue)', 'purple' => 'var(--purple)', 'green' => 'var(--green)', 'orange' => 'var(--orange)'];
@@ -243,7 +294,7 @@ require_once __DIR__ . '/includes/app_header.php';
                             <div>
                                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
                                     <span style="font-weight:500;font-size:13px;color:var(--fg);text-transform:capitalize"><?= e($pr['campaign_type']) ?></span>
-                                    <span style="font-size:13px;color:var(--fg2)">$<?= number_format((float)$pr['spend'], 2) ?></span>
+                                    <span style="font-size:13px;color:var(--fg2)"><?= price_fmt((float)$pr['spend']) ?></span>
                                 </div>
                                 <div class="progress">
                                     <div class="progress-bar" style="width:<?= $pct ?>%;background:var(--accent)"></div>
@@ -293,6 +344,77 @@ require_once __DIR__ . '/includes/app_header.php';
             <?php endif; ?>
         </div>
 
+        <!-- Ad Audit -->
+        <div class="card-dark" style="margin-bottom:32px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+                <div>
+                    <h5 style="font-weight:700;margin:0;color:var(--fg)"><i class="ph-bold ph-detective text-warning me-1"></i> Ad Audit</h5>
+                    <p style="font-size:12.5px;color:var(--fg3);margin:4px 0 0">Every campaign scored 0-100 (CTR quality, conversions, volume) — fix the red ones first.</p>
+                </div>
+                <a href="<?= url('create-ad') ?>" class="btn-outline-dark btn-sm"><i class="ph ph-rocket-launch"></i> Launch a fresh ad</a>
+            </div>
+
+            <?php if (empty($audit)): ?>
+                <div class="empty-state">
+                    <i class="ph ph-seal-check" style="color:var(--accent)"></i>
+                    <p style="color:var(--fg2);margin:0">No campaign activity in this period yet — launch an ad and the audit will score it here.</p>
+                </div>
+            <?php else: ?>
+                <?php if (!empty($auditWinners)): ?>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:18px">
+                    <?php foreach ($auditWinners as $w): ?>
+                    <div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:14px 16px;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                            <i class="ph-fill ph-trophy" style="color:#fbbf24"></i>
+                            <span style="font-size:12px;font-weight:800;color:#4ade80;text-transform:uppercase;letter-spacing:.4px">Top Performer</span>
+                        </div>
+                        <div style="color:var(--fg);font-weight:700;font-size:13.5px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= e($w['campaign_name']) ?></div>
+                        <div style="font-size:12px;color:var(--fg2)">Score <b style="color:#4ade80"><?= (int)$w['score'] ?></b> · CTR <b><?= number_format($w['ctr'], 2) ?>%</b> · <?= (int)$w['conversions'] ?> conv</div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+
+                <div style="overflow-x:auto">
+                    <table class="table-dark" style="width:100%;margin:0">
+                        <thead>
+                            <tr>
+                                <th style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);padding-bottom:12px">Score</th>
+                                <th style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);padding-bottom:12px">Campaign</th>
+                                <th style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);padding-bottom:12px">CTR</th>
+                                <th style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);padding-bottom:12px">CPC</th>
+                                <th style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);padding-bottom:12px">Spend</th>
+                                <th style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);padding-bottom:12px">Verdict</th>
+                                <th style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--fg3);padding-bottom:12px">Next step</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($audit as $a): ?>
+                                <tr>
+                                    <td>
+                                        <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;font-weight:800;font-size:14px;
+                                            background:<?= $a['score'] >= 70 ? 'rgba(34,197,94,.12);color:#4ade80' : ($a['score'] >= 40 ? 'rgba(234,179,8,.12);color:#fbbf24' : 'rgba(244,63,94,.12);color:#f87171') ?>">
+                                            <?= (int)$a['score'] ?>
+                                        </span>
+                                    </td>
+                                    <td style="font-weight:500;padding:12px 0;color:var(--fg);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= e($a['campaign_name']) ?></td>
+                                    <td style="color:var(--fg)"><?= number_format($a['ctr'], 2) ?>%</td>
+                                    <td style="color:var(--fg)"><?= $a['cpc'] > 0 ? price_fmt($a['cpc']) : '—' ?></td>
+                                    <td style="color:var(--fg)"><?= price_fmt((float)$a['spend']) ?></td>
+                                    <td>
+                                        <span class="<?= $a['verdict']['class'] ?>">
+                                            <i class="ph <?= $a['verdict']['icon'] ?>" style="margin-right:4px"></i><?= e($a['verdict']['label']) ?>
+                                        </span>
+                                    </td>
+                                    <td style="color:var(--fg2);font-size:12.5px;max-width:260px"><?= e($a['verdict']['advice']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+
         <!-- Needs Attention -->
         <div class="card-dark">
             <h5 style="font-weight:700;margin-bottom:16px;color:var(--fg)">Needs Attention</h5>
@@ -320,7 +442,7 @@ require_once __DIR__ . '/includes/app_header.php';
                                     <td>
                                         <span class="badge-platform"><?= e($na['campaign_type']) ?></span>
                                     </td>
-                                    <td style="color:var(--fg)">$<?= number_format((float)$na['spend'], 2) ?></td>
+                                    <td style="color:var(--fg)"><?= price_fmt((float)$na['spend']) ?></td>
                                     <td style="color:var(--fg)"><?= (int)$na['conversions'] ?></td>
                                     <td>
                                         <?php if ((int)$na['conversions'] === 0 && (float)$na['spend'] > 10): ?>

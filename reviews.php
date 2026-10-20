@@ -15,8 +15,9 @@ if ($currentUser) {
     $createdAt = strtotime($currentUser['created_at'] ?? 'now');
     $daysSinceSignup = (int)floor((time() - $createdAt) / 86400);
 
-    // Check if user is on Pro Plan
-    $isPro = in_array($currentUser['role'] ?? '', ['admin', 'pro', 'agency'], true);
+    // Check if user is on Pro Plan (any active paid plan qualifies)
+    $isPro = in_array($currentUser['role'] ?? '', ['admin', 'pro', 'agency'], true)
+        || (int)($currentUser['plan_id'] ?? 0) > 0;
     if (!$isPro) {
         // Check subscriptions table
         try {
@@ -262,7 +263,11 @@ require_once __DIR__ . '/includes/header.php';
                                     <?= ucfirst(e($rev['plan_type'])) ?> Member
                                 </span>
                             </div>
-
+                            <?php if (!empty($rev['is_featured'])): ?>
+                                <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.3);color:#fbbf24;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700;margin-bottom:10px;">
+                                    <i class="ph-fill ph-medal"></i> Featured Story
+                                </div>
+                            <?php endif; ?>
                             <!-- Review Title -->
                             <h4 class="text-white fw-bold font-size-16 mb-2">
                                 <?= e($rev['review_title'] ?? $rev['title'] ?? 'Verified Review') ?>
@@ -287,6 +292,9 @@ require_once __DIR__ . '/includes/header.php';
                             <div>
                                 <div class="text-white fw-bold font-size-14"><?= e($rev['full_name']) ?></div>
                                 <div class="text-white-50 font-size-12"><?= e($rev['user_role']) ?></div>
+                                <?php if (!empty($rev['created_at'])): ?>
+                                    <div class="text-white-50 font-size-11" style="opacity:.75;"><?= date('M d, Y', strtotime($rev['created_at'])) ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

@@ -237,6 +237,17 @@ class PaymentProcessor
             $amount = (float) $transaction['amount'];
             $meta = json_decode((string)($transaction['metadata'] ?? '{}'), true) ?: [];
 
+            // Wallets are USD-denominated. NGN charges are converted to their
+            // USD equivalent (pinned at initiation when available) before any
+            // credit is granted.
+            $usdAmount = $amount;
+            if (strtoupper((string)($transaction['currency'] ?? 'USD')) === 'NGN') {
+                $usdAmount = isset($meta['amount_usd'])
+                    ? (float) $meta['amount_usd']
+                    : round($amount / max(1.0, function_exists('exchange_rate_ngn_per_usd') ? exchange_rate_ngn_per_usd() : 1550.0), 2);
+            }
+            $aiCreditsPerUsd = 100; // 100 AI credits per $1 — matches the billing UI
+
             db()->query("BEGIN");
 
             // Mark transaction as paid
@@ -250,22 +261,25 @@ class PaymentProcessor
             if ($transaction['type'] === 'ad_credit_topup') {
                 db()->query(
                     "UPDATE users SET ad_credits = COALESCE(ad_credits, 0) + ? WHERE id = ?",
-                    [$amount, $userId]
+                    [$usdAmount, $userId]
                 );
-                $creditNote = '$' . number_format($amount, 2) . ' in ad credits';
+                $creditNote = '$' . number_format($usdAmount, 2) . ' in ad credits';
             } elseif ($transaction['type'] === 'ai_credit_topup') {
+                $granted = (int) round($usdAmount * $aiCreditsPerUsd);
                 db()->query(
                     "UPDATE users SET ai_credits = COALESCE(ai_credits, 0) + ? WHERE id = ?",
-                    [(int) $amount, $userId]
+                    [$granted, $userId]
                 );
-                $creditNote = (int) $amount . ' AI credits';
+                $creditNote = $granted . ' AI credits';
             } elseif ($transaction['type'] === 'plan_subscription' && !empty($meta['plan_id'])) {
                 $plan = db()->fetchOne(
                     "SELECT id, name, billing_cycle, ad_credits_included, ai_credits_included FROM pricing_plans WHERE id = ? AND status = 'active'",
                     [(int) $meta['plan_id']]
                 );
                 if ($plan !== null) {
-                    $cycle = (string)($plan['billing_cycle'] ?? 'monthly');
+                    // Explicit cycle from checkout metadata wins over the plan row
+                    // (supports monthly / yearly-25% variants of the same plan).
+                    $cycle  = (string)($meta['cycle'] ?? $plan['billing_cycle'] ?? 'monthly');
                     $months = ($cycle === 'yearly') ? 12 : 1;
                     $adCredits = (float)($plan['ad_credits_included'] ?? 0);
                     $aiCredits = (int)($plan['ai_credits_included'] ?? 0);

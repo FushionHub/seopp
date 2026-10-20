@@ -11,7 +11,94 @@ $userData = current_user();
 $adCredits = (float)($userData['ad_credits'] ?? 0);
 
 $errors = [];
-$success = '';
+$success = [];
+
+// Connected social accounts power the live dispatch (same engine as posts).
+$connections = db()->fetchAll("SELECT platform FROM connected_accounts WHERE user_id = ?", [$userId]);
+$connectedPlatforms = array_map(fn($r) => strtolower((string)$r['platform']), $connections);
+
+// Platforms the ad can be dispatched to via each network's direct API.
+$dispatchPlatforms = [
+    'meta'     => ['label' => 'Meta / Instagram', 'icon' => 'ph-facebook-logo',  'color' => '#1877F2'],
+    'tiktok'   => ['label' => 'TikTok',           'icon' => 'ph-tiktok-logo',    'color' => '#00f2fe'],
+    'twitter'  => ['label' => 'Twitter / X',      'icon' => 'ph-twitter-logo',   'color' => '#1da1f2'],
+    'linkedin' => ['label' => 'LinkedIn',         'icon' => 'ph-linkedin-logo',  'color' => '#0a66c2'],
+    'snapchat' => ['label' => 'Snapchat',         'icon' => 'ph-ghost',          'color' => '#fffc00'],
+];
+
+// ── AJAX: AI ad copywriter (Groq LPU, 1 credit) ──
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'generate_ad_copy') {
+    header('Content-Type: application/json');
+    if (!csrf_verify()) {
+        echo json_encode(['success' => false, 'error' => 'Your session expired. Refresh the page and try again.']);
+        exit;
+    }
+    $brief    = trim((string)($_POST['brief'] ?? ''));
+    $audience = trim((string)($_POST['audience'] ?? ''));
+    $plat     = trim((string)($_POST['platform'] ?? 'meta'));
+    $dest     = trim((string)($_POST['destination_url'] ?? ''));
+    if ($brief === '') {
+        echo json_encode(['success' => false, 'error' => 'Describe your product or offer first.']);
+        exit;
+    }
+
+    $prompt = "You are an elite direct-response ad copywriter. Write one high-converting ad for {$plat}. "
+        . "Product / offer: {$brief}. "
+        . ($audience !== '' ? "Target audience: {$audience}. " : '')
+        . "Return EXACTLY two lines in this format:\n"
+        . "HEADLINE: <punchy headline, max 60 characters, no quotes>\n"
+        . "PRIMARY: <2-3 sentence ad body with a clear CTA, max 400 characters>";
+
+    $res = AIEngine::generateText($prompt, $userId);
+    if (empty($res['success'])) {
+        echo json_encode(['success' => false, 'error' => (string)($res['message'] ?? 'AI engine unavailable — write the copy manually.')]);
+        exit;
+    }
+
+    $output   = (string)($res['result'] ?? '');
+    $provider = (string)($res['provider'] ?? '');
+    $headline = '';
+    $primary  = '';
+    if (preg_match('/HEADLINE:\s*(.+)/i', $output, $m)) {
+        $headline = trim($m[1], " \t\"'*");
+    }
+    if (preg_match('/PRIMARY:\s*([\s\S]+)/i', $output, $m)) {
+        $primary = trim($m[1]);
+    }
+
+    // No LLM key on this node (heuristic fallback echoes the prompt) —
+    // build clean, usable copy deterministically so the button always works.
+    if ($provider === 'adsbooster-heuristic' || str_contains($output, 'HEADLINE:') === false && $headline === '') {
+        $short    = trim((string)preg_replace('/\s+/', ' ', $brief));
+        $words    = explode(' ', $short);
+        $headline = ucwords(implode(' ', array_slice($words, 0, 8)));
+        if ($headline !== '') {
+            $headline = 'Stop Scrolling: ' . $headline . '!';
+        }
+        if (mb_strlen($headline) > 60) {
+            $headline = mb_substr($headline, 0, 57) . '...';
+        }
+        $aud = $audience !== '' ? $audience : 'smart shoppers';
+        $primary = $short . "\n\nBuilt for {$aud} — see why everyone is switching. Limited launch pricing available today.";
+    }
+
+    if ($headline === '' && $primary === '') {
+        // Model ignored the format — use the whole output as primary text.
+        $primary = trim($output);
+    }
+    if ($dest !== '' && stripos($primary, $dest) === false && $primary !== '') {
+        $primary .= "\n\n" . $dest;
+    }
+
+    echo json_encode([
+        'success'     => true,
+        'headline'    => $headline,
+        'primary'     => $primary,
+        'provider'    => (string)($res['provider'] ?? 'ai'),
+        'credits'     => (int)($res['credits_remaining'] ?? 0),
+    ]);
+    exit;
+}
 
 // Pre-fill state
 $old = [
@@ -90,7 +177,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $old['media_url']       = trim($_POST['existing_media_url'] ?? '');
         $old['media_type']      = trim($_POST['selected_media_type'] ?? 'image');
 
-        if ($old['platform'] === '') $errors[] = 'Please select a platform.';
+        // Multi-network dispatch targets (same direct-API engine the posts use).
+        $reqPlatforms = array_values(array_unique(array_filter(array_map(
+            fn($p) => strtolower(trim((string)$p)),
+            (array)($_POST['platforms'] ?? [])
+        ), fn($p) => $p !== '')));
+        $validDispatch = array_keys($dispatchPlatforms);
+        $reqPlatforms  = array_values(array_intersect($reqPlatforms, $validDispatch));
+
+        if (count($reqPlatforms) === 0) $errors[] = 'Select at least one publishing network (Meta, TikTok, X, LinkedIn, Snapchat).';
         if ($old['campaign_name'] === '') $errors[] = 'Campaign name is required.';
         if ($old['objective'] === '') $errors[] = 'Please select an objective.';
         if (!is_numeric($old['budget_amount']) || (float)$old['budget_amount'] <= 0) $errors[] = 'Please enter a valid budget amount.';
@@ -132,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $campaignId = db()->insert('ad_campaigns', [
                             'user_id'            => $userId,
                             'campaign_name'      => $old['campaign_name'],
-                            'campaign_type'      => $old['platform'],
+                            'campaign_type'      => $reqPlatforms[0] ?? 'meta',
                             'objective'          => $old['objective'],
                             'budget_type'        => $old['budget_type'],
                             'budget_amount'      => $budgetAmount,
@@ -161,8 +256,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         db()->query("COMMIT");
 
-                        set_flash('success', "🚀 Ad Campaign '{$old['campaign_name']}' launched successfully in real time!");
-                        redirect(url('dashboard'));
+                        // ── Live multi-network dispatch via each platform's direct API ──
+                        // Same engine the Post Creator uses (Meta Graph, TikTok Content
+                        // Posting, X API v2, LinkedIn, Snapchat Creatives).
+                        $okChannels   = [];
+                        $failChannels = [];
+                        $res          = ['results' => []];
+                        try {
+                            @set_time_limit(300);
+                            require_once __DIR__ . '/modules/social_post_engine.php';
+                            $mediaType = in_array(strtolower(pathinfo((string)$creativePath, PATHINFO_EXTENSION)), ['mp4', 'mov', 'webm'], true) ? 'video' : 'image';
+                            $adCopy    = trim($old['primary_text'] . "\n\n" . $old['destination_url']);
+                            $res = SocialPostEngine::publishMultiLive($userId, $reqPlatforms, $adCopy, $creativePath ?: null, $mediaType);
+                            foreach (($res['results'] ?? []) as $p => $r) {
+                                if (!empty($r['success'])) {
+                                    $okChannels[] = $dispatchPlatforms[$p]['label'] ?? $p;
+                                } else {
+                                    $failChannels[] = ($dispatchPlatforms[$p]['label'] ?? $p) . ' — ' . (string)($r['error'] ?? 'dispatch failed');
+                                }
+                            }
+                        } catch (\Throwable $dErr) {
+                            error_log('Ad dispatch failed: ' . $dErr->getMessage());
+                            $failChannels[] = 'Dispatch engine error: ' . $dErr->getMessage();
+                        }
+
+                        // Persist the dispatch telemetry on the campaign row.
+                        try {
+                            $spec = json_decode((string)db()->fetchOne("SELECT targeting_spec FROM ad_campaigns WHERE id = ?", [$campaignId])['targeting_spec'] ?? '{}', true) ?: [];
+                            $spec['platforms'] = $reqPlatforms;
+                            $spec['dispatch']  = [];
+                            foreach (($res['results'] ?? []) as $p => $r) {
+                                $spec['dispatch'][$p] = [
+                                    'success'    => (bool)($r['success'] ?? false),
+                                    'error'      => (string)($r['error'] ?? ''),
+                                    'latency_ms' => (int)($r['latency_ms'] ?? 0),
+                                    'post_id'    => (int)($r['post_id'] ?? 0),
+                                ];
+                            }
+                            db()->update('ad_campaigns', ['targeting_spec' => json_encode($spec)], 'id = ?', [$campaignId]);
+                        } catch (\Throwable $sErr) {
+                            error_log('Ad dispatch log failed: ' . $sErr->getMessage());
+                        }
+
+                        $flashLines = [];
+                        if (count($okChannels) > 0) {
+                            $flashLines[] = "🚀 Ad Campaign '{$old['campaign_name']}' launched — dispatched live to: " . implode(', ', $okChannels) . '.';
+                        }
+                        foreach ($failChannels as $fc) {
+                            $flashLines[] = '⚠️ ' . $fc;
+                        }
+                        if (count($okChannels) === 0 && count($failChannels) === 0) {
+                            $flashLines[] = "🚀 Ad Campaign '{$old['campaign_name']}' launched and queued on the platform.";
+                        }
+                        set_flash('success', implode("\n", $flashLines));
+                        redirect(url('create-ad') . '?launched=1');
 
                     } catch (\Throwable $e) {
                         db()->query("ROLLBACK");
@@ -217,25 +364,27 @@ require_once __DIR__ . '/includes/app_header.php';
                     <input type="hidden" name="existing_media_url" id="inp_existing_media_url" value="<?= e($old['media_url']) ?>">
                     <input type="hidden" name="selected_media_type" id="inp_selected_media_type" value="<?= e($old['media_type']) ?>">
 
-                    <!-- Platform Selector -->
+                    <!-- Platform Selector (multi-network live dispatch) -->
                     <div style="margin-bottom:28px;">
-                        <label class="form-label fw-bold text-white mb-2" style="font-size:14px;">1. Select Ad Network</label>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
-                            <?php
-                            $platforms = [
-                                ['id' => 'meta',       'icon' => 'ph-facebook-logo',  'label' => 'Meta (FB)',  'color' => '#1877F2'],
-                                ['id' => 'instagram',  'icon' => 'ph-instagram-logo', 'label' => 'Instagram',  'color' => '#E4405F'],
-                                ['id' => 'tiktok',     'icon' => 'ph-tiktok-logo',    'label' => 'TikTok Ads', 'color' => '#00f2fe'],
-                                ['id' => 'google_ads', 'icon' => 'ph-google-logo',    'label' => 'Google Ads', 'color' => '#4285F4'],
-                                ['id' => 'snapchat',   'icon' => 'ph-ghost',          'label' => 'Snapchat',   'color' => '#FFFC00'],
-                            ];
-                            foreach ($platforms as $p): ?>
-                                <label class="platform-card <?= $old['platform'] === $p['id'] ? 'selected' : '' ?>" style="display:flex;align-items:center;gap:8px;padding:12px 14px;border-radius:12px;cursor:pointer;border:1px solid <?= $old['platform'] === $p['id'] ? 'var(--accent)' : 'rgba(255,255,255,0.08)' ?>;background:<?= $old['platform'] === $p['id'] ? 'rgba(200,255,0,0.08)' : '#080c14' ?>;transition:all 0.2s;" onclick="setPlatform('<?= $p['id'] ?>', '<?= $p['label'] ?>', this)">
-                                    <input type="radio" name="platform" value="<?= $p['id'] ?>" <?= $old['platform'] === $p['id'] ? 'checked' : '' ?> style="display:none;">
-                                    <i class="ph <?= $p['icon'] ?>" style="font-size:20px;color:<?= $p['color'] ?>;"></i>
-                                    <span style="color:#fff;font-weight:600;font-size:12.5px;"><?= e($p['label']) ?></span>
-                                </label>
+                        <label class="form-label fw-bold text-white mb-2" style="font-size:14px;">1. Publishing Networks <span style="font-weight:500;color:var(--fg3);font-size:12px;">(select all that apply — dispatched live via each platform's direct API)</span></label>
+                        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                            <?php foreach ($dispatchPlatforms as $pId => $pInfo):
+                                $isConnected = in_array($pId, $connectedPlatforms, true) || ($pId === 'meta' && in_array('instagram', $connectedPlatforms, true));
+                            ?>
+                            <label class="ad-net-chip" data-net="<?= e($pId) ?>" style="display:flex;align-items:center;gap:8px;padding:11px 14px;border-radius:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.10);background:#080c14;transition:all 0.2s;user-select:none;">
+                                <input type="checkbox" name="platforms[]" value="<?= e($pId) ?>" <?= in_array($pId, ['meta','tiktok']) ? 'checked' : '' ?> style="display:none;" onchange="toggleNetChip(this)">
+                                <i class="ph <?= $pInfo['icon'] ?>" style="font-size:19px;color:<?= $pInfo['color'] ?>;"></i>
+                                <span style="color:#fff;font-weight:600;font-size:12.5px;"><?= e($pInfo['label']) ?></span>
+                                <?php if ($isConnected): ?>
+                                    <span class="badge bg-success bg-opacity-25 text-success font-size-10 px-2 py-1 rounded-pill">Live</span>
+                                <?php else: ?>
+                                    <a href="<?= url('social-connect') ?>?platform=<?= e($pId) ?>" onclick="event.stopPropagation();" class="font-size-10 text-decoration-none" style="color:var(--fg3);" title="Connect via OAuth to enable live dispatch">(Connect)</a>
+                                <?php endif; ?>
+                            </label>
                             <?php endforeach; ?>
+                        </div>
+                        <div style="font-size:11.5px;color:var(--fg3);margin-top:8px;">
+                            Connected accounts dispatch instantly through the official Meta Graph, TikTok Content Posting, X API v2, LinkedIn, and Snapchat Creatives APIs — identical to publishing a post.
                         </div>
                     </div>
 
@@ -296,6 +445,19 @@ require_once __DIR__ . '/includes/app_header.php';
                     </div>
 
                     <!-- Ad Copy & Creative -->
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label" style="font-weight:700;color:#fff;font-size:13px;display:block;margin-bottom:8px;">
+                            <i class="ph-bold ph-sparkle text-warning me-1"></i> AI Ad Copywriter <span style="font-weight:500;color:var(--fg3);font-size:11px;">(Groq LPU · 1 credit)</span>
+                        </label>
+                        <div class="d-flex gap-2">
+                            <input type="text" id="ai_brief" class="form-control" placeholder="e.g. Cloud-knit running shoes, 40% off first pair, free shipping" style="background:#080c14;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:11px 14px;">
+                            <button type="button" id="btn-ai-copy" class="btn btn-sm btn-accent rounded-pill px-3 text-nowrap" onclick="generateAdCopy()" style="font-weight:700;">
+                                <i class="ph-bold ph-magic-wand me-1"></i> Write my ad
+                            </button>
+                        </div>
+                        <span style="font-size:11px;color:var(--fg3);display:block;margin-top:6px;">Writes the headline and primary text below — edit anything afterwards.</span>
+                    </div>
+
                     <div style="margin-bottom:24px;">
                         <label for="headline" class="form-label" style="font-weight:700;color:#fff;font-size:13px;">Ad Headline</label>
                         <input type="text" id="headline" name="headline" maxlength="150" class="form-control" value="<?= e($old['headline']) ?>" required placeholder="Grab attention with a powerful headline..." oninput="updateLivePreview()" style="background:#080c14;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:12px 16px;">
@@ -548,17 +710,65 @@ require_once __DIR__ . '/includes/app_header.php';
 </div>
 
 <script>
-function setPlatform(id, label, el) {
-    document.querySelectorAll('.platform-card').forEach(c => {
-        c.style.borderColor = 'rgba(255,255,255,0.08)';
-        c.style.background = '#080c14';
-    });
-    el.style.borderColor = 'var(--accent)';
-    el.style.background = 'rgba(200,255,0,0.08)';
-    el.querySelector('input').checked = true;
+function toggleNetChip(input) {
+    const chip = input.closest('.ad-net-chip');
+    if (!chip) return;
+    chip.style.borderColor = input.checked ? 'var(--accent)' : 'rgba(255,255,255,0.10)';
+    chip.style.background  = input.checked ? 'rgba(200,255,0,0.08)' : '#080c14';
 
     const pill = document.getElementById('previewNetworkPill');
-    if (pill) pill.textContent = label + ' Feed';
+    if (pill) {
+        const names = Array.from(document.querySelectorAll('input[name="platforms[]"]:checked'))
+            .map(i => (i.closest('.ad-net-chip')?.querySelector('span')?.textContent || '').trim());
+        pill.textContent = names.length ? names.join(' + ') + ' Feed' : 'Multi-Network Feed';
+    }
+}
+
+/* ── AI Ad Copywriter (Groq LPU) ── */
+async function generateAdCopy() {
+    const briefEl = document.getElementById('ai_brief');
+    const brief = briefEl ? briefEl.value.trim() : '';
+    if (!brief) { alert('Describe your product or offer first — one line is enough.'); if (briefEl) briefEl.focus(); return; }
+
+    const btn = document.getElementById('btn-ai-copy');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ph-bold ph-circle-notch"></i> Writing…';
+
+    try {
+        const fd = new FormData();
+        fd.append('action', 'generate_ad_copy');
+        fd.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+        fd.append('brief', brief);
+        fd.append('audience', (document.getElementById('interests')?.value || '') + ' ' + (document.getElementById('geo')?.value || ''));
+        const nets = Array.from(document.querySelectorAll('input[name="platforms[]"]:checked')).map(i => i.value);
+        fd.append('platform', nets[0] || 'meta');
+        fd.append('destination_url', document.getElementById('destination_url')?.value || '');
+
+        const res = await fetch(window.location.pathname, { method: 'POST', body: fd, credentials: 'same-origin' });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'AI copywriter unavailable — write it manually.');
+
+        const h = document.getElementById('headline');
+        const p = document.getElementById('primary_text');
+        if (data.headline) h.value = data.headline;
+        if (data.primary) p.value = data.primary;
+        updateLivePreview();
+        toastMsg('Ad copy ready' + (data.provider ? ' via ' + data.provider : '') + '.', 'Credits left: ' + data.credits);
+    } catch (e) {
+        alert(e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+function toastMsg(msg, sub) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;background:#0d1524;border:1px solid rgba(196,240,0,.45);border-radius:12px;padding:14px 18px;color:#fff;font-size:13.5px;box-shadow:0 10px 40px rgba(0,0,0,.5);max-width:340px;';
+    wrap.innerHTML = '<b style="color:#c8ff00;display:block;margin-bottom:2px;">' + msg + '</b>' + (sub ? '<span style="color:#94a3b8;font-size:12px;">' + sub + '</span>' : '');
+    document.body.appendChild(wrap);
+    setTimeout(() => { wrap.style.opacity = '0'; wrap.style.transition = 'opacity .3s'; setTimeout(() => wrap.remove(), 320); }, 4200);
 }
 
 function updateEstimate() {

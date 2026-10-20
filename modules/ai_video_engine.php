@@ -661,6 +661,61 @@ class AIVideoEngine
      * `rendering_client`, and hands the scene list to the browser which
      * composites a real MP4/WebM via canvas.captureStream() + MediaRecorder.
      */
+    /**
+     * Generate a photoreal still for every scene in the plan.
+     *
+     * 1st choice: Google Gemini image models (Nano Banana 2 first) generate
+     * the still server-side and store it same-origin, so the canvas stays
+     * untainted and there are no CDN rate limits. When no key / no quota is
+     * available, curated first-party stills keep the storyboard compositing
+     * a real video regardless.
+     */
+    private static function generateSceneStills(array $plan, int $seed): array
+    {
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(300);
+        }
+
+        $res    = $plan['resolution'];
+        $scenes = $plan['scenes'];
+
+        require_once __DIR__ . '/gemini_engine.php';
+
+        foreach ($scenes as $i => &$sc) {
+            $sc['local_path'] = null;
+
+            $generated = null;
+            if (GeminiEngine::hasKey()) {
+                try {
+                    $generated = GeminiEngine::generateImage(
+                        $sc['visual_prompt'],
+                        $res['w'],
+                        $res['h'],
+                        'scene_' . $seed . '_' . ($i + 1)
+                    );
+                } catch (\Throwable $e) {
+                    error_log('Gemini scene still failed: ' . $e->getMessage());
+                }
+            }
+
+            if ($generated !== null) {
+                $sc['local_path']   = $generated['path'];
+                $sc['local_url']    = $generated['url'];
+                $sc['image_url']    = $generated['url'];
+                $sc['image_source'] = $generated['model'];
+            } else {
+                $placeholder = self::scenePlaceholderStill($seed + $i);
+                $sc['local_path']   = $placeholder;
+                $sc['local_url']    = BASE_URL . '/' . $placeholder;
+                $sc['image_url']    = $sc['local_url'];
+                $sc['image_source'] = 'local-placeholder';
+            }
+        }
+        unset($sc);
+
+        return $scenes;
+    }
+
     private static function createStoryboardRender(
         int $userId,
         array $params,
@@ -689,46 +744,7 @@ class AIVideoEngine
 
         $res    = $plan['resolution'];
         $seed   = random_int(1, 999999);
-        $scenes = $plan['scenes'];
-
-        require_once __DIR__ . '/gemini_engine.php';
-
-        foreach ($scenes as $i => &$sc) {
-            $sc['local_path'] = null;
-
-            // 1st choice: Google Gemini image models (Nano Banana 2 first)
-            // generate the scene still server-side and store it same-origin,
-            // so the canvas stays untainted and there are no CDN rate limits.
-            $generated = null;
-            if (GeminiEngine::hasKey()) {
-                try {
-                    $generated = GeminiEngine::generateImage(
-                        $sc['visual_prompt'],
-                        $res['w'],
-                        $res['h'],
-                        'scene_' . $seed . '_' . ($i + 1)
-                    );
-                } catch (\Throwable $e) {
-                    error_log('Gemini scene still failed: ' . $e->getMessage());
-                }
-            }
-
-            if ($generated !== null) {
-                $sc['local_path']  = $generated['path'];
-                $sc['local_url']   = $generated['url'];
-                $sc['image_url']   = $generated['url'];
-                $sc['image_source'] = $generated['model'];
-            } else {
-                // No Gemini key / quota exhausted: curated same-origin stills
-                // keep the storyboard compositing a real video regardless.
-                $placeholder = self::scenePlaceholderStill($seed + $i);
-                $sc['local_path']  = $placeholder;
-                $sc['local_url']   = BASE_URL . '/' . $placeholder;
-                $sc['image_url']   = $sc['local_url'];
-                $sc['image_source'] = 'local-placeholder';
-            }
-        }
-        unset($sc);
+        $scenes = self::generateSceneStills($plan, $seed);
 
         $metadata['provider']       = 'storyboard';
         $metadata['provider_label'] = $providerLabel;
@@ -780,6 +796,202 @@ class AIVideoEngine
             'full_script'     => $plan['full_script'],
             'next_action'     => 'client_render',
             'message'         => 'Scene assets ready. Rendering your video now — keep this tab open.',
+        ];
+    }
+
+    /**
+     * Re-render an existing creative in place — the engine behind the
+     * studio's Edit (new params, fresh scenes) and Regenerate (same params,
+     * fresh scenes) actions. The row keeps its id; `video_url` is replaced
+     * when the browser finishes the new render and save_render lands.
+     *
+     * Returns the same payload shape as createVideoCreative() so the client
+     * can drive the identical render pipeline.
+     */
+    public static function rebuildCreative(int $userId, int $creativeId, array $overrides = []): array
+    {
+        $row = db()->fetchOne(
+            "SELECT * FROM ai_video_creatives WHERE id = ? AND user_id = ?",
+            [$creativeId, $userId]
+        );
+        if (!$row) {
+            return ['error' => 'Creative not found.'];
+        }
+
+        $meta = json_decode($row['metadata'] ?? '{}', true) ?: [];
+
+        $videoType       = (string)($overrides['video_type']       ?? $meta['video_type'] ?? ($row['avatar_id'] === 'commercial_cinematic' ? 'commercial_cinematic' : 'ugc_talking_head'));
+        $avatarId        = (string)($overrides['avatar_id']        ?? $row['avatar_id']    ?? 'lexi_genz');
+        $voiceId         = (string)($overrides['voice_id']         ?? $row['voice_id']     ?? 'en_female_energetic');
+        $hookText        = trim((string)($overrides['hook_text']   ?? $row['hook_text']));
+        $scriptBody      = trim((string)($overrides['script_body'] ?? $row['script_body']));
+        $ctaText         = trim((string)($overrides['cta_text']    ?? $row['cta_text']));
+        $captionStyle    = (string)($overrides['caption_style']    ?? $row['caption_style'] ?? 'tiktok_glow');
+        $brollKeyword    = trim((string)($overrides['broll_keyword'] ?? $row['broll_keyword']));
+        $audioTrack      = (string)($overrides['audio_track']      ?? $row['audio_track']   ?? 'viral_lofi_beat');
+        $aspectRatio     = (string)($overrides['aspect_ratio']     ?? $row['aspect_ratio']  ?? '9:16');
+        $durationSeconds = max(10, min(120, (int)($overrides['duration_seconds'] ?? $row['duration_seconds'] ?? 30)));
+        $styleId         = (string)($overrides['style_id']         ?? $meta['style_id']     ?? 'lifestyle_storyboard');
+
+        if (!isset(self::getAspectRatios()[$aspectRatio])) {
+            $aspectRatio = '9:16';
+        }
+
+        if ($hookText === '' && $scriptBody === '') {
+            return ['error' => 'Add a hook or script before rendering.'];
+        }
+
+        $providerId = self::resolveProvider($overrides['provider'] ?? null);
+        $provider   = self::getProviders()[$providerId];
+
+        $plan = self::buildScenePlan([
+            'video_type'       => $videoType,
+            'hook_text'        => $hookText,
+            'script_body'      => $scriptBody,
+            'cta_text'         => $ctaText,
+            'broll_keyword'    => $brollKeyword,
+            'duration_seconds' => $durationSeconds,
+            'aspect_ratio'     => $aspectRatio,
+            'avatar_id'        => $avatarId,
+            'style_id'         => $styleId,
+        ]);
+
+        $creditsUsed = self::creditCost($durationSeconds);
+
+        $user = db()->fetchOne("SELECT ai_credits FROM users WHERE id = ?", [$userId]);
+        if ((int)($user['ai_credits'] ?? 0) < $creditsUsed) {
+            return ['error' => "Not enough AI credits. This render costs {$creditsUsed} credits."];
+        }
+
+        $thumb = $plan['avatar_img'];
+
+        $metadata = [
+            'video_type'    => $videoType,
+            'avatar_name'   => $plan['avatar'],
+            'provider'      => $providerId,
+            'provider_label'=> $provider['label'],
+            'style_id'      => $styleId,
+            'scenes'        => $plan['scenes'],
+            'resolution'    => $plan['resolution']['w'] . 'x' . $plan['resolution']['h'],
+            'full_script'   => $plan['full_script'],
+            'rebuilt_at'    => date('c'),
+            'edit_count'    => (int)($meta['edit_count'] ?? 0) + 1,
+        ];
+
+        // ── Built-in storyboard renderer: fresh stills, back to the browser ──
+        if ($provider['kind'] === 'storyboard') {
+            $seed   = random_int(1, 999999);
+            $scenes = self::generateSceneStills($plan, $seed);
+
+            $metadata['provider']       = 'storyboard';
+            $metadata['provider_label'] = $provider['label'];
+            $metadata['scenes']         = $scenes;
+            $metadata['seed']           = $seed;
+            $metadata['scene_source']   = count(array_filter($scenes, fn($s) => ($s['image_source'] ?? '') !== 'local-placeholder')) > 0
+                ? 'gemini' : 'local-placeholder';
+
+            if (!empty($scenes[0]['local_path'])) {
+                $thumb = $scenes[0]['local_path'];
+            }
+
+            db()->update('ai_video_creatives', [
+                'avatar_id'        => $videoType === 'commercial_cinematic' ? 'commercial_cinematic' : $avatarId,
+                'voice_id'         => $voiceId,
+                'hook_text'        => $hookText !== '' ? $hookText : 'Untitled video',
+                'script_body'      => $scriptBody,
+                'cta_text'         => $ctaText,
+                'caption_style'    => $captionStyle,
+                'broll_keyword'    => $brollKeyword,
+                'audio_track'      => $audioTrack,
+                'thumbnail_url'    => $thumb,
+                'aspect_ratio'     => $aspectRatio,
+                'duration_seconds' => $durationSeconds,
+                'status'           => 'rendering_client',
+                'error_message'    => null,
+                'credits_used'     => $creditsUsed,
+                'metadata'         => json_encode($metadata, JSON_UNESCAPED_SLASHES),
+            ], 'id = ? AND user_id = ?', [$creativeId, $userId]);
+
+            return [
+                'id'              => $creativeId,
+                'video_type'      => $videoType,
+                'status'          => 'rendering_client',
+                'provider'        => 'storyboard',
+                'provider_label'  => $provider['label'],
+                'video_url'       => '',
+                'thumbnail_url'   => $thumb,
+                'hook_text'       => $hookText,
+                'script_body'     => $scriptBody,
+                'cta_text'        => $ctaText,
+                'duration_seconds'=> $durationSeconds,
+                'caption_style'   => $captionStyle,
+                'audio_track'     => $audioTrack,
+                'aspect_ratio'    => $aspectRatio,
+                'credits_used'    => $creditsUsed,
+                'scenes'          => $scenes,
+                'resolution'      => $plan['resolution'],
+                'full_script'     => $plan['full_script'],
+                'next_action'     => 'client_render',
+                'message'         => 'Updated scene assets ready. Rendering your video now — keep this tab open.',
+            ];
+        }
+
+        // ── External async provider: resubmit the (possibly edited) prompt ──
+        $submission = self::submitToProvider($providerId, $provider, [
+            'prompt'       => $plan['full_script'],
+            'scenes'       => $plan['scenes'],
+            'aspect_ratio' => $aspectRatio,
+            'duration'     => $durationSeconds,
+            'resolution'   => $plan['resolution'],
+        ]);
+
+        if (isset($submission['error'])) {
+            error_log("AIVideoEngine: {$providerId} rebuild submit failed — " . $submission['error'] . ' — falling back to storyboard');
+            return self::rebuildCreative($userId, $creativeId, array_merge($overrides, ['provider' => 'storyboard']));
+        }
+
+        $metadata['task_id']    = $submission['task_id'] ?? '';
+        $metadata['task_url']   = $submission['task_url'] ?? '';
+        $metadata['prediction'] = $submission['prediction'] ?? null;
+
+        db()->update('ai_video_creatives', [
+            'avatar_id'        => $videoType === 'commercial_cinematic' ? 'commercial_cinematic' : $avatarId,
+            'voice_id'         => $voiceId,
+            'hook_text'        => $hookText !== '' ? $hookText : 'Untitled video',
+            'script_body'      => $scriptBody,
+            'cta_text'         => $ctaText,
+            'caption_style'    => $captionStyle,
+            'broll_keyword'    => $brollKeyword,
+            'audio_track'      => $audioTrack,
+            'video_url'        => '',
+            'thumbnail_url'    => $thumb,
+            'aspect_ratio'     => $aspectRatio,
+            'duration_seconds' => $durationSeconds,
+            'status'           => 'generating',
+            'error_message'    => null,
+            'credits_used'     => $creditsUsed,
+            'metadata'         => json_encode($metadata, JSON_UNESCAPED_SLASHES),
+        ], 'id = ? AND user_id = ?', [$creativeId, $userId]);
+
+        return [
+            'id'              => $creativeId,
+            'video_type'      => $videoType,
+            'status'          => 'generating',
+            'provider'        => $providerId,
+            'provider_label'  => $provider['label'],
+            'task_id'         => $submission['task_id'] ?? '',
+            'video_url'       => '',
+            'thumbnail_url'   => $thumb,
+            'hook_text'       => $hookText,
+            'script_body'     => $scriptBody,
+            'cta_text'        => $ctaText,
+            'duration_seconds'=> $durationSeconds,
+            'caption_style'   => $captionStyle,
+            'audio_track'     => $audioTrack,
+            'aspect_ratio'    => $aspectRatio,
+            'credits_used'    => $creditsUsed,
+            'next_action'     => 'poll',
+            'message'         => "Queued on {$provider['label']}. This usually takes 1-3 minutes.",
         ];
     }
 

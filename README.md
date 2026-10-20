@@ -2,7 +2,7 @@
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.1%20%7C%208.2%20%7C%208.3%20%7C%208.4-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
 [![Database](https://img.shields.io/badge/MySQL-8.0%2B%20%7C%20MariaDB-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com)
-[![AI Engines](https://img.shields.io/badge/AI%20Engines-Groq%20LPU%20%7C%20Flux%20%7C%20Gemini-f55036?style=flat-square)](https://groq.com)
+[![AI Engines](https://img.shields.io/badge/AI-Google%20Gemini%20(Nano%20Banana%202%20%2B%20Veo)%20%7C%20Groq%20LPU%20%7C%20Firecrawl-f55036?style=flat-square)](https://ai.google.dev)
 [![License](https://img.shields.io/badge/License-Proprietary-blue?style=flat-square)](#)
 
 **Adsbooster.net** is an enterprise-grade digital advertising optimization platform, AI UGC image creative studio, real-time multi-network social publisher, verified business marketplace, and thought leadership platform built with vanilla PHP 8.x, dark luxury aesthetics, and multi-model AI intelligence.
@@ -12,7 +12,8 @@
 ## 🌟 Key Platform Capabilities
 
 ### 1. 🎨 AI UGC Image Generator & Creative Studio (`ugc-generator.php`)
-- **Photorealistic AI UGC Generation**: Instant creative generation leveraging Flux.1-Schnell, Google Gemini Vision, and Groq LPU ad copy synthesis.
+- **Photorealistic AI UGC Generation**: Instant creative generation via the **Google Gemini image stack** — Nano Banana 2 (`gemini-3-pro-image-preview`) first, Nano Banana (`gemini-2.5-flash-image`) as fallback — with curated first-party stills when no key is configured. Groq LPU synthesizes the ad copy.
+- **Canva-Style Image Editor**: Filters, badge stamps, headline typography, and canvas export served same-origin through `media-proxy.php` so downloads never fail.
 - **Creator Personas & Shoot Styles**:
   - *Personas*: Gen Z Creator, SaaS Founder, Fitness Athlete, Everyday Homemaker, Tech Reviewer, Luxury Fashion Model.
   - *Styles*: Handheld Selfie Product Hold, Unboxing Moment, Lifestyle Kitchen Setting, Influencer Desk Setup, Dramatic Before & After, Minimalist Aesthetic Flatlay.
@@ -23,6 +24,17 @@
   - Headline typography and subtext overlays with real-time text styling and font size sliders.
 - **1-Click Variation Regeneration**: Synthesizes alternative creative variations using randomized seed generation while preserving the core product concept.
 - **Direct Deployment**: 1-click download in high resolution or instant push into live multi-network social post creator.
+
+### 1b. 🎬 AI Video Studio (`ugc-video-studio.php`, `modules/ai_video_engine.php`, `modules/gemini_engine.php`)
+- **Full Google AI Video Pipeline**: Text-to-video via **Google Veo** (`veo-3.1-generate-preview` → `veo-3.0` fallback chain) whenever a `GEMINI_API_KEY` is present; **Nano Banana 2** paints a photoreal still for every storyboard scene, stored same-origin so the canvas compositor never taints.
+- **Storyboard Studio (built-in, always works)**: Browser composites scenes into a real MP4/WebM via `canvas.captureStream()` + MediaRecorder — Ken Burns zoom, TikTok-style bouncing captions, synthesized beat, and Web Speech voice-over. Cloud render rejections automatically fall back to this path, so a render never dead-ends.
+- **Library Actions per video**:
+  - **Edit** — loads the script, hook, CTA, avatar, style, and scenes back into the composer; *Update & re-render* rebuilds in place (same creative id).
+  - **Regenerate** — same script, brand-new AI scene stills (fresh Gemini seed).
+  - **Download** — one-click MP4/WebM export.
+  - **Run ad** — sends the video straight into the ad launcher (`create-ad.php?video_id=…`).
+  - **Post** — sends it to the Post Creator for multi-network publishing.
+- **UGC talking-head and cinematic commercial modes** with creator avatars, voices, caption styles, aspect ratios (9:16 / 1:1 / 16:9), and durations 10-120s.
 
 ### 2. 🚀 Real-Time Multi-Platform Social Media & Ads Network Connect (`social-connect.php`, `post-creator.php`, `modules/social_post_engine.php`)
 - **Real-Time OAuth 2.0 Integration & Official Callback URLs**:
@@ -42,6 +54,7 @@
 
 - **Real-Time Live Publishing**:
   - Select any combination of connected channels with interactive multi-checkbox toggles.
+  - **AI content in, posts out**: Groq writes the caption, Gemini Nano Banana 2 renders the post illustration (`generate_illustration`, 5 credits), and one *Publish Live Now* click dispatches both to every connected network in real time.
   - Choose between immediate live dispatch (`🚀 Publish Live Now`) executing live cURL requests against each platform or scheduled queue delivery.
   - Live latency tracking, response logging, and per-platform dispatch status saved directly to `social_posts`.
 
@@ -102,19 +115,24 @@
 - **Emergency Recovery Codes**: 8 single-use cryptographically hashed backup codes for account retrieval.
 
 ### 10. 🛡️ Administrative Control Suite (`/admin/`)
-- All 20 administrative modules are operational:
+- 25 administrative modules across 7 sidebar sections (Overview, Users & Access, Content & Marketplace, Revenue, AI & Automation, Communication, Safety & Config), all reachable from the sidebar:
   - `index.php` — Platform overview, telemetry, financial summary, and audit logs.
+  - `system-health.php` — Worker queues, cron telemetry, and service diagnostics.
+  - `users.php` — **Full user management**: KPI cards, filters (status/role/search), pagination, profile editing, ad **and** AI credit adjustments, plan changes with expiry, suspend/activate, seller verification, one-time password reset, 2FA reset, guarded account deletion (email confirmation), and **impersonation** ("view as user" with a yellow exit banner).
+  - `settings.php` — Site identity, AI keys (Gemini/Groq/OpenRouter/Firecrawl), **default video provider** (Auto/Veo/Storyboard), **maintenance mode** (public sees a 503 page; admins stay in), **open/closed registration** (invite links still work), and the new-user AI credit grant.
   - `pricing.php` — Dynamic subscription tiers, credit quotas, and feature flags.
   - `listings.php` — Marketplace directory moderation and badge assignment.
   - `jobs.php` — Talent opportunities and bounty moderation.
   - `reviews.php` — Community review moderation and homepage featuring.
   - `campaigns.php` — Ad campaign inspection, manual budget adjustment, and status overrides.
-  - `users.php` — User role assignments, ban controls, and wallet balance adjustments.
+  - `ugc-studio.php` / `ai-media-buyer.php` / `social-media.php` / `server-tracking.php` — AI creative oversight, autonomous buying rules, publishing hub, and CAPI bridge.
+  - `agency-approvals.php` — Whitelabel portals and client content approvals.
   - `payouts.php` & `transactions.php` — Financial ledger inspection and withdrawal approvals.
   - `cms.php` & `blogs.php` — Article review and static content manager.
   - `analytics.php` — Platform-wide conversion, latency, and revenue metrics.
   - `tickets.php` — Customer support ticket desk and resolution pipeline.
   - `p2p-chat.php` — Escalated dispute review and chat safety monitoring.
+  - `portfolios-vcards.php` — Public showcase and digital vCard moderation.
   - `seo.php` — Meta titles, descriptions, OpenGraph tags, and sitemap settings.
   - `policy-rules.php` — Platform terms, safety guidelines, and advertising policies.
   - `referrals.php` — Affiliate tracking, referral tiers, and payout thresholds.
@@ -130,7 +148,7 @@
 - **Frontend**: Vanilla CSS Design System (Dark Luxury Palette `#080c14`, `#0d1524`, `#c8ff00`), Phosphor Icons
 - **Rich Text Editor**: CKEditor 5 Classic via official CDN
 - **Mail Engine**: PHPMailer 6.x with custom dark luxury HTML templates
-- **AI Providers**: Groq LPUs (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b`), Flux.1-Schnell, Google Gemini 2.5 Flash
+- **AI Providers**: Google Gemini (Nano Banana 2 image models, Veo 3.x video, Gemini 2.5 Flash), Groq LPUs (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b`), OpenRouter, Firecrawl (live web scraping)
 - **Social & Ad APIs**: Meta Graph API, TikTok API, Twitter / X API v2, LinkedIn API v2, Google Ads API, Snapchat API
 - **Billing Gateways**: Paystack & Flutterwave
 
@@ -144,14 +162,20 @@
    git clone https://github.com/your-org/adsbooster.git C:\laragon\www\seopp
    ```
 2. Start Apache and MySQL from Laragon.
-3. Create database `adsbooster` and import schema:
+3. Create an empty database `adsbooster` — the app **auto-installs the full schema on first page load** (guarded installer in `database/install.php`). Prefer importing manually? Run:
    ```bash
    mysql -u root adsbooster < database/adsbooster_complete.sql
    ```
-4. Access the application in your browser:
+4. Optional DB overrides — create `config/db.local.php` (never committed):
+   ```php
+   <?php return ['host' => '127.0.0.1', 'name' => 'adsbooster', 'user' => 'root', 'pass' => ''];
+   ```
+5. Add your `GEMINI_API_KEY` (Admin → Settings, or `config/apikeys.php`) to enable Nano Banana 2 images + Veo video. Groq powers text generation; Firecrawl powers live store scraping.
+6. Access the application in your browser:
    ```
    http://localhost/seopp
    ```
+   Clean URLs (`/login`, `/dashboard`, `/ugc-video-studio`) work via the root `.htaccess`.
 
 ### 2. Live Linux Server Deployment
 Refer to the comprehensive, step-by-step [DEPLOYMENT.md](DEPLOYMENT.md) for Apache VirtualHost, Nginx reverse proxy, SSL configuration, and cron automation.
@@ -174,11 +198,12 @@ seopp/
 ├── api/v1/                    # Public REST API v1
 │   ├── bootstrap.php          # Auth, Master API Key verification, Rate limiter
 │   ├── campaigns.php          # Ad campaign endpoints
+│   ├── capi-bridge.php        # Meta CAPI / TikTok Events server-side bridge
 │   ├── posts.php              # Social post creation & live publishing
 │   ├── ugc.php                # AI UGC image generation endpoints
 │   ├── directory.php          # Business directory endpoints
 │   ├── reviews.php            # Community review submission & querying
-│   ├── wallet.php             # Balance check & credit transaction endpoints
+│   ├── credits.php            # Balance check & credit transaction endpoints
 │   └── webhooks.php           # Webhook sender & test ping helper
 ├── assets/                    # Static assets (CSS, JS, Fonts, Images)
 ├── config/                    # System configurations
@@ -191,15 +216,24 @@ seopp/
 │   └── export_master_sql.php  # Automated database snapshot generator
 ├── includes/                  # Reusable layouts, headers, and navigation
 ├── modules/                   # Core business logic classes
-│   ├── ai_engine.php          # Groq, Gemini & Flux AI UGC image generator + resume parser
+│   ├── ai_engine.php          # Groq/Gemini text, UGC images (Nano Banana 2), resume parser
+│   ├── ai_video_engine.php    # Veo + Storyboard Studio video lifecycle (create/edit/regenerate)
+│   ├── gemini_engine.php      # Google Gemini image stack (Nano Banana 2 chain) + Veo model list
+│   ├── firecrawl_scraper.php  # Live web/site scraping for store imports & AI chat context
+│   ├── ecommerce_sync.php     # Shopify/WooCommerce import + campaign auto-packs
 │   ├── social_post_engine.php # Real-time multi-network live publishing engine
 │   ├── email_service.php      # PHPMailer & branded HTML email system
 │   └── two_factor.php         # RFC 6238 TOTP authentication library
 ├── api-settings.php           # Developer console, Master API key & webhook tester
 ├── developer-docs.php         # Complete A-Z developer documentation manual
 ├── status.php                 # Real-time service uptime & health telemetry
-├── ugc-generator.php          # AI UGC Image Studio & Canvas Editor
+├── ugc-generator.php          # AI UGC Image Studio & Canva-style canvas editor
+├── ugc-video-studio.php       # AI Video Studio — Veo/Nano Banana 2, edit, regenerate, run ads
 ├── post-creator.php           # Real-time multi-channel post composer & publisher
+├── media-proxy.php            # Same-origin image proxy (canvas-safe editor downloads)
+├── ecommerce-sync.php         # Shopify & WooCommerce 1-Click sync
+├── ad-spy.php                 # Competitor ad spy & reverse-engineering engine
+├── ai-media-buyer.php         # Autonomous media buyer & anti-burn kill-switch
 ├── connect-accounts.php       # OAuth connection manager for 6 social/ad networks
 ├── portfolio.php              # Dedicated public showcase with embedded NFC card
 ├── portfolio-builder.php      # Showcase Studio, dynamic repeaters & theme designer

@@ -227,6 +227,33 @@ $checks[] = probe('cache', 'Cache & rate-limit store', 'Core', function () {
     return [is_writable($dir), 'writable'];
 });
 
+// 7. REST API v1 — bootstrap loads, key table reachable, rate limiter writable.
+$checks[] = probe('rest_api', 'REST API v1', 'Platform', function () {
+    $boot = ROOT_PATH . '/api/v1/bootstrap.php';
+    if (!is_readable($boot)) {
+        return [false, 'api/v1/bootstrap.php missing'];
+    }
+    try {
+        $keys = (int)db()->fetchOne("SELECT COUNT(*) AS c FROM api_keys")['c'];
+        $rate = (int)db()->fetchOne("SELECT COUNT(*) AS c FROM api_rate_limits")['c'];
+        return [true, "bootstrap OK · {$keys} API key(s) · rate-limiter active ({$rate} hits)"];
+    } catch (\Throwable $e) {
+        return [false, 'API tables unreachable: ' . $e->getMessage()];
+    }
+});
+
+// 8. Webhooks — subscriptions registered and dispatchable.
+$checks[] = probe('webhooks', 'Webhooks engine', 'Platform', function () {
+    try {
+        $rows = db()->fetchOne("SELECT COUNT(*) AS total, SUM(status='active') AS active FROM webhooks");
+        $total  = (int)($rows['total'] ?? 0);
+        $active = (int)($rows['active'] ?? 0);
+        return [true, "{$active} active / {$total} registered webhook endpoint(s)"];
+    } catch (\Throwable $e) {
+        return [false, 'webhooks table unreachable: ' . $e->getMessage()];
+    }
+});
+
 // ── 30-day uptime from the real log ──────────────────────────────
 $uptime = [];
 try {

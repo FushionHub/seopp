@@ -668,6 +668,95 @@ function check_remember_login(): void
 check_remember_login();
 
 // ============================================================
+// Currency engine — USD / NGN dual pricing with a session switcher
+// ============================================================
+
+/** All user-selectable display currencies. */
+function currency_supported(): array
+{
+    return ['USD' => '$', 'NGN' => '₦'];
+}
+
+/** The active display currency (session → cookie → USD). */
+function currency_current(): string
+{
+    $code = strtoupper((string)($_SESSION['currency'] ?? ($_COOKIE['ab_currency'] ?? '')));
+    return isset(currency_supported()[$code]) ? $code : 'USD';
+}
+
+/** Switch the active currency for this session (and remember it for 90 days). */
+function currency_set(string $code): void
+{
+    $code = strtoupper(trim($code));
+    if (!isset(currency_supported()[$code])) {
+        return;
+    }
+    $_SESSION['currency'] = $code;
+    setcookie('ab_currency', $code, [
+        'expires'  => time() + 86400 * 90,
+        'path'     => '/',
+        'samesite' => 'Lax',
+    ]);
+}
+
+/** NGN units per 1 USD (admin-tunable via Settings → ngn_usd_rate). */
+function exchange_rate_ngn_per_usd(): float
+{
+    $rate = (float)get_setting('ngn_usd_rate', '1550');
+    return $rate > 0 ? $rate : 1550.0;
+}
+
+/**
+ * Convert a canonical USD price into the active display currency.
+ * NGN values are rounded to the nearest ₦25 so prices stay clean.
+ */
+function price_convert(float $usd, ?string $to = null): float
+{
+    $to = $to ?? currency_current();
+    if ($to === 'NGN') {
+        return round($usd * exchange_rate_ngn_per_usd() / 25) * 25;
+    }
+    return round($usd, 2);
+}
+
+/** Format a canonical USD price in the active display currency. */
+function price_fmt(float $usd, ?string $cur = null): string
+{
+    $cur = $cur ?? currency_current();
+    $symbols = currency_supported();
+    return $symbols[$cur] . number_format(price_convert($usd, $cur), $cur === 'NGN' ? 0 : 2);
+}
+
+/** Both currencies side by side, e.g. "$18.99 / ₦29,400". */
+function price_dual(float $usd): string
+{
+    return '$' . number_format($usd, 2) . ' / ' . '₦' . number_format(price_convert($usd, 'NGN'), 0);
+}
+
+/** URL for switching currency on the current page, preserving other params. */
+function currency_toggle_url(string $code): string
+{
+    $qs = $_GET;
+    $qs['cur'] = $code;
+    $path = strtok($_SERVER['REQUEST_URI'] ?? '', '?') ?: '/';
+    return e($path . '?' . http_build_query($qs));
+}
+
+/** Handle ?cur= switches on any page (GET, one line in the switcher link). */
+if (isset($_GET['cur']) && PHP_SAPI !== 'cli') {
+    currency_set((string)$_GET['cur']);
+    // Strip the cur param so refreshes don't re-trigger, keeping other params.
+    $qs = $_GET;
+    unset($qs['cur']);
+    $target = strtok($_SERVER['REQUEST_URI'] ?? '', '?') ?: '/';
+    if ($qs !== []) {
+        $target .= '?' . http_build_query($qs);
+    }
+    header('Location: ' . $target);
+    exit;
+}
+
+// ============================================================
 // Maintenance mode (Admin → Settings → Site Access & Maintenance)
 // ============================================================
 if (PHP_SAPI !== 'cli') {

@@ -654,6 +654,144 @@ curl -X GET "<?= BASE_URL ?>/api/v1/directory.php?category=Retail&limit=5" \
                 </div>
             </div>
 
+            <!-- Endpoint 7: AI Video Studio -->
+            <div id="ep-video-studio" class="card-dark p-4 rounded-4 mb-4" style="background:#0d1524 !important; border:1px solid rgba(255,255,255,0.08) !important;">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="method-pill method-post">POST</span>
+                    <code class="text-white fw-bold font-size-15">/ugc-video-studio.php</code>
+                    <span class="badge bg-warning bg-opacity-25 text-warning font-size-10">Session + CSRF</span>
+                </div>
+                <p class="text-white-50 font-size-13 mb-3">
+                    Full video lifecycle powered by Google AI: Veo renders video directly when a <code>GEMINI_API_KEY</code> is configured, and the Nano Banana 2 image models generate every scene still. Works in the app (same-origin) or from any client that holds a logged-in session cookie.
+                </p>
+
+                <div class="table-responsive mb-3">
+                    <table class="table table-dark table-sm font-size-12 mb-0" style="border-color:rgba(255,255,255,.08);">
+                        <thead><tr><th class="text-white-50">action</th><th class="text-white-50">Params</th><th class="text-white-50">What it does</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>create_video</code></td><td><code>hook_text</code> or <code>script_body</code>, optional <code>video_type, avatar_id, voice_id, style_id, caption_style, audio_track, broll_keyword, aspect_ratio, duration_seconds</code></td><td>Builds the scene plan, generates a Nano Banana 2 still per scene, returns <code>status=rendering_client</code> + <code>scenes[]</code> (browser composites the MP4/WebM), or <code>status=generating</code> when Veo accepted the job (poll it).</td></tr>
+                            <tr><td><code>update_video</code></td><td><code>creative_id</code> + any editable field above</td><td><b>Edit in place:</b> same creative id, new params, fresh AI stills. The old file stays on disk until the new render is saved.</td></tr>
+                            <tr><td><code>regenerate_video</code></td><td><code>creative_id</code></td><td><b>Remix:</b> same script, brand-new scene stills (new Gemini seed).</td></tr>
+                            <tr><td><code>get_video_status</code></td><td><code>creative_id</code></td><td>Poll Veo/external jobs until <code>completed</code> or <code>failed</code>.</td></tr>
+                            <tr><td><code>save_render</code></td><td><code>creative_id</code>, <code>video</code> (multipart), optional <code>thumbnail</code> (data URI)</td><td>Upload the finished browser render; deducts credits and marks <code>completed</code>.</td></tr>
+                            <tr><td><code>delete_video</code></td><td><code>creative_id</code></td><td>Deletes the creative and its stored files.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="text-white-50 font-size-12 mb-2">Every request needs the <code>csrf_token</code> field (echoed by the page as <code>const CSRF</code>) and the session cookie.</p>
+
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item"><button class="nav-link active rounded-pill px-3 py-1 font-size-12" data-bs-toggle="pill" data-bs-target="#vs-curl" type="button">cURL</button></li>
+                    <li class="nav-item"><button class="nav-link rounded-pill px-3 py-1 font-size-12" data-bs-toggle="pill" data-bs-target="#vs-js" type="button">JavaScript</button></li>
+                    <li class="nav-item"><button class="nav-link rounded-pill px-3 py-1 font-size-12" data-bs-toggle="pill" data-bs-target="#vs-py" type="button">Python</button></li>
+                    <li class="nav-item"><button class="nav-link rounded-pill px-3 py-1 font-size-12" data-bs-toggle="pill" data-bs-target="#vs-php" type="button">PHP</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="vs-curl">
+                        <div class="code-block"># 1) Sign in and keep the session cookie
+curl -c jar.txt -d "csrf_token=PAGE_CSRF&email=you%40mail.com&password=secret" <?= BASE_URL ?>/login
+
+# 2) Regenerate an existing video (same script, new Nano Banana 2 stills)
+curl -b jar.txt -X POST <?= BASE_URL ?>/ugc-video-studio.php \
+  -d "action=regenerate_video" \
+  -d "csrf_token=STUDIO_CSRF" \
+  -d "creative_id=17"</div>
+                    </div>
+                    <div class="tab-pane fade" id="vs-js">
+                        <div class="code-block">// In-app: the studio page already exposes CSRF + LIB state
+const fd = new FormData();
+fd.append('action', 'regenerate_video');
+fd.append('csrf_token', CSRF);
+fd.append('creative_id', '17');
+const res = await fetch(window.location.pathname, { method:'POST', body:fd, credentials:'same-origin' });
+const { success, video } = await res.json();
+if (success && video.status === 'rendering_client') {
+  // composite video.scenes[] with canvas + MediaRecorder, then save_render
+}</div>
+                    </div>
+                    <div class="tab-pane fade" id="vs-py">
+                        <div class="code-block">import requests
+
+s = requests.Session()
+page = s.get("<?= BASE_URL ?>/ugc-video-studio.php")
+import re
+csrf = re.search(r'const CSRF\s*=\s*"([^"]+)"', page.text).group(1)
+
+r = s.post("<?= BASE_URL ?>/ugc-video-studio.php",
+           data={"action": "regenerate_video", "csrf_token": csrf, "creative_id": "17"})
+video = r.json()["video"]
+print(video["status"], len(video["scenes"]), "scenes")</div>
+                    </div>
+                    <div class="tab-pane fade" id="vs-php">
+                        <div class="code-block">$ch = curl_init('<?= BASE_URL ?>/ugc-video-studio.php');
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_COOKIEFILE => 'jar.txt',      // session from the login step
+    CURLOPT_POSTFIELDS => http_build_query([
+        'action'      => 'regenerate_video',
+        'csrf_token'  => 'STUDIO_CSRF',
+        'creative_id' => '17',
+    ]),
+]);
+$video = json_decode(curl_exec($ch), true)['video'];
+echo $video['status']; // rendering_client → composite in browser, or poll get_video_status</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endpoint 8: Post Creator & Social Publishing -->
+            <div id="ep-post-creator" class="card-dark p-4 rounded-4 mb-4" style="background:#0d1524 !important; border:1px solid rgba(255,255,255,0.08) !important;">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="method-pill method-post">POST</span>
+                    <code class="text-white fw-bold font-size-15">/post-creator.php</code>
+                    <span class="badge bg-warning bg-opacity-25 text-warning font-size-10">Session + CSRF</span>
+                </div>
+                <p class="text-white-50 font-size-13 mb-3">
+                    AI content pipeline: Groq writes the caption, Gemini Nano Banana 2 paints the illustration, and <code>publish_now</code> dispatches both live to every connected account (Meta, TikTok, Twitter/X, LinkedIn, Snapchat) in a single request.
+                </p>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="text-white-50 font-size-11 fw-bold text-uppercase mb-1">Generate an AI post image (JSON, 5 credits)</div>
+                        <div class="code-block">action=generate_illustration
+csrf_token=…
+illustration_prompt=Flat lay of our skincare set
+                          on marble, morning light
+
+→ { "success": true,
+    "url": "/assets/uploads/ai/gemini/post_1_…​.png",
+    "model": "gemini-3-pro-image-preview" }</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 font-size-11 fw-bold text-uppercase mb-1">Publish live to every connected channel</div>
+                        <div class="code-block">action=publish_now
+csrf_token=…
+caption=New drop 🚀 link in bio #ad
+platforms[]=meta&platforms[]=tiktok
+existing_media_url=/assets/uploads/ai/gemini/post_1_…​.png
+media_type=image
+
+→ "Live Post Published! Channels: Meta, TikTok"</div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-3">
+                    <table class="table table-dark table-sm font-size-12 mb-0" style="border-color:rgba(255,255,255,.08);">
+                        <thead><tr><th class="text-white-50">action</th><th class="text-white-50">Params</th><th class="text-white-50">What it does</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>generate_ai</code></td><td><code>ai_prompt</code>, <code>ai_platform</code></td><td>Groq writes a platform-tuned caption (1 credit).</td></tr>
+                            <tr><td><code>generate_illustration</code></td><td><code>illustration_prompt</code></td><td>Gemini Nano Banana 2 renders the post image (5 credits) and stores it same-origin.</td></tr>
+                            <tr><td><code>publish_now</code></td><td><code>caption</code>, <code>platforms[]</code>, optional <code>existing_media_url</code> + <code>media_type</code> or a <code>media_upload</code> file</td><td>Live multi-network dispatch via each platform's OAuth token (<code>SocialPostEngine::publishMultiLive</code>).</td></tr>
+                            <tr><td><code>schedule</code></td><td><code>scheduled_at</code> + same media fields</td><td>Queues into <code>scheduled_posts</code> for the automation worker.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="text-white-50 font-size-12 mb-2">Connect accounts first under <a href="<?= url('social-connect') ?>" class="text-accent">Social Connect</a> — publishing uses real OAuth tokens, never passwords.</p>
+            </div>
+
             <!-- Client SDKs -->
             <div id="sdks" class="card-dark p-4 rounded-4 mb-4" style="background:#0d1524 !important; border:1px solid rgba(255,255,255,0.08) !important;">
                 <h3 class="text-white fw-bold h5 mb-3">
@@ -670,6 +808,9 @@ curl -X GET "<?= BASE_URL ?>/api/v1/directory.php?category=Retail&limit=5" \
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link rounded-pill px-3 py-1 font-size-12" id="php-tab" data-bs-toggle="pill" data-bs-target="#sdk-php" type="button">PHP (cURL)</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill px-3 py-1 font-size-12" id="curl-tab" data-bs-toggle="pill" data-bs-target="#sdk-curl" type="button">cURL</button>
                     </li>
                 </ul>
 
@@ -729,6 +870,14 @@ curl_setopt_array($ch, [
 $result = json_decode(curl_exec($ch), true);
 curl_close($ch);
 print_r($result);
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="sdk-curl">
+                        <div class="code-block">
+curl -X POST <?= BASE_URL ?>/api/v1/ugc.php \
+  -H "X-API-Key: adsb_live_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"product_name":"Smart Hydration Bottle","ugc_style":"selfie_hold","aspect_ratio":"1:1"}'
                         </div>
                     </div>
                 </div>

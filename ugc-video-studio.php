@@ -202,6 +202,28 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 studio_json(['success' => true]);
             }
 
+            // ── Edit an existing video in place (new params, fresh scenes) ──
+            case 'update_video': {
+                $id = (int)($_POST['creative_id'] ?? 0);
+                $result = AIVideoEngine::rebuildCreative($userId, $id, array_merge($_POST, [
+                    'provider' => trim((string)($_POST['provider'] ?? '')) ?: null,
+                ]));
+                if (isset($result['error'])) {
+                    studio_json(['success' => false, 'error' => $result['error']], 422);
+                }
+                studio_json(['success' => true, 'video' => $result]);
+            }
+
+            // ── Regenerate: same params, brand-new scene stills ──
+            case 'regenerate_video': {
+                $id = (int)($_POST['creative_id'] ?? 0);
+                $result = AIVideoEngine::rebuildCreative($userId, $id);
+                if (isset($result['error'])) {
+                    studio_json(['success' => false, 'error' => $result['error']], 422);
+                }
+                studio_json(['success' => true, 'video' => $result]);
+            }
+
             default:
                 studio_json(['success' => false, 'error' => 'Unknown action.'], 400);
         }
@@ -216,6 +238,29 @@ $history = db()->fetchAll(
     "SELECT * FROM ai_video_creatives WHERE user_id = ? ORDER BY created_at DESC LIMIT 24",
     [$userId]
 );
+
+// Client-side map powering Edit / Regenerate on library cards.
+$libData = [];
+foreach ($history as $vid) {
+    $meta = json_decode($vid['metadata'] ?? '{}', true) ?: [];
+    $libData[(int)$vid['id']] = [
+        'id'            => (int)$vid['id'],
+        'mode'          => ($meta['video_type'] ?? '') === 'commercial_cinematic' ? 'commercial' : 'ugc',
+        'avatar_id'     => (string)($vid['avatar_id'] ?? 'lexi_genz'),
+        'voice_id'      => (string)($vid['voice_id'] ?? 'en_female_energetic'),
+        'style_id'      => (string)($meta['style_id'] ?? 'lifestyle_storyboard'),
+        'hook'          => (string)($vid['hook_text'] ?? ''),
+        'script'        => (string)($vid['script_body'] ?? ''),
+        'cta'           => (string)($vid['cta_text'] ?? ''),
+        'caption_style' => (string)($vid['caption_style'] ?? 'tiktok_glow'),
+        'audio_track'   => (string)($vid['audio_track'] ?? 'viral_lofi_beat'),
+        'broll'         => (string)($vid['broll_keyword'] ?? ''),
+        'aspect'        => (string)($vid['aspect_ratio'] ?? '9:16'),
+        'duration'      => (int)($vid['duration_seconds'] ?? 30),
+        'scenes'        => array_values((array)($meta['scenes'] ?? [])),
+        'status'        => (string)($vid['status'] ?? ''),
+    ];
+}
 
 $credits = (int)db()->fetchOne("SELECT ai_credits FROM users WHERE id = ?", [$userId])['ai_credits'];
 
@@ -681,13 +726,14 @@ require_once __DIR__ . '/includes/app_header.php';
         <b><?= e($vid['hook_text']) ?></b>
         <small><?= e($meta['provider_label'] ?? 'Storyboard Studio') ?> · <?= date('M d, Y · H:i', strtotime($vid['created_at'])) ?></small>
         <div class="acts">
+          <button type="button" class="vs-btn" onclick="editCreative(<?= (int)$vid['id'] ?>)" title="Edit this video — opens its script and scenes back in the composer"><i class="ph ph-pencil-simple"></i></button>
+          <button type="button" class="vs-btn" onclick="regenerateCreative(<?= (int)$vid['id'] ?>)" title="Regenerate — same script, brand-new AI scene stills"><i class="ph ph-arrows-clockwise"></i></button>
           <?php if ($hasVideo): ?>
-            <a class="vs-btn" href="<?= e($vAbs) ?>" download><i class="ph ph-download-simple"></i></a>
-            <a class="vs-btn" href="<?= url('post-creator') ?>?video_id=<?= (int)$vid['id'] ?>"><i class="ph ph-paper-plane-tilt"></i></a>
+            <a class="vs-btn" href="<?= e($vAbs) ?>" download title="Download MP4/WebM"><i class="ph ph-download-simple"></i></a>
+            <a class="vs-btn" href="<?= url('post-creator') ?>?video_id=<?= (int)$vid['id'] ?>" title="Create a social post from this video"><i class="ph ph-paper-plane-tilt"></i></a>
             <a class="vs-btn primary" href="<?= url('create-ad') ?>?video_id=<?= (int)$vid['id'] ?>">Run ad</a>
-          <?php else: ?>
-            <button type="button" class="vs-btn danger js-del" data-id="<?= (int)$vid['id'] ?>"><i class="ph ph-trash"></i> Remove</button>
           <?php endif; ?>
+          <button type="button" class="vs-btn danger js-del" data-id="<?= (int)$vid['id'] ?>" title="Delete"><i class="ph ph-trash"></i></button>
         </div>
       </div>
     </div>
@@ -707,6 +753,7 @@ require_once __DIR__ . '/includes/app_header.php';
 /* ══════════════ CONFIG ══════════════ */
 const ENDPOINT   = window.location.pathname + window.location.search;
 const CSRF       = <?= json_encode(csrf_token()) ?>;
+const LIB        = <?= json_encode((object)$libData) ?>;
 const BASE       = <?= json_encode(rtrim(BASE_URL, '/')) ?>;
 const PROVIDERS  = <?= json_encode(array_map(fn($p) => ['label'=>$p['label'],'kind'=>$p['kind'],'configured'=>(bool)$p['configured']], $providers)) ?>;
 const ACTIVE     = <?= json_encode($activeProvider) ?>;
@@ -814,6 +861,7 @@ const S = {
   avatarName: <?= json_encode($avatars[0]['name']) ?>,
   scenes: [],          // {scene_number,label,caption,visual_prompt,image_url,local_url,zoom_from,zoom_to,pan,length,start}
   creativeId: null,
+  editing: null,       // creative id while an Edit → Update & re-render is in flight
   provider: ACTIVE,
   status: 'idle',      // idle | rendering_client | generating | completed | failed
   resultUrl: '',
@@ -1043,7 +1091,7 @@ $('#btn-generate').addEventListener('click', async () => {
   }, 1200);
 
   const payload = {
-    action: 'create_video',
+    action: S.editing ? 'update_video' : 'create_video',
     video_type: S.mode === 'ugc' ? 'ugc_talking_head' : 'commercial_cinematic',
     avatar_id: S.avatarId,
     style_id: S.styleId,
@@ -1057,34 +1105,28 @@ $('#btn-generate').addEventListener('click', async () => {
     aspect_ratio: S.aspect,
     duration_seconds: S.duration
   };
+  if (S.editing) payload.creative_id = S.editing;
 
   try{
     const d = await api(payload);
     // Stop the "building scenes" creep immediately: the next overlay calls
     // come from runClientRender / pollJob and would otherwise be overwritten.
     clearInterval(creepTimer);
-    const v = d.video;
-    S.creativeId = v.id;
-    S.provider   = v.provider || ACTIVE;
-    S.status     = v.status;
-    S.resultUrl  = v.video_url || '';
-    S.resultThumb= v.thumbnail_url || '';
-    S.scenes     = (v.scenes || S.scenes).map((s,i) => Object.assign({
-      scene_number: i+1, label: 'Scene '+(i+1), caption:'', visual_prompt:'', image_url:'', local_url:'',
-      start:0, length: Math.max(2, Math.round(S.duration/((v.scenes||S.scenes).length||1))),
-      zoom_from: i%2===0?1.0:1.18, zoom_to: i%2===0?1.18:1.0, pan: i%3===0?'right':(i%3===1?'left':'up')
-    }, s));
+    const wasEditing = !!S.editing;
+    S.editing = null;
+    $('#vs-gen-label').textContent = 'Generate video';
+    applyEngineVideo(d.video);
     syncMeta();
     renderFilm();
-    updateCredits(-creditCost(S.duration));
 
-    if (v.status === 'rendering_client'){
+    if (d.video.status === 'rendering_client'){
       await runClientRender();
-    } else if (v.status === 'generating'){
+    } else if (d.video.status === 'generating'){
       await pollJob(S.creativeId);
-    } else if (v.status === 'completed'){
+    } else if (d.video.status === 'completed'){
       showCompleted(S.resultUrl, S.resultThumb);
     }
+    if (wasEditing) setTimeout(() => location.reload(), 1800);
   }catch(e){
     clearInterval(creepTimer);
     toast(e.message, 'err');
@@ -1095,6 +1137,99 @@ $('#btn-generate').addEventListener('click', async () => {
     $('#vs-gen-label').textContent = 'Generate video';
   }
 });
+
+/**
+ * Shared response handler for create_video / update_video / regenerate_video:
+ * pushes the engine payload into studio state and paints the scene board.
+ */
+function applyEngineVideo(v){
+  S.creativeId = v.id;
+  S.provider   = v.provider || ACTIVE;
+  S.status     = v.status;
+  S.resultUrl  = v.video_url || '';
+  S.resultThumb= v.thumbnail_url || '';
+  S.images     = [];
+  S.playhead   = 0;
+  S.currentScene = 0;
+  S.scenes     = (v.scenes || S.scenes).map((s,i) => Object.assign({
+    scene_number: i+1, label: 'Scene '+(i+1), caption:'', visual_prompt:'', image_url:'', local_url:'',
+    start:0, length: Math.max(2, Math.round(S.duration/((v.scenes||S.scenes).length||1))),
+    zoom_from: i%2===0?1.0:1.18, zoom_to: i%2===0?1.18:1.0, pan: i%3===0?'right':(i%3===1?'left':'up')
+  }, s));
+  updateCredits(-creditCost(S.duration));
+}
+
+/* ══════════════ EDIT & REGENERATE (library actions) ══════════════ */
+window.editCreative = function(id){
+  const c = LIB[id];
+  if (!c){ toast('That video is not in your library.','err'); return; }
+
+  $('#vs-hook').value = c.hook || '';
+  $('#vs-body').value = c.script || '';
+  $('#vs-cta').value  = c.cta || '';
+  const ideaEl = $('#vs-idea'); if (ideaEl) ideaEl.value = c.hook || '';
+  const brollEl = $('#vs-broll'); if (brollEl) brollEl.value = c.broll || '';
+  const capSel = $('#vs-caption'); if (capSel) capSel.value = c.caption_style;
+  const voiceSel = $('#vs-voice'); if (voiceSel) voiceSel.value = c.voice_id;
+  const trackSel = $('#vs-track'); if (trackSel) trackSel.value = c.audio_track;
+
+  setMode(c.mode === 'commercial' ? 'commercial' : 'ugc');
+  setAspect(c.aspect);
+  S.duration = c.duration;
+  $$('#vs-dur-chips .vs-chip').forEach(x => x.classList.toggle('on', parseInt(x.dataset.dur,10) === c.duration));
+
+  $$('#vs-avatars .vs-tile').forEach(x => x.classList.toggle('on', x.dataset.id === c.avatar_id));
+  const tile = $('#vs-avatars .vs-tile[data-id="' + c.avatar_id + '"]');
+  if (tile){ S.avatarId = c.avatar_id; S.avatarImg = tile.dataset.img; S.avatarName = tile.dataset.name; }
+
+  $$('#vs-styles .vs-style').forEach(x => x.classList.toggle('on', x.dataset.id === c.style_id));
+  S.styleId = c.style_id;
+
+  S.scenes = (c.scenes || []).map((s,i) => Object.assign({
+    scene_number: i+1, label: 'Scene '+(i+1), caption:'', visual_prompt:'', image_url:'', local_url:'',
+    start:0, length: Math.max(2, Math.round(c.duration/((c.scenes||[]).length||1))),
+    zoom_from: i%2===0?1.0:1.18, zoom_to: i%2===0?1.18:1.0, pan: i%3===0?'right':(i%3===1?'left':'up')
+  }, s));
+
+  S.creativeId = c.id;
+  S.editing    = c.id;
+  S.status     = 'idle';
+  S.resultUrl  = '';
+  S.resultThumb= '';
+  S.images     = [];
+  S.playhead   = 0;
+  S.currentScene = 0;
+
+  syncMeta();
+  renderFilm();
+  $('#vs-gen-label').textContent = 'Update & re-render';
+  toast('Editing “' + ((c.hook||'video').slice(0,60)) + '”', 'ok', 'Change anything, then press Update & re-render.');
+  const left = document.querySelector('.vs-left');
+  if (left) left.scrollIntoView({ behavior:'smooth', block:'start' });
+};
+
+window.regenerateCreative = async function(id){
+  const c = LIB[id];
+  if (!c){ toast('That video is not in your library.','err'); return; }
+  if (!confirm('Regenerate this video? Same script — brand-new AI scene stills. Costs ' + creditCost(c.duration) + ' credits.')) return;
+
+  overlay(true, 'Regenerating scenes…', 'Creating fresh AI stills for every scene. About 20 seconds — stay on this page.', 20);
+  try{
+    const d = await api({ action:'regenerate_video', creative_id:id });
+    applyEngineVideo(d.video);
+    syncMeta();
+    renderFilm();
+    if (d.video.status === 'rendering_client'){
+      await runClientRender();
+    } else if (d.video.status === 'generating'){
+      await pollJob(S.creativeId);
+    }
+    setTimeout(() => location.reload(), 1800);
+  }catch(e){
+    toast(e.message, 'err');
+    overlay(false);
+  }
+};
 
 function updateCredits(delta){
   const el = $('#vs-credits');
@@ -1125,9 +1260,9 @@ function renderFilm(){
   $('#vs-stage-scenes').innerHTML = '<i class="ph ph-film-strip"></i> <b>' + S.scenes.length + '</b> scenes';
 }
 
-$('#btn-regen-scenes').addEventListener('click', async () => {
+$('#btn-regen-scenes').addEventListener('click', () => {
   if (!S.creativeId){ toast('Generate a video first.','err'); return; }
-  toast('Re-render with the new prompts using Generate video.');
+  regenerateCreative(S.creativeId);
 });
 
 /* ══════════════ EXTERNAL PROVIDER POLLING ══════════════ */

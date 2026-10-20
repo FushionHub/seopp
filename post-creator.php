@@ -11,6 +11,46 @@ $userId   = current_user_id();
 $userData = current_user();
 $aiCredits = (int)($userData['ai_credits'] ?? 0);
 
+// ── AJAX: AI post illustration (Google Gemini — Nano Banana 2 first) ──
+// Returns JSON; the composer fills the attached-media card so the image can
+// be published live or scheduled to any connected social account.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'generate_illustration') {
+    header('Content-Type: application/json');
+    if (!csrf_verify()) {
+        echo json_encode(['success' => false, 'error' => 'Your session expired. Refresh the page and try again.']);
+        exit;
+    }
+    $prompt = trim((string)($_POST['illustration_prompt'] ?? ''));
+    if ($prompt === '') {
+        echo json_encode(['success' => false, 'error' => 'Describe the illustration you want first.']);
+        exit;
+    }
+
+    $illCost = 5; // matches AIEngine::IMAGE_CREDIT_COST
+    if ($aiCredits < $illCost) {
+        echo json_encode(['success' => false, 'error' => "Not enough AI credits — this image costs {$illCost}. Top up in AI Settings."]);
+        exit;
+    }
+
+    require_once __DIR__ . '/modules/gemini_engine.php';
+    $styled = $prompt . '. Scroll-stopping social media post illustration, bold vibrant colors, high contrast, professional marketing visual, clean composition, ultra detailed, no watermark, no text overlays.';
+    $img = GeminiEngine::generateImage($styled, 1024, 1024, 'post_' . $userId . '_' . time());
+
+    if ($img === null) {
+        echo json_encode(['success' => false, 'error' => 'The image engine is unavailable right now. Attach a file or pick from the AI Library instead.']);
+        exit;
+    }
+
+    db()->query("UPDATE users SET ai_credits = GREATEST(0, ai_credits - ?) WHERE id = ?", [$illCost, $userId]);
+    echo json_encode([
+        'success' => true,
+        'url'     => $img['url'],
+        'model'   => $img['model'],
+        'credits' => max(0, $aiCredits - $illCost),
+    ]);
+    exit;
+}
+
 $connections = db()->fetchAll(
     "SELECT platform, access_token, account_name FROM connected_accounts WHERE user_id = ?",
     [$userId]
@@ -293,14 +333,28 @@ require_once __DIR__ . '/includes/app_header.php';
 
             <?php if ($aiResult): ?>
                 <div style="margin-top:28px;background:#080c14;border:1px solid var(--accent);border-radius:12px;padding:24px;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
                         <h6 style="color:#fff;font-weight:700;margin:0;"><i class="ph ph-magic-wand text-warning me-2"></i>Generated Content Output</h6>
-                        <a href="<?= url('post-creator') ?>?tab=manual" class="btn-accent btn-sm rounded-pill px-3" onclick="sessionStorage.setItem('cached_caption', <?= json_encode($aiResult) ?>)">
-                            Use in Composer <i class="ph ph-arrow-right"></i>
-                        </a>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="button" class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="seedIllustrationFromText()">
+                                <i class="ph ph-image me-1"></i> Make an illustration
+                            </button>
+                            <a href="<?= url('post-creator') ?>?tab=manual" class="btn-accent btn-sm rounded-pill px-3" onclick="sessionStorage.setItem('cached_caption', <?= json_encode($aiResult) ?>)">
+                                Use in Composer <i class="ph ph-arrow-right"></i>
+                            </a>
+                        </div>
                     </div>
                     <pre style="color:#fff;white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.6;margin:0;"><?= e($aiResult) ?></pre>
                 </div>
+                <script>
+                function seedIllustrationFromText(){
+                    const text = <?= json_encode($aiResult) ?>;
+                    const short = String(text).replace(/\s+/g,' ').trim().slice(0, 220);
+                    sessionStorage.setItem('ai_illustration_prompt', short);
+                    sessionStorage.setItem('cached_caption', text);
+                    window.location.href = <?= json_encode(url('post-creator') . '?tab=manual') ?>;
+                }
+                </script>
             <?php endif; ?>
         </div>
     <?php else: ?>
@@ -388,6 +442,21 @@ require_once __DIR__ . '/includes/app_header.php';
                                 <span style="font-size:11px;color:var(--fg3);">JPG, PNG, WebP, MP4, MOV (Max 50MB)</span>
                                 <input type="file" id="media_upload" name="media_upload" accept="image/*,video/*" style="display:none;" onchange="handlePostMedia(this)">
                             </div>
+                        </div>
+
+                        <!-- AI Post Image Generator (Google Gemini — Nano Banana 2) -->
+                        <div class="mb-4">
+                            <label class="form-label mb-2" style="font-weight:600;color:var(--fg);font-size:13px;display:block;">
+                                <i class="ph-bold ph-sparkle text-accent me-1"></i> Generate AI Post Image
+                                <span style="font-weight:500;color:var(--fg3);font-size:11px;">(Nano Banana 2 · 5 credits)</span>
+                            </label>
+                            <div class="d-flex gap-2">
+                                <input type="text" id="ai_illustration_prompt" class="form-control" placeholder="e.g. Flat-lay of our skincare set on marble with soft morning light" style="background:#080c14;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:12px;">
+                                <button type="button" id="btn-ai-illustration" class="btn btn-outline-primary rounded-pill px-3 text-nowrap" onclick="generatePostIllustration()">
+                                    <i class="ph-bold ph-magic-wand me-1"></i> Generate
+                                </button>
+                            </div>
+                            <span style="font-size:11px;color:var(--fg3);display:block;margin-top:6px;">The image attaches automatically — publish it live or queue it to any connected account right after.</span>
                         </div>
 
                         <!-- Schedule Time -->
@@ -664,6 +733,56 @@ function updatePostPreview() {
         mock.textContent = caption || 'Write your caption to preview how it looks...';
     }
 }
+
+/* ── AI Post Image (Gemini Nano Banana 2) ── */
+async function generatePostIllustration() {
+    const promptEl = document.getElementById('ai_illustration_prompt');
+    const prompt = promptEl ? promptEl.value.trim() : '';
+    if (!prompt) { alert('Describe the illustration you want first.'); if (promptEl) promptEl.focus(); return; }
+
+    const btn = document.getElementById('btn-ai-illustration');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ph-bold ph-circle-notch" style="animation:spin 1s linear infinite"></i> Creating…';
+
+    try {
+        const fd = new FormData();
+        fd.append('action', 'generate_illustration');
+        fd.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+        fd.append('illustration_prompt', prompt);
+        const res = await fetch(window.location.pathname + window.location.search, { method: 'POST', body: fd, credentials: 'same-origin' });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Image generation failed. Please try again.');
+
+        selectPostLibraryMedia('image', data.url, data.url, '');
+        toastMsg('Illustration ready — attached to your post.', 'Created with ' + data.model + '.');
+    } catch (e) {
+        alert(e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+function toastMsg(msg, sub) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;background:#0d1524;border:1px solid rgba(196,240,0,.45);border-radius:12px;padding:14px 18px;color:#fff;font-size:13.5px;box-shadow:0 10px 40px rgba(0,0,0,.5);max-width:340px;';
+    wrap.innerHTML = '<b style="color:#c8ff00;display:block;margin-bottom:2px;">' + msg + '</b>' + (sub ? '<span style="color:#94a3b8;font-size:12px;">' + sub + '</span>' : '');
+    document.body.appendChild(wrap);
+    setTimeout(() => { wrap.style.opacity = '0'; wrap.style.transition = 'opacity .3s'; setTimeout(() => wrap.remove(), 320); }, 4200);
+}
+
+/* Bridge from the AI text tab: prefill the illustration prompt. */
+(function () {
+    try {
+        const seeded = sessionStorage.getItem('ai_illustration_prompt');
+        if (seeded) {
+            const el = document.getElementById('ai_illustration_prompt');
+            if (el) { el.value = seeded; el.focus(); }
+            sessionStorage.removeItem('ai_illustration_prompt');
+        }
+    } catch (e) {}
+})();
 
 function selectPostLibraryMedia(type, mediaUrl, thumbUrl, caption) {
     document.getElementById('inp_existing_media_url').value = mediaUrl;

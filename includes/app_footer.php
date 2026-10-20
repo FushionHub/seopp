@@ -278,5 +278,52 @@ document.addEventListener('DOMContentLoaded', function() {
     syncAppThemeIcons(cur);
 });
 </script>
+<?php
+// ── First-login quick guide ──
+// Shows once per session on the first app page after login or registration.
+if (is_logged_in() && empty($_SESSION['quick_guide_seen'])):
+    $_SESSION['quick_guide_seen'] = 1;
+?>
+<div id="quickGuideOverlay" style="position:fixed;inset:0;background:rgba(4,7,14,.78);backdrop-filter:blur(4px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface,#0d1524);border:1px solid var(--border);border-radius:20px;max-width:520px;width:100%;padding:30px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.6);">
+    <button type="button" onclick="closeQuickGuide()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--border);color:var(--fg2);cursor:pointer;font-size:16px;">&times;</button>
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="width:58px;height:58px;border-radius:16px;background:rgba(200,255,0,.12);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;"><i class="ph-bold ph-rocket-launch"></i></div>
+      <h3 style="color:var(--fg);font-weight:800;font-size:20px;margin:0 0 6px;">Welcome to <?= e(get_setting('site_name', 'Adsbooster.net')) ?> 🎉</h3>
+      <p style="color:var(--fg2);font-size:13.5px;margin:0;">Launch your first ad in under 5 minutes — here's the fast path:</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+      <?php
+      $guideSteps = [
+          ['ph-link',            'Link your accounts',   'Connect Instagram, TikTok, X, LinkedIn or Snapchat with official OAuth — 20 seconds each.', url('social-connect')],
+          ['ph-sparkle',         'Create with AI',       'AI writes the copy, Nano Banana 2 paints the images, Veo renders the video.', url('ugc-generator')],
+          ['ph-rocket-launch',   'Publish everywhere',   'One click posts your content or launches ads live on every connected network.', url('create-ad')],
+          ['ph-gift',            'Earn with referrals',  'Share your link — earn credit rewards when friends join and top up.', url('referrals')],
+      ];
+      foreach ($guideSteps as $i => $gs): ?>
+        <a href="<?= $gs[3] ?>" onclick="closeQuickGuide()" style="display:flex;gap:13px;align-items:flex-start;background:var(--bg);border:1px solid var(--border);border-radius:13px;padding:13px 15px;text-decoration:none;transition:border-color .15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(200,255,0,.1);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ph-bold <?= $gs[0] ?>" style="font-size:18px;"></i></div>
+          <div>
+            <div style="color:var(--fg);font-weight:700;font-size:14px;"><?= ($i + 1) . '. ' . e($gs[1]) ?></div>
+            <div style="color:var(--fg2);font-size:12.5px;line-height:1.45;margin-top:2px;"><?= e($gs[2]) ?></div>
+          </div>
+          <i class="ph ph-caret-right" style="color:var(--fg3);margin-left:auto;align-self:center;"></i>
+        </a>
+      <?php endforeach; ?>
+    </div>
+    <button type="button" onclick="closeQuickGuide()" class="btn-accent" style="width:100%;justify-content:center;padding:13px;font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px;">
+      <i class="ph-bold ph-lightning"></i> Start creating — got it!
+    </button>
+  </div>
+</div>
+<script>
+function closeQuickGuide() {
+  var o = document.getElementById('quickGuideOverlay');
+  if (o) { o.style.opacity = '0'; o.style.transition = 'opacity .25s'; setTimeout(function(){ o.remove(); }, 260); }
+  try { localStorage.setItem('ab_quick_guide_seen', '1'); } catch (e) {}
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeQuickGuide(); });
+</script>
+<?php endif; ?>
 </body>
 </html>

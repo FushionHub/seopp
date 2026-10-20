@@ -1,30 +1,41 @@
 <?php declare(strict_types=1);
 
+require_once __DIR__ . '/config/site_setting_and_config.php';
 require_once __DIR__ . '/modules/payments.php';
 
 $userId  = current_user_id();
 $errors  = [];
 
-$planSlug  = trim($_GET['plan'] ?? '');
-$creditAmt = (float)($_GET['credits'] ?? 0);
-$currency  = strtoupper(trim($_GET['currency'] ?? 'NGN'));
+$planId    = (int)($_GET['plan'] ?? 0);
+$creditUsd = (float)($_GET['credits'] ?? 0);   // credits requested, in USD value
+$currency  = currency_current();
+$cycle     = ($_GET['cycle'] ?? 'monthly') === 'yearly' ? 'yearly' : 'monthly';
 $gateway   = '';
 
 $planDetails = null;
-if ($planSlug !== '') {
-    $planDetails = db()->fetchOne("SELECT * FROM pricing_plans WHERE slug = ? AND is_active = 1", [$planSlug]);
+if ($planId > 0) {
+    $planDetails = db()->fetchOne("SELECT * FROM pricing_plans WHERE id = ? AND status = 'active'", [$planId]);
     if (!$planDetails) {
         $errors[] = 'Invalid or inactive plan.';
     }
 }
 
 $isCredits = false;
-if ($creditAmt > 0 && !$planDetails) {
+$usdAmount = 0.0;
+if ($planDetails) {
+    $isOneOff = ($planDetails['billing_cycle'] ?? '') === 'pay_as_you_go';
+    $usdAmount = (float)($planDetails['price'] ?? 0);
+    if ($cycle === 'yearly' && !$isOneOff) {
+        $usdAmount = round($usdAmount * 12 * 0.75, 2);   // 25% yearly discount
+    }
+} elseif ($creditUsd > 0) {
+    $creditUsd = max(2.5, $creditUsd);               // platform minimum top-up
     $isCredits = true;
+    $usdAmount = $creditUsd;
     $planDetails = [
-        'name'        => number_format($creditAmt) . ' AI Credits',
-        'description' => 'Credit top-up for AI-powered tools',
-        'price'       => $creditAmt,
+        'name'        => number_format($creditUsd * 100) . ' AI Credits',
+        'description' => 'AI credit top-up (100 credits per $1)',
+        'price'       => $creditUsd,
     ];
 }
 
@@ -36,11 +47,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!in_array($gateway, ['paystack', 'flutterwave'], true)) {
             $errors[] = 'Please select a valid payment gateway.';
+        } elseif ($usdAmount <= 0) {
+            $errors[] = 'Nothing to pay for.';
         } else {
-            $type = $isCredits ? 'ai_credits' : 'subscription';
-            $amount = $isCredits ? $creditAmt : (float)($planDetails['price'] ?? 0);
+            if ($isCredits) {
+                $type   = 'ai_credit_topup';
+                $charge = price_convert($usdAmount, $currency);
+                $meta   = ['amount_usd' => $usdAmount];
+            } else {
+                $type   = 'plan_subscription';
+                $charge = price_convert($usdAmount, $currency);
+                $meta   = [
+                    'plan_id'    => (int)$planDetails['id'],
+                    'plan_name'  => (string)($planDetails['name'] ?? ''),
+                    'cycle'      => ($planDetails['billing_cycle'] ?? '') === 'pay_as_you_go' ? 'monthly' : $cycle,
+                    'amount_usd' => $usdAmount,
+                ];
+            }
 
-            $result = PaymentProcessor::initiatePayment($userId, $type, $amount, $currency, $gateway);
+            $result = PaymentProcessor::initiatePayment($userId, $type, $charge, $currency, $gateway, $meta);
 
             if ($result['success'] && $result['redirect_url']) {
                 redirect($result['redirect_url']);

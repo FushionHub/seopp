@@ -460,9 +460,33 @@ require_once __DIR__ . '/includes/app_header.php';
         </div>
     </div>
 
-    <!-- Channel Cards Grid -->
+    <!-- How publishing works -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:32px;">
+        <?php
+        $steps = [
+            ['n' => '1', 'icon' => 'ph-link',           'title' => 'Connect your accounts', 'desc' => 'Authorize each network below with official OAuth 2.0 — takes about 20 seconds each.'],
+            ['n' => '2', 'icon' => 'ph-magic-wand',     'title' => 'Create with AI',        'desc' => 'AI writes the caption, Nano Banana 2 paints the image, Veo renders the video.'],
+            ['n' => '3', 'icon' => 'ph-rocket-launch',  'title' => 'Publish everywhere',    'desc' => 'One click dispatches live to every connected network via their direct APIs.'],
+        ];
+        foreach ($steps as $s): ?>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:flex-start;">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(200,255,0,0.12);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:15px;"><?= $s['n'] ?></div>
+            <div>
+                <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px;"><i class="ph <?= $s['icon'] ?> text-accent me-1"></i><?= e($s['title']) ?></div>
+                <div style="color:var(--fg2);font-size:12.5px;line-height:1.5;"><?= e($s['desc']) ?></div>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Channel Cards Grid (connected first) -->
     <div class="row g-4">
-        <?php foreach ($validPlatforms as $p):
+        <?php
+        $orderedPlatforms = array_values(array_merge(
+            array_intersect($validPlatforms, $connected),
+            array_diff($validPlatforms, $connected)
+        ));
+        foreach ($orderedPlatforms as $p):
             $isC = isset($connectedMap[$p]);
             $acc = $connectedMap[$p] ?? null;
             $color = $platformColors[$p];
@@ -512,6 +536,10 @@ require_once __DIR__ . '/includes/app_header.php';
                         <a href="<?= url('social-connect') ?>?platform=<?= e($p) ?>" class="btn-outline-dark btn-sm" style="flex:1;text-align:center;">
                             <?= $isC ? '<i class="ph ph-gear"></i> Manage' : '<i class="ph ph-lock-key"></i> Connect with OAuth' ?>
                         </a>
+                        <?php if ($isC): ?>
+                            <a href="<?= url('post-creator') ?>" class="btn-outline-dark btn-sm" title="Create a post for this network" style="text-align:center;"><i class="ph ph-paper-plane-tilt"></i></a>
+                            <a href="<?= url('create-ad') ?>" class="btn-outline-dark btn-sm" title="Launch an ad on this network" style="text-align:center;"><i class="ph ph-megaphone"></i></a>
+                        <?php endif; ?>
                         <?php if ($isC): ?>
                             <form method="POST" style="margin:0;" onsubmit="return confirm('Disconnect <?= e($platformLabels[$p]) ?>?')">
                                 <?= csrf_field() ?>

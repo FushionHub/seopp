@@ -411,13 +411,15 @@ After deployment, test the following endpoints to verify all components:
 | :--- | :--- | :--- |
 | `/index.php` | Homepage with dynamic Verified Directory & Reviews showcase | HTTP 200 |
 | `/marketplace.php` | Business & Product Directory with WhatsApp/Phone filters | HTTP 200 |
-| `/ugc-generator.php` | AI UGC Image Creative Studio with HTML5 Canvas filter editor | HTTP 200 |
-| `/post-creator.php` | Real-time multi-network post composer & live cURL publisher | HTTP 200 |
+| `/ugc-generator.php` | AI UGC Image Creative Studio with Canva-style canvas editor | HTTP 200 |
+| `/ugc-video-studio.php` | AI Video Studio — Veo/Nano Banana 2, edit, regenerate, download, run ads | HTTP 200 (login) |
+| `/post-creator.php` | AI caption + Nano Banana 2 illustration → live multi-network publish | HTTP 200 (login) |
 | `/developer-docs.php` | Encyclopedic A–Z Developer Documentation & code generators | HTTP 200 |
 | `/api-settings.php` | Master API Key console, Rate limit monitor & Webhook Tester | HTTP 200 |
-| `/status.php` | Live service uptime & 6-network latency telemetry | HTTP 200 |
+| `/status.php` | Live service uptime & network latency telemetry | HTTP 200 |
 | `/security-2fa.php` | Google Authenticator RFC 6238 & Email OTP 2FA setup | HTTP 200 |
 | `/admin-login.php` | Administrative login with TOTP 2FA verification challenge | HTTP 200 |
+| `/admin/index.php` | Admin dashboard — 25 modules, user management, maintenance mode | HTTP 200 (admin) |
 | `/portfolio.php?u=demo` | Dedicated public portfolio view (accessible without login) | HTTP 200 |
 | `/vcard-download.php?id=3` | RFC 6350 compliant digital vCard download (.vcf) | HTTP 200 (vcard) |
 | `/reviews.php` | Community review submission portal (Pro vs Free 5-day rule) | HTTP 200 |
@@ -425,6 +427,13 @@ After deployment, test the following endpoints to verify all components:
 | `/p2p-chat.php` | P2P Chat with AI Growth Consultant bot & deal proposals | HTTP 200 |
 | `/blog-manage.php` | CKEditor 5 Blog Article Creator & Manager | HTTP 200 |
 | `/404.php` | Custom 404 Error handler with live search | HTTP 404 |
+
+### Feature Smoke Test (after first login)
+
+1. **Image generation** — UGC Studio → generate a creative. With `GEMINI_API_KEY` set, the result reports `gemini-3-pro-image-preview` (Nano Banana 2); without a key it uses first-party fallback stills and still works.
+2. **Video generation** — Video Studio → *Generate video*. Scenes come back with same-origin stills, the browser renders an MP4/WebM, and the library card offers **Edit / Regenerate / Download / Run ad / Post**.
+3. **Edit + Regenerate** — hit *Regenerate* on a library card: same script, fresh stills, same creative id, credits re-charged on save.
+4. **AI post → social** — Post Creator → *Generate Post Content* → *Make an illustration* → *🚀 Publish Live Now* to every connected channel.
 
 
 ---
