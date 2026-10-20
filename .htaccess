@@ -67,6 +67,15 @@ RewriteCond %{REQUEST_URI} !/config/ [NC]
 RewriteRule ^ %1%2 [R=301,L]
 
 # -------------------------------------------------------------
+# 3. Root deployment (production document root):
+#    /login → /login.php when that file exists at DOCUMENT_ROOT
+# -------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^(.+?)/?$ $1.php [QSA,L]
+
+# -------------------------------------------------------------
 # 4. Fallback root routing for subdirectories (local /seopp/ dev)
 # -------------------------------------------------------------
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -85,12 +94,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]{2,6}$
 RewriteRule ^ 404.php [L]
-
-# 4. Fallback root routing for subdirectories
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{DOCUMENT_ROOT}/seopp/$1.php -f
-RewriteRule ^(.+?)/?$ $1.php [QSA,L]
 
 # =============================================================
 # Security Headers
