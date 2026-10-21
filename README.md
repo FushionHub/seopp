@@ -61,6 +61,7 @@
 ### 3. 🌐 Developer Platform, REST API v1 & Webhooks (`api/v1/*`, `developer-docs.php`, `api-settings.php`)
 
 - **One Unified Master API Key**: Single bearer token granting comprehensive access across all platform domains (`read`, `write`, `ads`, `ai`, `social`, `directory`, `wallet`, `ugc`, `reviews`).
+- **Official JavaScript SDK** (`sdk/adsbooster-js-sdk/`): zero-dependency Node ≥18 + browser client with full TypeScript typings, automatic 429/5xx retries, rate-limit telemetry, typed errors, and Node webhook signature verification. Self-hosted UMD served at `/api/v1/sdk/adsbooster.js` for drop-in `<script>` installs. Live SDK repo: [FushionHub/adsbooster-js-sdk](https://github.com/FushionHub/adsbooster-js-sdk) (with CI on Node 18/20/22). End-to-end smoke-tested against the live API (`examples/node-smoke-test.js`).
 - **Sliding-Window Rate Limiting**: Enforces a strict quota of 60 requests per minute tracked in the `api_rate_limits` table. Exceeded quotas return HTTP 429 Too Many Requests with standard `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.
 - **Real-Time HMAC-SHA256 Webhooks**: Outbound event notifications (`campaign.status_changed`, `post.published`, `payment.completed`, `webhook.test_ping`) signed with cryptographic `X-Adsbooster-Signature` headers.
 - **Interactive Webhook Tester**: Integrated "Ping Test" in the Developer Console (`api-settings.php`) verifying target endpoints in real time with millisecond latency telemetry.
@@ -204,7 +205,9 @@ seopp/
 │   ├── directory.php          # Business directory endpoints
 │   ├── reviews.php            # Community review submission & querying
 │   ├── credits.php            # Balance check & credit transaction endpoints
+│   ├── sdk/adsbooster.js      # Self-hosted JavaScript SDK (UMD) for developers
 │   └── webhooks.php           # Webhook sender & test ping helper
+├── sdk/adsbooster-js-sdk/     # Official JavaScript SDK package (src, dist, types, examples)
 ├── assets/                    # Static assets (CSS, JS, Fonts, Images)
 ├── config/                    # System configurations
 │   ├── db.php                 # Database PDO singleton connection

@@ -104,6 +104,7 @@ require_once __DIR__ . '/includes/app_header.php';
                 <a href="#ep-webhooks">7. Webhooks Management</a>
 
                 <div class="text-white-50 font-size-11 fw-bold text-uppercase px-2 mt-3 mb-2">Client SDKs</div>
+                <a href="#js-sdk">JavaScript SDK (Node & Browser)</a>
                 <a href="#sdks">cURL, JavaScript, Python, PHP</a>
             </div>
         </div>
@@ -790,6 +791,63 @@ media_type=image
                 </div>
 
                 <p class="text-white-50 font-size-12 mb-2">Connect accounts first under <a href="<?= url('social-connect') ?>" class="text-accent">Social Connect</a> — publishing uses real OAuth tokens, never passwords.</p>
+            </div>
+
+            <!-- JavaScript SDK -->
+            <div id="js-sdk" class="card-dark p-4 rounded-4 mb-4" style="background:#0d1524 !important; border:1px solid rgba(255,255,255,0.08) !important;">
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                    <span class="badge bg-accent bg-opacity-25 text-accent font-size-10 fw-bold">OFFICIAL SDK</span>
+                    <code class="text-white fw-bold font-size-15">adsbooster-js-sdk</code>
+                    <a href="<?= BASE_URL ?>/api/v1/sdk/adsbooster.js" download class="btn btn-outline-light btn-sm rounded-pill px-3 font-size-11 ms-auto">
+                        <i class="ph ph-download-simple me-1"></i> Download (self-hosted)
+                    </a>
+                </div>
+                <p class="text-white-50 font-size-13 mb-3">
+                    Zero-dependency JavaScript / TypeScript client for the full REST API — AI UGC creatives, campaigns, multi-network publishing, server-side CAPI tracking, credits and signed webhooks. Works in Node ≥18 and modern browsers, with automatic retries on rate limits and full typings.
+                    <a href="https://github.com/adsbooster-sdks/adsbooster-js-sdk" target="_blank" class="text-accent">SDK repository <i class="ph ph-arrow-square-out"></i></a>
+                </p>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="text-white-50 font-size-11 fw-bold text-uppercase mb-1">Install (npm · ESM · UMD · typings included)</div>
+                        <div class="code-block">npm install adsbooster-js-sdk
+
+# or self-hosted, straight from this deployment:
+# <script src="<?= BASE_URL ?>/api/v1/sdk/adsbooster.js"></script></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 font-size-11 fw-bold text-uppercase mb-1">Quick start</div>
+                        <div class="code-block">import { Adsbooster } from 'adsbooster-js-sdk';
+
+const client = new Adsbooster({ apiKey: 'adsb_live_…' });
+
+const bal   = await client.credits.balance();
+const img   = await client.ugc.generateImage({ product_name: 'Cloud-Knit Shoes' });
+const camp  = await client.campaigns.create({ name: 'Q4 Drop', platform: 'meta', objective: 'conversions', budget_amount: 25 });
+await client.posts.create({ platform: 'tiktok', caption: 'New drop 🚀 #ad', media_url: img.creative.image_url });</div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-3">
+                    <table class="table table-dark table-sm font-size-12 mb-0" style="border-color:rgba(255,255,255,.08);">
+                        <thead><tr><th class="text-white-50">Namespace</th><th class="text-white-50">Methods</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>client.campaigns</code></td><td><code>list({page,limit,status})</code> · <code>get(id)</code> · <code>create(payload)</code> · <code>update(id,payload)</code> · <code>pause(id)</code> · <code>resume(id)</code></td></tr>
+                            <tr><td><code>client.posts</code></td><td><code>list()</code> · <code>get(id)</code> · <code>create({platform,caption,media_url,media_type})</code> · <code>remove(id)</code></td></tr>
+                            <tr><td><code>client.ugc</code></td><td><code>generateImage({product_name,ugc_style,aspect_ratio,…})</code> · <code>listRecent({limit})</code></td></tr>
+                            <tr><td><code>client.credits</code></td><td><code>balance()</code></td></tr>
+                            <tr><td><code>client.directory</code></td><td><code>list({category,q,limit})</code> · <code>createListing(payload)</code></td></tr>
+                            <tr><td><code>client.reviews</code></td><td><code>list()</code> · <code>submit({rating,review_text})</code></td></tr>
+                            <tr><td><code>client.capi</code></td><td><code>scriptUrl()</code> · <code>track({pixel_token,event_name,custom_data})</code></td></tr>
+                            <tr><td><code>client.webhooks</code></td><td><code>testPingUrl(url)</code> · <code>Adsbooster.webhooks.verify(rawBody, signature, secret)</code> (Node)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="text-white-50 font-size-12 mb-0">
+                    <i class="ph ph-shield-check text-success me-1"></i>
+                    The SDK auto-retries <code>429</code>/<code>5xx</code>, honors <code>Retry-After</code>, exposes the live quota on <code>client.lastRateLimit</code>, and throws typed <code>AdsboosterError</code> objects (<code>err.status</code>, <code>err.code</code>). Verify inbound webhooks with <code>Adsbooster.webhooks.verify()</code> using the RAW request body.
+                </p>
             </div>
 
             <!-- Client SDKs -->

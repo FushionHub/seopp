@@ -16,8 +16,8 @@ if ($method === 'GET') {
     $query = trim((string)($_GET['q'] ?? ''));
     $limit = min(50, max(1, (int)($_GET['limit'] ?? 20)));
 
-    $sql = "SELECT id, title, category, address, phone, whatsapp, rating, reviews_count, is_verified, cover_image, website_url, created_at 
-            FROM marketplace_listings WHERE status = 'active'";
+    $sql = "SELECT id, title, category, address, phone, whatsapp, rating, views_count AS reviews_count, seller_verified AS is_verified, featured_image AS cover_image, website_url, created_at
+            FROM marketplace_items WHERE status = 'active'";
     $params = [];
 
     if (!empty($category)) {
